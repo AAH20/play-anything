@@ -1,0 +1,11 @@
+import type {Snapshot} from './graph';
+export async function neo4jBundle(graph:Snapshot){const bytes=new TextEncoder().encode(JSON.stringify(graph));const digest=await crypto.subtle.digest('SHA-256',bytes);const revision=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');return {
+ format:'play-anything.neo4j-import.v1',status:'export-only; no database connection or import performed',revision,
+ instructions:['Replace tenant_id and repository_id with your authorized namespace.','Use fixed statements with parameters through your own database driver. Do not interpolate repository names into Cypher.','Apply uniqueness constraint before import. Commit node and relationship imports atomically, then publish the revision.','This bundle is a rebuildable snapshot projection; a hosted query API must enforce authorization separately from Supabase RLS.'],
+ constraint:'CREATE CONSTRAINT code_node_identity IF NOT EXISTS FOR (n:CodeNode) REQUIRE (n.tenant_id, n.repository_id, n.revision, n.id) IS UNIQUE',
+ parameters:{tenant_id:'REPLACE_WITH_AUTHORIZED_TENANT',repository_id:graph.name,revision,nodes:graph.nodes,edges:graph.edges.map((e,index)=>({...e,id:String(index)}))},
+ statements:[
+ 'UNWIND $nodes AS row MERGE (n:CodeNode {tenant_id:$tenant_id, repository_id:$repository_id, revision:$revision, id:row.id}) SET n.name=row.name, n.kind=row.kind, n.path=row.path, n.summary=row.summary, n.confidence=row.confidence, n.line=row.line',
+ 'UNWIND $edges AS row MATCH (a:CodeNode {tenant_id:$tenant_id, repository_id:$repository_id, revision:$revision, id:row.source}), (b:CodeNode {tenant_id:$tenant_id, repository_id:$repository_id, revision:$revision, id:row.target}) MERGE (a)-[r:CODE_RELATION {id:row.id}]->(b) SET r.kind=row.relation, r.confidence=row.confidence, r.line=row.line'],
+ neighborhoodQuery:'MATCH (n:CodeNode {tenant_id:$tenant_id, repository_id:$repository_id, revision:$revision, id:$id})-[r:CODE_RELATION]-(m:CodeNode) WHERE m.tenant_id=$tenant_id AND m.repository_id=$repository_id AND m.revision=$revision RETURN n,r,m LIMIT 200',
+ boundaries:['Validate database edition support for composite uniqueness before running.','No credentials, auto-provisioning, unrestricted query execution or real-time guarantees are included.']};}

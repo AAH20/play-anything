@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Creator Studio · Play Anything</title>
+  <link rel="stylesheet" href="creator.css">
+  <link rel="stylesheet" href="graph.css">
+  <link rel="stylesheet" href="creator-enhancements.css">
+  <script src="hosting-model.js" defer></script>
+  <script src="graph-viewer.js" defer></script>
+  <script src="public-config.js" defer></script>
+  <script src="pitch-studio.js" defer></script>
+  <script src="creator-enhancements.js" defer></script>
+  <script src="cloud-plans.js" defer></script>
+  <script src="creator-model.js" defer></script>
+  <script src="creator.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to workspace</a>
+<aside class="sidebar">
+  <a class="brand" href="creator.html"><span class="brand-mark">✳</span><span>play anything<span class="brand-sub">CREATOR STUDIO</span></span></a>
+  <div class="side-label">YOUR WORKSPACE</div>
+  <nav aria-label="Creator steps" id="side-steps">
+    <button data-step="0" class="active"><span class="nav-number">01</span>Connect & start</button>
+    <button data-step="1"><span class="nav-number">02</span>Understand the repo</button>
+    <button data-step="2"><span class="nav-number">03</span>Compose your project</button>
+    <button data-step="3"><span class="nav-number">04</span>Build a business</button>
+  </nav>
+  <a class="dashboard-link" href="dashboard.html#map" target="_top">↗ Explore the RPG dashboard</a>
+  <div class="side-bottom"><span class="tiny-dot"></span> A small idea. A real starting point.<p>Understand the code.<br>Make something of your own.</p><a class="mentor-link" href="mailto:aah@a2zsoc.com?subject=Play%20Anything%20creator%20mentorship">Talk to an experienced mentor ↗</a></div>
+</aside>
+<div class="workspace">
+  <header class="topbar"><div><span class="breadcrumb">PLAY ANYTHING</span><span class="slash">/</span><strong>New creation</strong></div><div class="top-actions"><span id="service-status" class="badge">Checking local service…</span><button id="export-top" class="quiet">Export plan ↗</button></div></header>
+  <main id="main" tabindex="-1">
+    <div class="page-heading"><div><span class="eyebrow">FROM REPOSITORY TO POSSIBILITY</span><h1>Your next idea starts here.</h1><p>Understand a codebase. Choose your building blocks. Find a viable path forward.</p></div><span class="project-tag">NEW PROJECT <span>↗</span></span></div>
+    <ol class="stepper" aria-label="Progress"><li data-step="0" class="active"><span>1</span>Connect</li><li data-step="1"><span>2</span>Understand</li><li data-step="2"><span>3</span>Compose</li><li data-step="3"><span>4</span>Launch plan</li></ol>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <div class="workbench">
+      <div class="main-column">
+        <section data-panel="0">
+          <div class="quickstart"><div><span class="eyebrow">THE SHORTEST PATH TO YOUR FIRST BUILD</span><h2>Skip the blank canvas.</h2><p>Explore a sample, complete a short walkthrough, and assemble your first game or map.</p><button id="quick-start" class="primary">Absolute quick start <span>→</span></button><small>Sample project · no credentials needed</small></div><div class="blueprint-art" aria-hidden="true"><span class="art-label">YOUR IDEA</span><div class="art-node art-top">⌘<span>REPOSITORY</span></div><div class="art-wire"></div><div class="art-row"><div class="art-node">◇<span>MAPS</span></div><div class="art-node accent">✳<span>YOUR GAME</span></div><div class="art-node">↗<span>BUSINESS</span></div></div><span class="art-caption">Small pieces. Your possibilities.</span></div></div>
+          <div class="section-heading"><div><span class="eyebrow">01 / MAKE IT YOURS</span><h2>Bring your tools. Pick your goal.</h2></div><span class="badge">Saved on this device</span></div>
+          <div class="panel">
+            <fieldset><legend>What are you here to build?</legend><div class="goal-grid"><label class="choice"><input type="radio" name="goal" value="game" checked><span>◇<strong>A custom game</strong><small>Mechanics, quests & players</small></span></label><label class="choice"><input type="radio" name="goal" value="map"><span>⌘<strong>A custom map</strong><small>Worlds, levels & learning paths</small></span></label><label class="choice"><input type="radio" name="goal" value="tool"><span>↗<strong>A developer tool</strong><small>A useful product from a repo</small></span></label></div></fieldset>
+            <div class="form-grid"><label>Your experience<select id="experience"><option value="guided">Guide me through the basics</option><option value="experienced">I know my way around code</option></select></label><label>Your preferred agent / harness<input id="harness" placeholder="e.g. Codex, Claude Code, Cursor, custom" value="My coding agent" maxlength="120"></label></div>
+            <label>How would you like to work?<select id="connection-mode"><option value="handoff">Export a handoff to my existing agent</option><option value="endpoint">Connect a compatible model endpoint</option></select></label>
+            <p id="handoff-help" class="help">Keep using your own agent and harness. We prepare a repository brief and build plan you can take with you.</p>
+            <div id="endpoint-fields" hidden><div class="form-grid"><label>API base URL<input id="endpoint" type="url" placeholder="http://127.0.0.1:11434/v1"></label><label>Model ID <span class="optional">optional</span><input id="model" placeholder="First available model if blank"></label></div><label>API key <span class="optional">optional for local models</span><input id="api-key" type="password" autocomplete="off" placeholder="Kept only in this local server session"></label><p class="help">Uses the endpoint’s /models and /chat/completions interfaces. Repository summaries are sent only when you ask for an explanation.</p></div>
+            <div class="panel-footer"><span id="connection-status" class="help">Choose a handoff or verify a live endpoint.</span><button id="connect" class="secondary">Prepare handoff →</button></div>
+          </div>
+          <button class="primary next" id="to-repository">Continue to repository <span>→</span></button>
+        </section>
+
+        <section data-panel="1" hidden>
+          <div class="section-heading"><div><span class="eyebrow">02 / UNDERSTAND BEFORE YOU BUILD</span><h2>Make the repository make sense.</h2><p>A short, evidence-based tour of its structure and dependencies.</p></div></div>
+          <div class="panel"><label>Repository URL<input id="repo-url" type="url" placeholder="https://github.com/owner/repository"></label><p class="help">Public HTTPS repositories on GitHub, GitLab, and Bitbucket. The local service clones and inspects source without running it.</p><div class="button-row"><button id="analyze" class="primary">Analyze repository →</button><button id="sample" class="secondary">Use the sample</button><button id="analyze-local" class="quiet">Analyze this project</button></div><p id="offline-help" class="help" hidden>For live connections, cloning, and analysis, start <code>python3 -m play_anything.creator_server</code> and open the printed local URL.</p></div>
+          <div id="repository-report" hidden>
+            <div class="stat-row" id="repo-stats"></div>
+            <div class="panel"><span class="eyebrow">YOUR REPOSITORY AT A GLANCE</span><h3 id="repo-name"></h3><div id="repo-tree" class="repo-tree"></div><p id="repo-limit" class="help"></p><details><summary>Inspect observed import relationships</summary><ul id="repo-edges" class="mono-list"></ul></details></div>
+            <repo-graph id="understanding-graph"></repo-graph>
+            <div class="panel"><div class="section-heading"><div><span class="eyebrow">OPTIONAL / YOUR AGENT’S PERSPECTIVE</span><h3>Ask for a guided explanation.</h3></div></div><p class="help">Sends up to 60 file summaries and 100 import relationships to your connected model. No source contents or keys are included in the handoff export.</p><div class="button-row"><button id="explain" class="secondary">Ask connected agent</button><button id="handoff-download" class="quiet">Download repository brief ↗</button></div><pre id="explanation" hidden></pre></div>
+            <div class="panel tutorial"><span class="eyebrow">A TWO-MINUTE UNDERSTANDING CHECK</span><h3>Know what you’re taking forward.</h3><p id="tutorial-intro">Explore a folder above, then follow a dependency. File structure is a starting point; it does not prove runtime behavior.</p><fieldset><legend>What is an observed Python dependency based on?</legend><label class="radio-line"><input type="radio" name="dependencies" value="imports">An import in the parsed source</label><label class="radio-line"><input type="radio" name="dependencies" value="nearby">Two files being near each other</label></fieldset><fieldset><legend>Before selling a derivative game or product, what should you check?</legend><label class="radio-line"><input type="radio" name="rights" value="public">Whether the repository is public</label><label class="radio-line"><input type="radio" name="rights" value="review">The code, asset, and trademark permissions</label></fieldset><button id="complete-tutorial" class="primary">Complete tutorial & choose modules →</button></div>
+          </div>
+        </section>
+
+        <section data-panel="2" hidden>
+          <div class="section-heading"><div><span class="eyebrow">03 / SMALL PIECES, YOUR POSSIBILITIES</span><h2>Compose your project.</h2><p>Select capabilities. Required dependencies come along automatically.</p></div></div>
+          <div class="preset-row"><button data-preset="game" class="secondary">Game starter</button><button data-preset="map" class="secondary">Map creator</button><button data-preset="tool" class="secondary">Developer tool</button><button data-preset="all" class="quiet">Explore all modules</button></div>
+          <p class="help">These are implementation choices for your build plan. Selection does not remove source files or install features into a cloned project.</p>
+          <section class="panel hosting-panel" data-hosting></section>
+          <section class="panel" data-allocation></section>
+          <div id="module-grid" class="module-grid"></div>
+          <div class="panel"><h3>Source areas to focus on</h3><p class="help">Choose folders from the analyzed repository for your agent’s first pass. The clone retains all source and license files.</p><div id="source-modules" class="source-modules"></div></div>
+          <button id="to-business" class="primary next">See the business case <span>→</span></button>
+        </section>
+
+        <section data-panel="3" hidden>
+          <div class="section-heading"><div><span class="eyebrow">04 / TURN THE IDEA INTO A PLAN</span><h2>Know what it takes to launch.</h2><p>Every number has an input. Change the assumptions and see the trade-offs.</p></div></div>
+          <div class="scenario-banner"><span>◉</span><div><strong>Illustrative scenario · USD per month</strong><p>Editable allowances, not quotes or a forecast. Replace them with your costs. One paying customer = one monthly transaction.</p></div></div>
+          <section class="panel hosting-panel" data-hosting></section>
+          <section class="panel" data-allocation></section>
+          <div class="panel"><h3>Your audience & revenue</h3><div class="form-grid three" id="revenue-inputs"></div><details open><summary>Operating costs & customer acquisition</summary><div class="form-grid three" id="cost-inputs"></div></details><details><summary>Model usage & provider rates</summary><p class="help">Applies when the Agent & harness bridge module is selected. These are editable example rates; voice-provider charges belong in that module’s variable costs.</p><div class="form-grid" id="ai-inputs"></div></details></div>
+          <div class="panel"><h3>Module-by-module cost accounting</h3><p class="help">Setup hours × hourly rate is a one-time investment. Fixed and variable allowances exclude shared maintenance, fees, and model usage.</p><div class="table-scroll"><table><caption class="sr-only">Editable cost allowances by selected module</caption><thead><tr><th>Module</th><th>Setup hours</th><th>Fixed / mo</th><th>$/active / mo</th><th>Monthly total</th></tr></thead><tbody id="cost-table"></tbody></table></div></div>
+          <div class="panel"><h3>The monthly picture</h3><div class="stat-row" id="business-stats"></div><dl id="cost-breakdown" class="cost-breakdown"></dl><details><summary>How these figures are calculated</summary><p class="help">Gross revenue = paying customers × price. Contribution = gross − refunds − payment/platform fees − variable module costs − AI usage. Operating result = contribution − fixed module costs − shared hosting − maintenance labor − overhead − acquisition spend. Hosting usage is held at the entered scenario when computing break-even; future tier changes require recalculation. Break-even keeps your paid-to-active ratio constant. Setup payback uses a stable positive monthly operating result. Figures exclude tax, financing, depreciation, and engine royalties unless you enter them into the relevant allowances.</p></details></div>
+          <div class="panel"><span class="eyebrow">MARKET LANDSCAPE</span><h3>Compare the barriers. Build your own advantage.</h3><p class="help">Engine ecosystems are relevant reference points for game/map creators, not direct competitors for every venture. Cost facts link to sources; barrier and moat notes are planning hypotheses.</p><div id="competitors" class="competitors"></div><details><summary>Add a direct competitor for your industry</summary><div class="form-grid"><label>Competitor<input id="competitor-name" placeholder="A product your audience already uses"></label><label>Evidence URL<input id="competitor-source" type="url" placeholder="https://..."></label><label>Barrier to entry<textarea id="competitor-barrier" placeholder="What makes entering this market difficult?"></textarea></label><label>Your defensible advantage<textarea id="competitor-moat" placeholder="What would be hard for them to copy? What evidence supports it?"></textarea></label></div><button id="add-competitor" class="secondary">Add comparison</button><ul id="custom-competitors"></ul></details></div>
+          <pitch-studio class="panel"></pitch-studio>
+          <section class="panel" id="cloud-plans"></section>
+          <div class="panel launch-panel"><span class="eyebrow">YOUR STARTING POINT IS READY</span><h3>Create your venture workspace.</h3><label>Project name<input id="venture-name" value="my-first-venture" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{0,59}" maxlength="60"></label><details><summary>Review repository license files</summary><div id="license-files"></div><p class="help"><a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository" target="_blank" rel="noopener noreferrer">Public access does not itself grant commercial reuse rights ↗</a></p></details><label class="check-line"><input id="rights-reviewed" type="checkbox">I have reviewed the permissions for the code, assets, and branding I intend to use.</label><div class="button-row"><button id="create-workspace" class="primary">Clone & create workspace →</button><button id="export-plan" class="secondary">Export the plan</button></div><p class="help">Creates a separate clone, an accounting plan, and an agent handoff. Your selected features are the implementation brief; no repository code is executed.</p><div id="workspace-result" role="status" hidden></div></div>
+          <div class="mentor-card"><div><span class="eyebrow">A HEAD START, WITH A HUMAN</span><h3>You don’t have to figure it all out alone.</h3><p>Get experienced guidance on your architecture, first release, and business assumptions.</p></div><a class="primary mentor-link" href="mailto:aah@a2zsoc.com?subject=Play%20Anything%20creator%20mentorship">Ask for mentorship ↗</a><span>aah@a2zsoc.com</span></div>
+        </section>
+      </div>
+      <aside class="blueprint-summary" aria-label="Live project summary"><div class="summary-top"><span class="eyebrow">YOUR LAUNCH BLUEPRINT</span><span>↗</span></div><h2 id="summary-name">Your custom game</h2><span class="badge" id="summary-mode">Ready when you are</span><div class="summary-journey"><div><span class="journey-dot" id="dot-connect"></span><span>Your tools<strong id="summary-agent">Choose your agent</strong></span></div><div><span class="journey-dot" id="dot-repo"></span><span>Your foundation<strong id="summary-repo">Add a repository</strong></span></div><div><span class="journey-dot" id="dot-tutorial"></span><span>Your understanding<strong id="summary-tutorial">A short guided walkthrough</strong></span></div></div><div class="summary-modules"><div class="summary-label">SELECTED CAPABILITIES <strong id="module-count">0</strong></div><div id="module-chips"></div></div><div class="summary-economics"><div><span>Estimated setup</span><strong id="summary-setup">—</strong></div><div><span>Monthly operating result</span><strong id="summary-profit">—</strong></div><p>Based on editable example assumptions.</p></div><p class="summary-foot">Start small. Your plan can grow<br>with what you learn.</p></aside>
+    </div>
+    <footer>Made for people who build.<span>Local-first planning · Your agent, your workflow</span></footer>
+  </main>
+</div>
+</body>
+</html>

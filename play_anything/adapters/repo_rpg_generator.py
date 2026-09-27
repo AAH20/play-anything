@@ -10,6 +10,7 @@ import os
 import time
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Optional, Any
+from .repository_index import iter_repository_summaries, resolve_python_imports
 from ..core.models import (
     CodeNode, CodeEdge,
     SkillTreeResult, FogOfWarPartitionResult,
@@ -111,29 +112,19 @@ class RepoRPGGenerator:
         )
 
     @staticmethod
-    def scan_local_directory(directory_path: str, max_files: int = 50) -> WorldState:
+    def scan_local_directory(directory_path: str, max_files: Optional[int] = 50, *,
+                             cache_path: Optional[str] = None, cache_max_entries: int = 10000) -> WorldState:
         """Scans an actual directory on disk and converts it into a playable RPG world."""
         repo_name = os.path.basename(os.path.abspath(directory_path))
         nodes: List[CodeNode] = []
         edges: List[CodeEdge] = []
 
-        file_list: List[str] = []
-        for root, dirs, files in os.walk(directory_path):
-            dirs[:] = [d for d in dirs if not d.startswith(".") and d not in {"node_modules", "__pycache__", "venv", "dist", "build"}]
-            for file in files:
-                if file.endswith((".py", ".ts", ".js", ".go", ".rs", ".java", ".cpp", ".c", ".md")):
-                    rel = os.path.relpath(os.path.join(root, file), directory_path)
-                    file_list.append(rel)
-                    if len(file_list) >= max_files:
-                        break
-            if len(file_list) >= max_files:
-                break
-
-        if not file_list:
-            return RepoRPGGenerator.generate_synthetic_world(repo_name=repo_name)
-
-        # Classify layer based on path heuristics
-        for idx, f in enumerate(file_list):
+        summaries = []
+        for idx, summary in enumerate(iter_repository_summaries(
+                directory_path, max_files, cache_path=cache_path,
+                cache_max_entries=cache_max_entries)):
+            summaries.append(summary)
+            f = summary["path"]
             f_lower = f.lower()
             if "test" in f_lower:
                 layer = "test"
@@ -153,26 +144,22 @@ class RepoRPGGenerator:
                 layer = "domain"
 
             nid = f"file_{idx:02d}"
-            # Cyclomatic complexity approximation
-            complexity = 1.0 + (len(f) % 7) * 1.5
-            vuln_score = 0.4 if layer == "api" and "auth" in f_lower else 0.05
-
             nodes.append(CodeNode(
                 node_id=nid,
                 name=f,
                 kind="file",
                 layer=layer,
-                complexity=round(complexity, 1),
-                lines_of_code=max(25, (len(f) * 12) % 400),
-                vulnerability_score=vuln_score,
-                tags={layer}
+                complexity=summary["complexity"],
+                lines_of_code=summary["lines_of_code"],
+                vulnerability_score=0.0,
+                tags={layer, summary["analysis"]}
             ))
 
-        # Infer basic import edges
-        for i in range(len(nodes) - 1):
-            edges.append(CodeEdge(nodes[i].node_id, nodes[i + 1].node_id, "imports", 1.0))
-            if i + 2 < len(nodes):
-                edges.append(CodeEdge(nodes[i].node_id, nodes[i + 2].node_id, "calls", 1.2))
+        if not nodes:
+            return RepoRPGGenerator.generate_synthetic_world(repo_name=repo_name)
+        node_ids = {node.name: node.node_id for node in nodes}
+        edges = [CodeEdge(source, target, "imports", 1.0)
+                 for source, target in resolve_python_imports(summaries, node_ids)]
 
         personas = [
             AgentPersona("npc_wizard", "Master of Architecture", "Senior Architect Wizard", "mystical_authoritative", "Explains system design", affinity_layers={"domain", "data"}),

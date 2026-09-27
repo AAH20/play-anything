@@ -43,3 +43,25 @@ venv.bak/
 .coverage
 htmlcov/
 scratch/
+
+# Local creator clones and plans
+.play-anything-workspaces/
+
+# Static deployment output and local Supabase tooling
+site-dist/
+supabase/.temp/
+supabase/.branches/
+
+# Optional Next.js workspace
+node_modules/
+.next/
+*.tsbuildinfo
+apps/web/public/legacy/
+apps/web/public/repository-graph.json
+apps/web/.env*
+!apps/web/.env.example
+!apps/web/lib/
+!apps/web/lib/**
+
+# Optional source-pinned kernel checkouts; installed locally, not vendored.
+.integration-sources/

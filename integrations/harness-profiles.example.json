@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "profiles": [
+    {
+      "name": "Codex read-only execution (subscription sign-in)",
+      "integrationId": "harness",
+      "operation": "run",
+      "harnessId": "codex",
+      "authMode": "subscription",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "argv": ["codex", "exec", "--sandbox", "read-only", "--skip-git-repo-check", "{prompt}"]
+    },
+    {
+      "name": "Claude Code restricted plan mode with read tools only (subscription sign-in)",
+      "integrationId": "harness",
+      "operation": "run",
+      "harnessId": "claude-code",
+      "authMode": "subscription",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "argv": ["claude", "--restricted", "-p", "--permission-mode", "plan", "--tools", "Read,Glob,Grep", "{prompt}"]
+    },
+    {
+      "name": "Cursor headless print mode (review local read-only policy before enabling)",
+      "integrationId": "harness",
+      "operation": "run",
+      "harnessId": "cursor",
+      "authMode": "subscription",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "argv": ["cursor-agent", "--print", "{prompt}"]
+    },
+    {
+      "name": "OpenCode plan agent (configure plan agent first)",
+      "integrationId": "harness",
+      "operation": "run",
+      "harnessId": "opencode",
+      "authMode": "api",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "argv": ["opencode", "run", "--agent", "plan", "{prompt}"]
+    },
+    {
+      "name": "Hermes one-shot chat", 
+      "integrationId": "harness",
+      "operation": "run",
+      "harnessId": "hermes",
+      "authMode": "subscription",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "argv": ["hermes", "chat", "-q", "--oneshot", "{prompt}"]
+    },
+    {
+      "name": "OpenManus local prompt (workspace must contain its main.py)",
+      "integrationId": "openmanus",
+      "operation": "run",
+      "harnessId": "openmanus",
+      "authMode": "local",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/OPENMANUS/CHECKOUT",
+      "argv": ["python", "main.py", "--prompt", "{prompt}"]
+    },
+    {
+      "name": "UnderstandAnything through an installed Codex /understand plugin",
+      "integrationId": "understand-anything",
+      "operation": "run",
+      "harnessId": "codex",
+      "authMode": "subscription",
+      "enabled": false,
+      "workspace": "/ABSOLUTE/PATH/TO/TRUSTED/REPOSITORY",
+      "promptPrefix": "/understand",
+      "argv": ["codex", "exec", "--sandbox", "read-only", "--skip-git-repo-check", "{prompt}"]
+    }
+  ]
+}

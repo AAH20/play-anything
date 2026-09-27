@@ -1,0 +1,22 @@
+[
+  {
+    "name": "graph-rag-np-hard-kernel",
+    "repository": "https://github.com/AAH20/graph-rag-np-hard-kernel",
+    "revision": "35b1bb93a04d419fc1167480d93a1eed711fb711"
+  },
+  {
+    "name": "agentic-np-hard-kernel",
+    "repository": "https://github.com/AAH20/agentic-np-hard-kernel",
+    "revision": "ad8e99faa20c414b60d86b8ec211863c003535fc"
+  },
+  {
+    "name": "mirofish-swarm-optimizer",
+    "repository": "https://github.com/AAH20/mirofish-swarm-optimizer",
+    "revision": "d2a3df25cf80750fadd562373f7941b9cb8db2f1"
+  },
+  {
+    "name": "agentic-graph-swarm-kernel",
+    "repository": "https://github.com/AAH20/agentic-graph-swarm-kernel",
+    "revision": "d429ee702e0e9b59b68f3714723a4f1d4bc425c8"
+  }
+]

@@ -7,12 +7,15 @@ and link evolutionary optimization with multi-agent evaluation (Kaggle Game Aren
 
 from __future__ import annotations
 import math
+import json
+from copy import deepcopy
 import uuid
 import time
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from play_anything.core.personalization_engine import OnboardingCalibrationGate
+from play_anything.core.manifest_schema import manifest_json_schema, validate_manifest_data
 
 
 class GameMode(str, Enum):
@@ -201,23 +204,46 @@ class RealmManifest:
         return asdict(self)
 
     @classmethod
+    def json_schema(cls) -> Dict[str, Any]:
+        """Export the structural Draft 2020-12 schema; defaults remain optional."""
+        return manifest_json_schema(cls)
+
+    @classmethod
+    def validate_dict(cls, data: Dict[str, Any]) -> List[str]:
+        return validate_manifest_data(data, cls)
+
+    def to_json(self) -> str:
+        data = self.to_dict()
+        errors = self.validate_dict(data)
+        if errors:
+            raise ValueError("Invalid realm manifest: " + "; ".join(errors))
+        return json.dumps(data, indent=2, allow_nan=False)
+
+    @classmethod
+    def from_json(cls, payload: str) -> RealmManifest:
+        return cls.from_dict(json.loads(payload))
+
+    @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> RealmManifest:
-        data = data.copy()
+        errors = cls.validate_dict(data)
+        if errors:
+            raise ValueError("Invalid realm manifest: " + "; ".join(errors))
+        data = deepcopy(data)
         data["game_mode"] = GameMode(data["game_mode"])
-        data["requirements"]["sandbox_tier"] = SandboxTier(data["requirements"]["sandbox_tier"])
+        data["requirements"]["sandbox_tier"] = SandboxTier(data["requirements"].get("sandbox_tier", SandboxTier.DOCKER_CONTAINER))
         data["requirements"] = RealmRequirement(**data["requirements"])
-        data["controls"]["primary_scheme"] = ControlScheme(data["controls"]["primary_scheme"])
+        data["controls"]["primary_scheme"] = ControlScheme(data["controls"].get("primary_scheme", ControlScheme.ISOMETRIC_POINT_CLICK))
         data["controls"] = RealmControlsConfig(**data["controls"])
         data["objectives"] = [RealmObjective(**obj) for obj in data["objectives"]]
-        data["benchmarks"]["anti_cheat_mode"] = AntiCheatStrictness(data["benchmarks"]["anti_cheat_mode"])
+        data["benchmarks"]["anti_cheat_mode"] = AntiCheatStrictness(data["benchmarks"].get("anti_cheat_mode", AntiCheatStrictness.STRICT))
         data["benchmarks"] = RealmBenchmarkGuardrails(**data["benchmarks"])
         data["punishments"] = RealmPunishments(**data["punishments"])
-        data["monetization"]["access_type"] = AccessType(data["monetization"]["access_type"])
+        data["monetization"]["access_type"] = AccessType(data["monetization"].get("access_type", AccessType.OPEN_ACCESS))
         data["monetization"] = RealmMonetizationConfig(**data["monetization"])
         if "evolution" in data:
             data["evolution"] = EvolutionConfig(**data["evolution"])
         if "evaluation" in data:
-            data["evaluation"]["arena_protocol"] = ArenaProtocol(data["evaluation"]["arena_protocol"])
+            data["evaluation"]["arena_protocol"] = ArenaProtocol(data["evaluation"].get("arena_protocol", ArenaProtocol.KAGGLE_GAME_ARENA_SWISS))
             data["evaluation"] = EvaluationConfig(**data["evaluation"])
         if "onboarding_gate" in data:
             data["onboarding_gate"] = OnboardingCalibrationGate(**data["onboarding_gate"])
@@ -443,8 +469,11 @@ class RealmStudioEngine:
 
     def validate_manifest(self, manifest: RealmManifest) -> Dict[str, Any]:
         """Validates manifest against system invariants and fairness standards."""
-        errors = []
+        errors = RealmManifest.validate_dict(manifest.to_dict())
         warnings = []
+        if errors:
+            return {"valid": False, "errors": errors, "warnings": warnings,
+                    "manifest_id": manifest.id}
 
         if not manifest.title or len(manifest.title) < 3:
             errors.append("Title must be at least 3 characters.")

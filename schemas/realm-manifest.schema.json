@@ -1,0 +1,379 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Play Anything Realm Manifest",
+  "$ref": "#/$defs/RealmManifest",
+  "$defs": {
+    "RealmManifest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "game_mode": {
+          "type": "string",
+          "enum": [
+            "boss_raid",
+            "capture_the_flag",
+            "speedrun_refactor",
+            "tower_defense",
+            "code_golf",
+            "battle_royale",
+            "onboarding_walkthrough",
+            "model_eval_colosseum"
+          ]
+        },
+        "repository_url": {
+          "type": "string"
+        },
+        "requirements": {
+          "$ref": "#/$defs/RealmRequirement"
+        },
+        "controls": {
+          "$ref": "#/$defs/RealmControlsConfig"
+        },
+        "objectives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RealmObjective"
+          }
+        },
+        "benchmarks": {
+          "$ref": "#/$defs/RealmBenchmarkGuardrails"
+        },
+        "punishments": {
+          "$ref": "#/$defs/RealmPunishments"
+        },
+        "monetization": {
+          "$ref": "#/$defs/RealmMonetizationConfig"
+        },
+        "evolution": {
+          "$ref": "#/$defs/EvolutionConfig"
+        },
+        "evaluation": {
+          "$ref": "#/$defs/EvaluationConfig"
+        },
+        "onboarding_gate": {
+          "$ref": "#/$defs/OnboardingCalibrationGate"
+        },
+        "created_at": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "author",
+        "version",
+        "description",
+        "game_mode",
+        "repository_url",
+        "requirements",
+        "controls",
+        "objectives",
+        "benchmarks",
+        "punishments",
+        "monetization"
+      ],
+      "additionalProperties": false
+    },
+    "RealmRequirement": {
+      "type": "object",
+      "properties": {
+        "target_language": {
+          "type": "string"
+        },
+        "min_runtime_version": {
+          "type": "string"
+        },
+        "sandbox_tier": {
+          "type": "string",
+          "enum": [
+            "wasm_micro_isolate",
+            "docker_container",
+            "firecracker_microvm"
+          ]
+        },
+        "max_memory_mb": {
+          "type": "integer"
+        },
+        "max_cpu_time_ms": {
+          "type": "integer"
+        },
+        "allowed_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_hero_level": {
+          "type": "integer"
+        },
+        "min_player_elo": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "target_language",
+        "min_runtime_version"
+      ],
+      "additionalProperties": false
+    },
+    "RealmControlsConfig": {
+      "type": "object",
+      "properties": {
+        "primary_scheme": {
+          "type": "string",
+          "enum": [
+            "isometric_point_click",
+            "wasd_spatial_explorer",
+            "vim_modal_navigation",
+            "voice_commanded_swarm",
+            "gamepad_twin_stick"
+          ]
+        },
+        "allow_voice_commands": {
+          "type": "boolean"
+        },
+        "keybindings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "voice_prompts_map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "RealmObjective": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "target_metric": {
+          "type": "string"
+        },
+        "target_threshold": {
+          "type": "number"
+        },
+        "xp_reward": {
+          "type": "integer"
+        },
+        "gold_reward": {
+          "type": "integer"
+        },
+        "is_mandatory": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "target_metric",
+        "target_threshold",
+        "xp_reward",
+        "gold_reward"
+      ],
+      "additionalProperties": false
+    },
+    "RealmBenchmarkGuardrails": {
+      "type": "object",
+      "properties": {
+        "max_pipeline_latency_us": {
+          "type": "number"
+        },
+        "min_mutation_score_pct": {
+          "type": "number"
+        },
+        "max_cyclomatic_complexity": {
+          "type": "integer"
+        },
+        "max_memory_rss_mb": {
+          "type": "integer"
+        },
+        "anti_cheat_mode": {
+          "type": "string",
+          "enum": [
+            "relaxed",
+            "strict",
+            "paranoid"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "RealmPunishments": {
+      "type": "object",
+      "properties": {
+        "slashing_penalty_pct": {
+          "type": "number"
+        },
+        "elo_penalty": {
+          "type": "integer"
+        },
+        "tech_debt_debuff": {
+          "type": "string"
+        },
+        "cursed_blame_artifact": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "RealmMonetizationConfig": {
+      "type": "object",
+      "properties": {
+        "access_type": {
+          "type": "string",
+          "enum": [
+            "open_access",
+            "premium_challenge",
+            "institutional_membership",
+            "sponsored_enterprise_bounty"
+          ]
+        },
+        "ticket_price_tokens": {
+          "type": "integer"
+        },
+        "creator_rev_share_pct": {
+          "type": "number"
+        },
+        "engagement_pool_eligible": {
+          "type": "boolean"
+        },
+        "custom_skins_allowed": {
+          "type": "boolean"
+        },
+        "sponsored_bounty_usd": {
+          "type": "number"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "EvolutionConfig": {
+      "type": "object",
+      "properties": {
+        "generation_budget": {
+          "type": "integer"
+        },
+        "population_size": {
+          "type": "integer"
+        },
+        "mutation_rate_ast": {
+          "type": "number"
+        },
+        "crossover_strategy": {
+          "type": "string"
+        },
+        "selection_pressure": {
+          "type": "number"
+        },
+        "self_play_iterations": {
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "EvaluationConfig": {
+      "type": "object",
+      "properties": {
+        "arena_protocol": {
+          "type": "string",
+          "enum": [
+            "kaggle_game_arena_swiss",
+            "bradley_terry_pairwise",
+            "bayesian_glicko2",
+            "self_play_evolutionary"
+          ]
+        },
+        "judge_models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metrics_tracked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence_interval_pct": {
+          "type": "number"
+        },
+        "reasoning_token_ceiling": {
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "OnboardingCalibrationGate": {
+      "type": "object",
+      "properties": {
+        "map_id": {
+          "type": "string"
+        },
+        "map_title": {
+          "type": "string"
+        },
+        "supports_cadet_mode": {
+          "type": "boolean"
+        },
+        "supports_pro_fast_track": {
+          "type": "boolean"
+        },
+        "supports_senior_sage_mode": {
+          "type": "boolean"
+        },
+        "pro_bypass_qualification_test": {
+          "type": "string"
+        },
+        "cadet_visual_metaphor": {
+          "type": "string"
+        },
+        "senior_vitality_focus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "map_id",
+        "map_title"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

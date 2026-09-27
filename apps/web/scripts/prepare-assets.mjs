@@ -1,0 +1,16 @@
+import {execFileSync} from 'node:child_process';
+import {readFileSync,writeFileSync,copyFileSync,mkdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {resolve} from 'node:path';
+const root=fileURLToPath(new URL('../../../',import.meta.url));
+const output=resolve(root,'apps/web/public/legacy');
+mkdirSync(output,{recursive:true});
+execFileSync('python3',['-c','from scripts.build_site import build; import sys; build(sys.argv[1])',output],{cwd:root,stdio:'inherit'});
+copyFileSync(resolve(output,'repository-graph.json'),resolve(root,'apps/web/public/repository-graph.json'));
+const file=resolve(output,'creator.html');
+let html=readFileSync(file,'utf8');
+html=html.replace('<repo-graph id="understanding-graph"></repo-graph>','<repo-graph id="understanding-graph" style="display:none"></repo-graph><iframe allowfullscreen id="next-repo-graph" title="Interactive repository graph" src="/graph?embed=1" style="width:100%;height:850px;border:1px solid #d9e1e5;border-radius:14px"></iframe>');
+html=html.replace('</body>','<script src="next-bridge.js"></script></body>');
+writeFileSync(file,html);
+writeFileSync(resolve(output,'index.html'),html);
+writeFileSync(resolve(output,'next-bridge.js'),`(()=>{const send=()=>{const graph=window.CreatorWorkbench?.getState().report?.graph;const frame=document.getElementById('next-repo-graph');if(graph&&frame)frame.contentWindow.postMessage({type:'play-graph-snapshot',graph},location.origin);};document.addEventListener('creator-report',send);window.addEventListener('message',e=>{if(e.origin===location.origin&&e.source===document.getElementById('next-repo-graph')?.contentWindow&&e.data?.type==='play-graph-ready')send();});})();`);

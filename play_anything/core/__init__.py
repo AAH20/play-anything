@@ -25,6 +25,18 @@ from .sandbox_scheduler import solve_sandbox_scheduling
 from .tokenomics_equilibrium import solve_tokenomics_equilibrium
 from .temporal_drift_engine import solve_temporal_drift_sync
 from .byzantine_fairplay import solve_byzantine_fairplay
+from .swarm_orchestrator import (
+    SwarmTask,
+    SwarmScheduleResult,
+    SwarmTaskScheduler,
+    MemoryRecord,
+    CompactionResult,
+    ContextCompactor,
+    AstPatch,
+    MergeOutcome,
+    TreeCrdtSemanticMerger,
+    WoundWaitLockManager,
+)
 
 __all__ = [
     # Models
@@ -50,4 +62,15 @@ __all__ = [
     "solve_tokenomics_equilibrium",
     "solve_temporal_drift_sync",
     "solve_byzantine_fairplay",
+    # Swarm & Memory Solvers
+    "SwarmTask",
+    "SwarmScheduleResult",
+    "SwarmTaskScheduler",
+    "MemoryRecord",
+    "CompactionResult",
+    "ContextCompactor",
+    "AstPatch",
+    "MergeOutcome",
+    "TreeCrdtSemanticMerger",
+    "WoundWaitLockManager",
 ]

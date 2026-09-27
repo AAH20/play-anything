@@ -116,6 +116,7 @@ def main():
         print("\nUsage:")
         print("  python3 cli.py benchmark-all        Run microsecond benchmark suite across 10 solvers")
         print("  python3 cli.py play [repo_path]     Launch interactive playable terminal RPG")
+        print("  python3 -m play_anything.cli creator  Open local creator onboarding and venture planner")
         print("  python3 cli.py dashboard            Open interactive 3D RPG Web Dashboard in browser")
         print("  python3 cli.py demo-world           Generate and inspect procedural world state")
         sys.exit(0)
@@ -126,6 +127,10 @@ def main():
     elif cmd == "play":
         path = args[1] if len(args) > 1 else None
         run_play_interactive(path)
+    elif cmd == "creator":
+        from play_anything.creator_server import main as creator_main
+        sys.argv = [sys.argv[0], *args[1:]]
+        creator_main()
     elif cmd == "dashboard":
         open_dashboard()
     elif cmd == "demo-world":
