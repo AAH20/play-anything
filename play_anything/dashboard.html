@@ -1059,7 +1059,92 @@
             <div class="text-xs text-slate-300 font-mono">Manifest ID: <span id="pub-manifest-id" class="text-sky-300">realm_8f93a102</span> | Share URL: <code id="pub-share-url" class="text-amber-300">playanything://realms/apollo-auth-fortress</code></div>
           </div>
         </div>
-        <button onclick="document.getElementById('studio-published-banner').classList.add('hidden')" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">Dismiss</button>
+      <!-- Whales of the Game Development Industry & AAA Simulation Consortium Panel -->
+      <div class="glass-panel p-6 rounded-2xl border-amber-500/40 bg-gradient-to-r from-amber-950/30 via-slate-900/80 to-purple-950/30 flex flex-col gap-5">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-amber-500/20 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🐋</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-rose-300">
+                  AAA GAME INDUSTRY TITANS & SOVEREIGN SIMULATION CONSORTIUM
+                </h3>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-amber-950 text-amber-300 border border-amber-800 font-mono font-bold">CUSTOM INSTITUTIONAL QUOTES</span>
+              </div>
+              <p class="text-xs text-slate-300 mt-1 max-w-4xl">
+                For publishers and simulation whales utilizing apex 3D engines (<strong>Unreal Engine 5 Chaos/Lumen</strong> & <strong>Unity DOTS/Netcode</strong>) with massive-scale networking, ECS state synchronizers, and global cloud distribution. We coordinate bespoke games development, high-stakes business and war games, and apex surveillance/weaponization systems with real-world mechanics and real risk management (far beyond <em>Rise of Kingdoms, Red Alert, War Thunder</em>, or Steam assembly sims).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Real-World Life Enhancement Charter (Strict Antidote to Escapism) -->
+        <div class="p-4 rounded-xl bg-slate-950/80 border border-amber-500/30 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-xs font-bold text-amber-300">
+            <span>🛡️</span> <span>MANDATORY GOVERNANCE CHARTER: REAL-WORLD LIFE ENHANCEMENT</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Every simulation architecture coordinated through this consortium is mathematically engineered to <strong>enhance players' real-world lives</strong>: elevating strategic decision-making, physical and intellectual vitality, high-stakes problem solving, and sovereign wealth accumulation. We strictly reject predatory dopamine treadmills, lootbox addiction, and sedentary virtual reality bubbles that disconnect human beings from reality and erode their health.
+          </p>
+        </div>
+
+        <!-- Interactive Custom Quote Estimator for Whales -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Target 3D Engine Infrastructure</label>
+            <select id="whale-engine" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+              <option value="unreal">Unreal Engine 5 (Nanite, Lumen, Chaos Physics, Mass ECS)</option>
+              <option value="unity">Unity (DOTS, Entities, Netcode for GameObjects)</option>
+              <option value="hybrid">Hybrid Sovereign Mesh (C++ MicroVMs + Pixel Streaming)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">High-Stakes Simulation Domain</label>
+            <select id="whale-domain" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+              <option value="business">Business Warfare & Geopolitical Macro-Finance</option>
+              <option value="defense">Apex Surveillance, Electronic Warfare & Kinetic Ballistics</option>
+              <option value="growth">Competitive Real-World Cognitive & Problem-Solving Arena</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Scale & Concurrency Tier</label>
+            <select id="whale-scale" onchange="updateWhaleQuoteDisplay()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+              <option value="tier1">Enterprise Studio (10k - 100k CCU • $500k - $1.5M)</option>
+              <option value="tier2" selected>Global Publisher (100k - 1M CCU • $2.0M - $6.5M)</option>
+              <option value="tier3">Sovereign Conglomerate (1M - 10M+ CCU • $8M - $25M+)</option>
+            </select>
+          </div>
+
+          <div class="flex items-end">
+            <button onclick="requestWhaleCoordinationQuote()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 text-xs font-black shadow-lg transition flex items-center justify-center gap-1.5">
+              <span>📜</span> <span>Generate Custom Quote Spec</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Generated Quote Results Drawer (Live Display) -->
+        <div id="whale-quote-display" class="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div class="flex items-center gap-4">
+            <div>
+              <span class="text-slate-400 text-[10px] block">ESTIMATED CONTRACT BRACKET:</span>
+              <span id="whale-quote-bracket" class="text-amber-300 font-bold text-sm">$2,000,000 - $6,500,000</span>
+            </div>
+            <div class="border-l border-slate-800 pl-4">
+              <span class="text-slate-400 text-[10px] block">DELIVERY TIMELINE:</span>
+              <span id="whale-quote-timeline" class="text-sky-300 font-bold">12 Months (Turnkey SMR)</span>
+            </div>
+            <div class="border-l border-slate-800 pl-4">
+              <span class="text-slate-400 text-[10px] block">DEDICATED INFRASTRUCTURE:</span>
+              <span id="whale-quote-infra" class="text-emerald-400 font-bold">$65,000 / month</span>
+            </div>
+          </div>
+          <div class="text-[10px] text-slate-400">
+            <span>Governance:</span> <span class="text-emerald-400">100% Anti-Escapism Compliant</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -1584,6 +1669,34 @@
       newDiv.className = 'bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between';
       newDiv.innerHTML = `<div><div class="font-bold text-slate-200">Sub-150µs Latency Gate</div><div class="text-[10px] text-slate-400">Target: AST latency <= 150µs</div></div><span class="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded">+500 XP</span>`;
       list.appendChild(newDiv);
+    }
+
+    function updateWhaleQuoteDisplay() {
+      playSound('click');
+      const tier = document.getElementById('whale-scale').value;
+      const bracket = document.getElementById('whale-quote-bracket');
+      const timeline = document.getElementById('whale-quote-timeline');
+      const infra = document.getElementById('whale-quote-infra');
+
+      if (tier === 'tier1') {
+        bracket.textContent = '$500,000 - $1,500,000';
+        timeline.textContent = '6 Months (Milestone SMR)';
+        infra.textContent = '$15,000 / month';
+      } else if (tier === 'tier2') {
+        bracket.textContent = '$2,000,000 - $6,500,000';
+        timeline.textContent = '12 Months (Turnkey SMR)';
+        infra.textContent = '$65,000 / month';
+      } else {
+        bracket.textContent = '$8,000,000 - $25,000,000+ (Custom Sovereign)';
+        timeline.textContent = '18 Months (Sovereign Allocation)';
+        infra.textContent = '$250,000+ / month (Private Cluster)';
+      }
+    }
+
+    function requestWhaleCoordinationQuote() {
+      playSound('level_up');
+      updateWhaleQuoteDisplay();
+      alert("Custom Sovereign Quote Specification generated and registered in coordinator registry! Reference: WHALE-" + Math.random().toString(36).substring(2, 8).toUpperCase());
     }
 
     window.addEventListener('DOMContentLoaded', () => {
