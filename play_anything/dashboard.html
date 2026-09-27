@@ -1525,6 +1525,262 @@
 
       </div>
 
+      <!-- ==================== PERSONALIZED PEER & AI RIVAL MATCHMAKING ENGINE ==================== -->
+      <div class="glass-panel p-6 rounded-2xl border-purple-500/40 bg-slate-900/70 flex flex-col gap-5">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-3.5">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-sky-300">
+                  Targeted Peer & AI Rival Matchmaking (Calibrated to Your Exact Level)
+                </h3>
+                <span id="match-active-tier-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-950 text-sky-300 border border-sky-700">
+                  STAFF ARCHITECT (2,400 ELO)
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Precision pairing against human contenders and frontier AI agents within ±35 Elo, matching your exact cognitive velocity and target growth vectors.
+              </p>
+            </div>
+          </div>
+
+          <!-- Simulation Quick Selector -->
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-slate-400 font-mono">Calibrated Tier:</span>
+            <button onclick="renderMatchmakingProfile('staff')" id="btn-match-staff" class="px-2.5 py-1 rounded bg-sky-900 border border-sky-600 text-sky-200 text-[10px] font-mono font-bold transition">
+              ⚡ Staff (2,400)
+            </button>
+            <button onclick="renderMatchmakingProfile('apex')" id="btn-match-apex" class="px-2.5 py-1 rounded bg-slate-950 hover:bg-purple-950 border border-slate-800 text-purple-300 text-[10px] font-mono transition">
+              👑 Apex (2,680)
+            </button>
+            <button onclick="renderMatchmakingProfile('cadet')" id="btn-match-cadet" class="px-2.5 py-1 rounded bg-slate-950 hover:bg-amber-950 border border-slate-800 text-amber-300 text-[10px] font-mono transition">
+              🧒 Cadet (1,850)
+            </button>
+            <button onclick="renderMatchmakingProfile('sage')" id="btn-match-sage" class="px-2.5 py-1 rounded bg-slate-950 hover:bg-emerald-950 border border-slate-800 text-emerald-300 text-[10px] font-mono transition">
+              🌿 Sage (2,150)
+            </button>
+          </div>
+        </div>
+
+        <!-- Match Rationale & Growth Target Banner -->
+        <div class="p-3.5 rounded-xl bg-purple-950/30 border border-purple-500/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div class="flex items-center gap-2.5">
+            <span class="text-lg">🧭</span>
+            <div>
+              <span class="text-slate-400 block text-[10px]">CURRENT TARGET GROWTH VECTOR:</span>
+              <span id="match-growth-vector" class="text-purple-200 font-bold">
+                Zero-Downtime High-Concurrency Resiliency & Formal Distributed Verification
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-400 block text-[10px]">RECOMMENDED ARENA CRUCIBLE:</span>
+            <span id="match-recommended-challenge" class="text-amber-300 font-bold">
+              30-Minute Distributed Saga Deadlock Crucible & Cache Invalidation Race
+            </span>
+          </div>
+        </div>
+
+        <!-- Matched Rivals Grid (Humans vs AI Agents) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Column A: Calibrated Human Peers -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <span class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                <span>👤</span> <span>Calibrated Human Peers at Your Level</span>
+              </span>
+              <span class="text-[9px] font-mono text-sky-400 bg-sky-950/80 px-2 py-0.5 rounded">RATING TOLERANCE ±35 ELO</span>
+            </div>
+            <div id="match-human-peers-list" class="flex flex-col gap-3">
+              <!-- Dynamically populated by renderMatchmakingProfile -->
+            </div>
+          </div>
+
+          <!-- Column B: Calibrated AI Sparring Agents -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                <span>🤖</span> <span>Calibrated AI Sparring Agents (Zero Latency)</span>
+              </span>
+              <span class="text-[9px] font-mono text-purple-400 bg-purple-950/80 px-2 py-0.5 rounded">SUB-50ms TTFT BACKBONE</span>
+            </div>
+            <div id="match-ai-peers-list" class="flex flex-col gap-3">
+              <!-- Dynamically populated by renderMatchmakingProfile -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PRECISE BRACKETED DIVISION LEADERBOARD ==================== -->
+      <div class="glass-panel p-6 rounded-2xl border-slate-800 flex flex-col gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🏆</span>
+            <div>
+              <h3 class="text-sm font-bold text-amber-300 flex items-center gap-2">
+                <span>Precise Bracketed Division Leaderboard</span>
+                <span class="text-[9px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">REAL-TIME MERITOCRACY</span>
+              </h3>
+              <p class="text-xs text-slate-400">
+                Track Elo progression, consecutive days of uninterrupted deliberate practice, and real-world life performance index (LPI).
+              </p>
+            </div>
+          </div>
+
+          <!-- Division Switcher Tabs -->
+          <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
+            <button id="div-btn-staff" onclick="switchLeaderboardTab('staff')" class="px-3 py-1.5 rounded-lg bg-sky-950 text-sky-300 font-bold border border-sky-800 transition">
+              Staff Architect (2350-2500)
+            </button>
+            <button id="div-btn-apex" onclick="switchLeaderboardTab('apex')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-purple-300 transition">
+              Grandmaster Apex (2600-2750)
+            </button>
+            <button id="div-btn-cadet" onclick="switchLeaderboardTab('cadet')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-amber-300 transition">
+              Cadet Cup (1750-1920)
+            </button>
+            <button id="div-btn-sage" onclick="switchLeaderboardTab('sage')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-emerald-300 transition">
+              Senior Sage (2050-2250)
+            </button>
+          </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-950 text-slate-400 font-mono text-[10px] uppercase">
+              <tr>
+                <th class="p-2.5">Rank & Crest</th>
+                <th class="p-2.5">Contender</th>
+                <th class="p-2.5">Entity Type</th>
+                <th class="p-2.5">Rating (Elo)</th>
+                <th class="p-2.5">Consistency Streak</th>
+                <th class="p-2.5">Weekly Practice</th>
+                <th class="p-2.5">Life Perf Index (LPI)</th>
+                <th class="p-2.5">Primary Domain</th>
+                <th class="p-2.5 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="division-leaderboard-tbody" class="divide-y divide-slate-800/80 font-mono text-[11px]">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== CHAMPIONS & LEADERS HOLISTIC LIFE ENHANCEMENT SHOWCASE ==================== -->
+      <div class="glass-panel p-6 rounded-2xl border-amber-500/40 bg-gradient-to-r from-amber-950/20 via-slate-900/90 to-purple-950/20 flex flex-col gap-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🌟</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-sky-300">
+                  CHAMPIONS SPOTLIGHT: HOW RIGOROUS TRAINING & UNYIELDING CONSISTENCY ELEVATES EVERY ASPECT OF LIFE
+                </h3>
+              </div>
+              <p class="text-xs text-slate-300 mt-1">
+                The leaders of the sovereign arena do not play for escapism. Their position is sustained through daily deliberate practice that directly transforms physical health, neuro-clarity, career trajectory, and emotional mastery.
+              </p>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded bg-amber-950 text-amber-300 border border-amber-700 text-xs font-mono font-bold">
+            ANTI-ESCAPISM CHARTER
+          </span>
+        </div>
+
+        <!-- 4 Life Enhancement Facets Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+          <!-- Facet 1: Physical & Neural Vitality -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2.5">
+            <div>
+              <div class="flex items-center gap-2 text-rose-300 font-bold mb-1">
+                <span>❤️</span> <span>Physical & Neural Vitality</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed" id="champ-facet-physical">
+                Morning strength training combined with regulated sleep architecture; sustained athletic energy throughout 12-hour operational days.
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-800/80 text-[10px] font-mono text-emerald-400">
+              Metric: Zero Afternoon Brain Fog
+            </div>
+          </div>
+
+          <!-- Facet 2: Cognitive Clarity & War-Room Calm -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2.5">
+            <div>
+              <div class="flex items-center gap-2 text-sky-300 font-bold mb-1">
+                <span>🧠</span> <span>Cognitive Clarity & Executive Calm</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed" id="champ-facet-cognitive">
+                Instantly diagnoses asynchronous race conditions and deadlock hazards; zero context-switching friction during critical incidents.
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-800/80 text-[10px] font-mono text-sky-400">
+              Metric: 100% Calm Under Pressure
+            </div>
+          </div>
+
+          <!-- Facet 3: Career & Sovereign Impact -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2.5">
+            <div>
+              <div class="flex items-center gap-2 text-amber-300 font-bold mb-1">
+                <span>🚀</span> <span>Career Sovereignty & Impact</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed" id="champ-facet-career">
+                Promoted to Staff Systems Architect; spearheads enterprise migration to zero-copy transactional pipelines saving $4.2M annually.
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-800/80 text-[10px] font-mono text-amber-400">
+              Metric: Direct Career Compounding
+            </div>
+          </div>
+
+          <!-- Facet 4: Emotional Poise & Relationships -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2.5">
+            <div>
+              <div class="flex items-center gap-2 text-emerald-300 font-bold mb-1">
+                <span>🌿</span> <span>Emotional Mastery & Presence</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed" id="champ-facet-relational">
+                Unshakable emotional poise under high stakes; patient mentor to junior engineers and fully present parent during evenings.
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-800/80 text-[10px] font-mono text-emerald-400">
+              Metric: Deep Presence & Serenity
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Champion Testimonial Card -->
+        <div class="p-5 rounded-xl border border-amber-500/50 bg-amber-950/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-3xl shadow-lg border border-sky-300/40 shrink-0" id="champ-avatar-icon">
+              🧙
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5">
+                <span class="text-sm font-bold text-amber-200" id="champ-display-name">Marcus Thorne</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-sky-950 text-sky-300 border border-sky-700 font-mono font-bold" id="champ-tier-badge">
+                  STAFF ARCHITECT LEAGUE CHAMPION
+                </span>
+                <span class="text-xs font-mono text-rose-300 font-bold flex items-center gap-1" id="champ-streak-badge">
+                  🔥 185 Days Uninterrupted Streak
+                </span>
+              </div>
+              <blockquote class="text-xs text-slate-200 italic mt-1.5 leading-relaxed max-w-4xl" id="champ-quote-testament">
+                "I replaced passive evening streaming and doomscrolling with 60 minutes of arena challenges. Within six months, I lost 32 pounds through structured discipline, eradicated imposter syndrome, negotiated a 40% compensation leap, and rediscovered the deep joy of pure engineering craftsmanship."
+              </blockquote>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <button onclick="inspectChampionTrainingRoutine()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 text-xs font-bold font-mono shadow-md transition">
+              📜 Inspect 4-Pillar Daily Regimen
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ==================== VIEW 8: ENTERPRISE INFRASTRUCTURE & AGENTIC SOC / GRC ==================== -->
@@ -2589,9 +2845,309 @@
       alert("Custom Sovereign Quote Specification generated and registered in coordinator registry! Reference: WHALE-" + Math.random().toString(36).substring(2, 8).toUpperCase());
     }
 
+    // --- Targeted Peer & AI Matchmaking and Division Leaderboards ---
+    const divisionData = {
+      staff: {
+        badge: "STAFF ARCHITECT (2,400 ELO)",
+        growth: "Zero-Downtime High-Concurrency Resiliency & Formal Distributed Verification",
+        challenge: "30-Minute Distributed Saga Deadlock Crucible & Cache Invalidation Race",
+        champ: {
+          name: "Marcus Thorne",
+          avatar: "🧙",
+          badge: "STAFF ARCHITECT LEAGUE CHAMPION",
+          streak: "🔥 185 Days Uninterrupted Streak",
+          quote: "\"I replaced passive evening streaming and doomscrolling with 60 minutes of arena challenges. Within six months, I lost 32 pounds through structured discipline, eradicated imposter syndrome, negotiated a 40% compensation leap, and rediscovered the deep joy of pure engineering craftsmanship.\"",
+          physical: "Morning strength training combined with regulated sleep architecture; sustained athletic energy throughout 12-hour operational days.",
+          cognitive: "Instantly diagnoses asynchronous race conditions and deadlock hazards; zero context-switching friction during critical incidents.",
+          career: "Promoted to Staff Systems Architect; spearheads enterprise migration to zero-copy transactional pipelines saving $4.2M annually.",
+          relational: "Unshakable emotional poise under high stakes; patient mentor to junior engineers and fully present parent during evenings."
+        },
+        humans: [
+          { name: "Sarah Lin", avatar: "👩‍💻", elo: 2410, streak: 142, hours: 13.5, lpi: 97.5, domain: "Chaos Resiliency & Partition Recovery", style: "Chaos Monkey Inoculation" },
+          { name: "Kenji Sato", avatar: "👨‍💻", elo: 2380, streak: 98, hours: 12.0, lpi: 96.9, domain: "Linux eBPF & Kernel Socket Virtualization", style: "Microsecond Profiler" }
+        ],
+        agents: [
+          { name: "Hermes-FastTrack-70B", avatar: "⚡", elo: 2400, model: "vLLM: Llama-3.3-70B (PagedAttn v2)", ttft: "42ms", hours: 168.0, lpi: 99.0, domain: "Sub-50ms AST Refactoring" },
+          { name: "DeepSeek-V3-Staff", avatar: "🧠", elo: 2390, model: "vLLM: DeepSeek-V3 (FP8 Quant)", ttft: "48ms", hours: 168.0, lpi: 98.5, domain: "Mutation Stress Testing" }
+        ],
+        leaderboard: [
+          { rank: "🥇", name: "Marcus Thorne", type: "Human Peer", elo: 2480, streak: "🔥 185 Days", hours: "14.2 h/wk", lpi: "98.1%", domain: "Saga Orchestration & Concurrency" },
+          { rank: "🥈", name: "Sarah Lin", type: "Human Peer", elo: 2410, streak: "🔥 142 Days", hours: "13.5 h/wk", lpi: "97.5%", domain: "Chaos Inoculation & Failovers" },
+          { rank: "🥉", name: "Hermes-FastTrack-70B", type: "AI Sparring Agent", elo: 2400, streak: "🔥 365 Days", hours: "168.0 h/wk", lpi: "99.0%", domain: "Continuous Batching Refactor" },
+          { rank: "4", name: "DeepSeek-V3-Staff", type: "AI Sparring Agent", elo: 2390, streak: "🔥 310 Days", hours: "168.0 h/wk", lpi: "98.5%", domain: "Parallel Test Harness Generation" },
+          { rank: "5", name: "Kenji Sato", type: "Human Peer", elo: 2380, streak: "🔥 98 Days", hours: "12.0 h/wk", lpi: "96.9%", domain: "eBPF Socket Virtualization" }
+        ]
+      },
+      apex: {
+        badge: "GRANDMASTER APEX (2,680 ELO)",
+        growth: "Kernel Internals, Formal Invariance Proofs & Sovereign Security",
+        challenge: "45-Minute Lockless Micro-Kernel Scheduler & Formal Invariance Proof",
+        champ: {
+          name: "Dr. Elena Vance",
+          avatar: "👑",
+          badge: "GRANDMASTER APEX SYNDICATE CHAMPION",
+          streak: "🔥 412 Days Uninterrupted Streak",
+          quote: "\"Daily deliberate training in the arena transformed every facet of my mortal existence. Committing to a daily 90-minute algorithmic crucible forged physical calm, dropped my resting heart rate to 48 bpm, completely eradicated work-related anxiety, and directly catalyzed my promotion to Principal Fellow. Mastery in the arena translates 1:1 into sovereign mastery over your physical reality.\"",
+          physical: "5:30 AM Zone-2 cardio and cold immersion; resting HR 48 bpm; uninterrupted 4-hour cognitive flow blocks without caffeine or fatigue.",
+          cognitive: "Zero anxiety during production outages; complex multi-million dollar incidents feel predictable, serene, and easily remediated.",
+          career: "Architected sovereign consensus layer saving $14M annually; recognized worldwide among top 0.01% distributed systems fellows.",
+          relational: "Absolute evening detachment with zero phone distraction; arena hardship burns away daily trivialities, fostering deep family patience."
+        },
+        humans: [
+          { name: "Soren Kjaer", avatar: "🛡️", elo: 2640, streak: 310, hours: 16.0, lpi: 98.7, domain: "Zero-Copy Lockless Data Structures", style: "Cache-Line Micro-Optimizations" },
+          { name: "Tariq Al-Mansoor", avatar: "⚔️", elo: 2625, streak: 220, hours: 15.5, lpi: 98.2, domain: "Formal Cryptographic State Machines", style: "Mathematical Proof Invariant" }
+        ],
+        agents: [
+          { name: "Aegis-R1-Sovereign", avatar: "🪐", elo: 2720, model: "OpenRouter: deepseek/deepseek-r1", ttft: "120ms", hours: 168.0, lpi: 100.0, domain: "Formal Verification & CoT Proofs" },
+          { name: "Claude-3.7-Sonnet-Apex", avatar: "👁️", elo: 2690, model: "OpenRouter: claude-3.7-sonnet:thinking", ttft: "180ms", hours: 168.0, lpi: 99.8, domain: "NP-Hard Repository Synthesis" }
+        ],
+        leaderboard: [
+          { rank: "🥇", name: "Aegis-R1-Sovereign", type: "AI Sparring Agent", elo: 2720, streak: "🔥 580 Days", hours: "168.0 h/wk", lpi: "100.0%", domain: "Automated Invariant Proofs" },
+          { rank: "🥈", name: "Claude-3.7-Sonnet-Apex", type: "AI Sparring Agent", elo: 2690, streak: "🔥 420 Days", hours: "168.0 h/wk", lpi: "99.8%", domain: "SWE-bench Verified Refactor" },
+          { rank: "🥉", name: "Dr. Elena Vance", type: "Human Peer", elo: 2680, streak: "🔥 412 Days", hours: "18.5 h/wk", lpi: "99.4%", domain: "Kernel Internals & Formal Proofs" },
+          { rank: "4", name: "Soren Kjaer", type: "Human Peer", elo: 2640, streak: "🔥 310 Days", hours: "16.0 h/wk", lpi: "98.7%", domain: "Lockless Rust Concurrency" },
+          { rank: "5", name: "Tariq Al-Mansoor", type: "Human Peer", elo: 2625, streak: "🔥 220 Days", hours: "15.5 h/wk", lpi: "98.2%", domain: "Cryptographic State Machines" }
+        ]
+      },
+      cadet: {
+        badge: "CADET DISCOVERY CUP (1,850 ELO)",
+        growth: "Visual Graph Traversal, Computational Thinking & Confident Scaffolding",
+        challenge: "Interactive Graph Castle: Routing the Data Portcullis & Energy Crystals",
+        champ: {
+          name: "Leo Chen (Age 14)",
+          avatar: "🚀",
+          badge: "CADET DISCOVERY CUP CHAMPION",
+          streak: "🔥 124 Days Uninterrupted Streak",
+          quote: "\"I used to spend 5 hours a day on mindless battle-royale games that left me exhausted, irritable, and unfocused. Since committing to the Cadet Arena, I build real simulation maps, won my regional STEM Olympiad, raised my school GPA from 2.8 to 3.9, and was voted varsity track captain. Real training makes you proud of who you are.\"",
+          physical: "Replaced sedentary slouching with varsity track & field endurance; peak mental energy during school exams.",
+          cognitive: "Visually decomposes recursive algorithms and graph routing; effortlessly solves advanced high-school calculus.",
+          academic: "State Science Olympiad Gold Medalist; awarded regional youth innovator prize for accessibility software.",
+          relational: "Transcended gaming rage into stoic composure; mentors younger middle-school peers with patience."
+        },
+        humans: [
+          { name: "Maya Patel (Age 13)", avatar: "🎨", elo: 1820, streak: 86, hours: 8.0, lpi: 96.4, domain: "Logic Tree Synthesis & Block-to-Python", style: "Algorithmic Storyteller" },
+          { name: "David Kim (Age 15)", avatar: "⭐", elo: 1805, streak: 72, hours: 7.5, lpi: 95.8, domain: "Game Physics & Kinematic ASTs", style: "Simulation Builder" }
+        ],
+        agents: [
+          { name: "Cadet-Mentor-Companion", avatar: "🤖", elo: 1850, model: "vLLM: Qwen2.5-Coder-7B (Fine-Tuned)", ttft: "35ms", hours: 168.0, lpi: 99.2, domain: "Socratic Guided Discovery" },
+          { name: "Nova-Spark-AI", avatar: "✨", elo: 1810, model: "vLLM: Llama-3.3-70B (Pedagogical)", ttft: "45ms", hours: 168.0, lpi: 98.7, domain: "Visual Feedback Sparring" }
+        ],
+        leaderboard: [
+          { rank: "🥇", name: "Leo Chen (Age 14)", type: "Youth Cadet", elo: 1890, streak: "🔥 124 Days", hours: "9.5 h/wk", lpi: "97.6%", domain: "Visual State Machines & Spells" },
+          { rank: "🥈", name: "Cadet-Mentor-Companion", type: "AI Sparring Agent", elo: 1850, streak: "🔥 365 Days", hours: "168.0 h/wk", lpi: "99.2%", domain: "Socratic Scaffolding Engine" },
+          { rank: "🥉", name: "Maya Patel (Age 13)", type: "Youth Cadet", elo: 1820, streak: "🔥 86 Days", hours: "8.0 h/wk", lpi: "96.4%", domain: "Logic Tree Synthesis" },
+          { rank: "4", name: "Nova-Spark-AI", type: "AI Sparring Agent", elo: 1810, streak: "🔥 280 Days", hours: "168.0 h/wk", lpi: "98.7%", domain: "Positive Reinforcement Sparring" },
+          { rank: "5", name: "David Kim (Age 15)", type: "Youth Cadet", elo: 1805, streak: "🔥 72 Days", hours: "7.5 h/wk", lpi: "95.8%", domain: "Kinematic Simulations" }
+        ]
+      },
+      sage: {
+        badge: "SENIOR SAGE CIRCLE (2,150 ELO)",
+        growth: "Paced Precision, Memory Longevity & Pure Functional Invariance",
+        challenge: "Pure Functional Immutability & High-Dimensional Memory Alignment",
+        champ: {
+          name: "Margaret O'Connor (Age 71)",
+          avatar: "🌿",
+          badge: "SENIOR SAGE VITALITY CIRCLE CHAMPION",
+          streak: "🔥 260 Days Uninterrupted Streak",
+          quote: "\"At 71, society often expects retirees to passively decline. Instead, I dedicate 90 minutes each morning to rigorous algorithmic crucibles. My clinical cognitive biomarker tests show working memory recall and neuroplasticity comparable to an individual thirty years younger. Consistent mental strain is the true fountain of youth.\"",
+          physical: "Daily 5-mile alpine walks combined with hand-eye coordination drills; zero joint stiffness or lethargy.",
+          cognitive: "Clinical MoCA (Montreal Cognitive Assessment) perfect score of 30/30; sharp semantic memory retrieval.",
+          career: "Guides dozens of junior software architects weekly on timeless design patterns and fault tolerance.",
+          relational: "Deep daily intellectual excitement; engaged in vibrant intergenerational engineering communities."
+        },
+        humans: [
+          { name: "Arthur Pendelton (Age 68)", avatar: "📜", elo: 2120, streak: 195, hours: 10.5, lpi: 97.3, domain: "Functional LISP & Immutable State", style: "Paced Precision Scholar" },
+          { name: "Dr. Hidetoshi Tanaka (Age 74)", avatar: "🏛️", elo: 2090, streak: 310, hours: 12.0, lpi: 98.2, domain: "Cryptographic Protocol Invariants", style: "Mathematical Stoic" }
+        ],
+        agents: [
+          { name: "Sage-Ergonomic-Scholar", avatar: "🕯️", elo: 2100, model: "OpenRouter: deepseek/deepseek-r1 (Paced)", ttft: "140ms", hours: 168.0, lpi: 99.1, domain: "High-Readability Proofs" },
+          { name: "Nestor-Longevity-AI", avatar: "🛡️", elo: 2085, model: "vLLM: Llama-3.3-70B (Ergonomic)", ttft: "50ms", hours: 168.0, lpi: 98.4, domain: "Neuroplasticity Workouts" }
+        ],
+        leaderboard: [
+          { rank: "🥇", name: "Margaret O'Connor (Age 71)", type: "Senior Sage", elo: 2180, streak: "🔥 260 Days", hours: "11.0 h/wk", lpi: "98.8%", domain: "Algorithmic Invariance & Memory" },
+          { rank: "🥈", name: "Arthur Pendelton (Age 68)", type: "Senior Sage", elo: 2120, streak: "🔥 195 Days", hours: "10.5 h/wk", lpi: "97.3%", domain: "Immutable Functional Flow" },
+          { rank: "🥉", name: "Sage-Ergonomic-Scholar", type: "AI Sparring Agent", elo: 2100, streak: "🔥 400 Days", hours: "168.0 h/wk", lpi: "99.1%", domain: "Contemplative Paced Guidance" },
+          { rank: "4", name: "Dr. Hidetoshi Tanaka (Age 74)", type: "Senior Sage", elo: 2090, streak: "🔥 310 Days", hours: "12.0 h/wk", lpi: "98.2%", domain: "Cryptographic Invariants" },
+          { rank: "5", name: "Nestor-Longevity-AI", type: "AI Sparring Agent", elo: 2085, streak: "🔥 340 Days", hours: "168.0 h/wk", lpi: "98.4%", domain: "Ergonomic Memory Retainers" }
+        ]
+      }
+    };
+
+    let activeMatchTier = 'staff';
+    let activeLeaderboardTab = 'staff';
+
+    function renderMatchmakingProfile(tierKey) {
+      playSound('click');
+      activeMatchTier = tierKey;
+      const data = divisionData[tierKey];
+      if (!data) return;
+
+      // Update buttons
+      ['staff', 'apex', 'cadet', 'sage'].forEach(k => {
+        const btn = document.getElementById('btn-match-' + k);
+        if (btn) {
+          if (k === tierKey) {
+            btn.className = 'px-2.5 py-1 rounded bg-sky-900 border border-sky-600 text-sky-200 text-[10px] font-mono font-bold transition';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 text-[10px] font-mono transition';
+          }
+        }
+      });
+
+      // Update Badge & Rationale
+      const badgeEl = document.getElementById('match-active-tier-badge');
+      const growthEl = document.getElementById('match-growth-vector');
+      const challengeEl = document.getElementById('match-recommended-challenge');
+
+      if (badgeEl) badgeEl.textContent = data.badge;
+      if (growthEl) growthEl.textContent = data.growth;
+      if (challengeEl) challengeEl.textContent = data.challenge;
+
+      // Render Humans
+      const humanContainer = document.getElementById('match-human-peers-list');
+      if (humanContainer) {
+        humanContainer.innerHTML = data.humans.map(h => `
+          <div class="p-3 rounded-lg bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3 hover:border-sky-500/50 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">${h.avatar}</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-slate-200 text-xs">${h.name}</span>
+                  <span class="px-1.5 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono text-[9px]">${h.elo} ELO</span>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">${h.domain}</div>
+                <div class="flex items-center gap-2 text-[9px] font-mono text-slate-500 mt-1">
+                  <span class="text-rose-300 font-bold">🔥 ${h.streak}d streak</span>
+                  <span>•</span>
+                  <span>${h.hours} h/wk</span>
+                  <span>•</span>
+                  <span class="text-emerald-400 font-bold">LPI: ${h.lpi}%</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="challengePeer('${h.name}', ${h.elo})" class="px-2.5 py-1 rounded bg-sky-600 hover:bg-sky-500 text-white font-mono text-[10px] font-bold shadow transition flex items-center gap-1 shrink-0">
+              <span>⚡</span> <span>Challenge</span>
+            </button>
+          </div>
+        `).join('');
+      }
+
+      // Render AI Agents
+      const aiContainer = document.getElementById('match-ai-peers-list');
+      if (aiContainer) {
+        aiContainer.innerHTML = data.agents.map(a => `
+          <div class="p-3 rounded-lg bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3 hover:border-purple-500/50 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">${a.avatar}</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-purple-200 text-xs">${a.name}</span>
+                  <span class="px-1.5 py-0.2 rounded bg-purple-950 text-purple-300 border border-purple-800 font-mono text-[9px]">${a.elo} ELO</span>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">${a.domain}</div>
+                <div class="flex items-center gap-2 text-[9px] font-mono text-slate-500 mt-1">
+                  <span class="text-purple-300 font-bold">${a.model}</span>
+                  <span>•</span>
+                  <span class="text-emerald-400 font-bold">TTFT: ${a.ttft}</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="sparWithAiAgent('${a.name}', '${a.model}')" class="px-2.5 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white font-mono text-[10px] font-bold shadow transition flex items-center gap-1 shrink-0">
+              <span>🤖</span> <span>Spar</span>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function switchLeaderboardTab(tierKey) {
+      playSound('click');
+      activeLeaderboardTab = tierKey;
+      const data = divisionData[tierKey];
+      if (!data) return;
+
+      // Update tab buttons
+      ['staff', 'apex', 'cadet', 'sage'].forEach(k => {
+        const btn = document.getElementById('div-btn-' + k);
+        if (btn) {
+          if (k === tierKey) {
+            btn.className = 'px-3 py-1.5 rounded-lg bg-sky-950 text-sky-300 font-bold border border-sky-800 transition';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition border border-transparent';
+          }
+        }
+      });
+
+      // Populate Table Body
+      const tbody = document.getElementById('division-leaderboard-tbody');
+      if (tbody) {
+        tbody.innerHTML = data.leaderboard.map(row => `
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="p-2.5 font-bold text-amber-300">${row.rank}</td>
+            <td class="p-2.5 font-bold text-slate-200 font-sans">${row.name}</td>
+            <td class="p-2.5">
+              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${row.type.includes('AI') ? 'bg-purple-950 text-purple-300 border border-purple-800' : 'bg-sky-950 text-sky-300 border border-sky-800'}">
+                ${row.type}
+              </span>
+            </td>
+            <td class="p-2.5 font-bold text-emerald-400 font-mono">${row.elo}</td>
+            <td class="p-2.5 text-rose-300 font-bold font-mono">${row.streak}</td>
+            <td class="p-2.5 text-slate-300 font-mono">${row.hours}</td>
+            <td class="p-2.5 text-emerald-400 font-bold font-mono">${row.lpi}</td>
+            <td class="p-2.5 text-slate-400 font-sans">${row.domain}</td>
+            <td class="p-2.5 text-right">
+              <button onclick="challengePeer('${row.name}', ${row.elo})" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-sky-300 text-[10px] font-mono border border-slate-700 transition">
+                ⚔️ Duel
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Update Champion Spotlight
+      const c = data.champ;
+      const nameEl = document.getElementById('champ-display-name');
+      const avatarEl = document.getElementById('champ-avatar-icon');
+      const tierBadge = document.getElementById('champ-tier-badge');
+      const streakBadge = document.getElementById('champ-streak-badge');
+      const quoteEl = document.getElementById('champ-quote-testament');
+      const physEl = document.getElementById('champ-facet-physical');
+      const cogEl = document.getElementById('champ-facet-cognitive');
+      const carEl = document.getElementById('champ-facet-career');
+      const relEl = document.getElementById('champ-facet-relational');
+
+      if (nameEl) nameEl.textContent = c.name;
+      if (avatarEl) avatarEl.textContent = c.avatar;
+      if (tierBadge) tierBadge.textContent = c.badge;
+      if (streakBadge) streakBadge.textContent = c.streak;
+      if (quoteEl) quoteEl.textContent = c.quote;
+      if (physEl) physEl.textContent = c.physical;
+      if (cogEl) cogEl.textContent = c.cognitive;
+      if (carEl) carEl.textContent = c.career;
+      if (relEl) relEl.textContent = c.relational;
+    }
+
+    function challengePeer(peerName, elo) {
+      playSound('boss_hit');
+      alert(`⚔️ PEER DUEL DISPATCHED: Challenge request sent to ${peerName} (${elo} Elo)!\n\nSandbox: gVisor runsc Micro-Isolate\nObjective: Asynchronous Saga Concurrency Race\nAnti-Cheat: Merkle Tree Proof Active`);
+    }
+
+    function sparWithAiAgent(agentName, model) {
+      playSound('scanner');
+      alert(`🤖 INSTANT SPARRING CRUCIBLE LAUNCHED:\n\nOpponent: ${agentName}\nInference Fleet: ${model}\nTTFT Latency: <50ms\nTarget Vector: Real-time Mutation & Invariant Verification`);
+    }
+
+    function inspectChampionTrainingRoutine() {
+      playSound('level_up');
+      const c = divisionData[activeLeaderboardTab].champ;
+      alert(`📜 4-PILLAR DAILY REGIMEN: ${c.name} (${c.streak})\n\n1. PHYSICAL: ${c.physical}\n2. COGNITIVE: ${c.cognitive}\n3. CAREER: ${c.career}\n4. RELATIONSHIPS: ${c.relational}\n\nCREDO: "True mastery is forged under deliberate friction, directly empowering mortal reality."`);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       initCanvas();
       updateInspector();
+      renderMatchmakingProfile('staff');
+      switchLeaderboardTab('staff');
       const hash = window.location.hash.replace('#', '');
       if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization', 'enterprise'].includes(hash)) {
         switchTab(hash);

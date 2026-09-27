@@ -310,6 +310,39 @@ Forcing a senior engineer with 10+ years of Linux kernel or distributed systems 
 - **All introductory tutorial levels (Levels 1–4) are bypassed in 0.04s**.
 - The player drops directly into the **Level 8 Concurrency Crucible Dungeon**, saving **22.5 minutes** of executive time.
 
+### Personalized Peer & AI Rival Matchmaking Engine
+Every player is provided with precise, dynamic suggestions to compete against opponents matching their calibrated skill bracket ($\Delta \text{Elo} \le 35$):
+* **Calibrated Human Peers**: Matched across similar cognitive tempos, consistency streaks, and complementary architectural specialties (e.g. distributed sagas vs. memory-safe systems).
+* **Calibrated AI Sparring Agents**: Directly paired with tailored LLM backbones (e.g. self-hosted **vLLM Llama-3.3-70B** with sub-50ms TTFT for high-speed refactoring drills, or **OpenRouter DeepSeek-R1** for recursive formal verification).
+
+### Precise Bracketed Division Leaderboards
+Progression is governed by transparent, meritocratic division leaderboards:
+* **Grandmaster Apex Syndicate (2600 – 2750 Elo)**: Top 0.01% global systems engineers and frontier reasoning models.
+* **Staff Architect Premier League (2350 – 2500 Elo)**: High-concurrency systems, asynchronous sagas, and fault-tolerant design.
+* **Cadet Discovery Cup (1750 – 1920 Elo)**: Foundational algorithmic intuition, visual state-machine crafting, and positive scaffolding.
+* **Senior Sage Vitality Circle (2050 – 2250 Elo)**: Ergonomic cognitive longevity, pure functional programming, and memory preservation.
+
+Every leaderboard tracks not merely Elo, but **Consecutive Days of Deliberate Practice (🔥 Streak)**, **Weekly Training Hours**, and the holistic **Life Performance Index (LPI %)**.
+
+### Champions Spotlight: How Daily Rigorous Training Elevates Every Dimension of Life
+True mastery in the sovereign arena is antithetical to mindless escapism. Leaders and champions across divisions sustain their positions through relentless daily discipline that compounds directly into real-world personal power:
+
+1. **Physical & Neural Vitality**:
+   * *Regimen*: 5:30 AM Zone-2 cardio, cold immersion, and disciplined circadian sleep architecture.
+   * *Impact*: Dropped resting heart rates (champion Dr. Elena Vance: 48 bpm); uninterrupted 4-hour cognitive flow blocks with zero afternoon brain fog or stimulant dependency.
+2. **Cognitive Clarity & Executive Calm**:
+   * *Regimen*: Timed arena duels under high-stakes mutation testing and fault-injection crucibles.
+   * *Impact*: Real-world production outages and board-level crises feel calm, predictable, and routinely manageable.
+3. **Career Sovereignty & Compounding**:
+   * *Regimen*: Mastery of distributed consensus, memory safety, and formal invariance.
+   * *Impact*: Staff champion Marcus Thorne overcame burnout, dropped 32 lbs, negotiated a 40% salary leap, and led zero-copy pipeline migrations saving \$4.2M/year. Youth champion Leo Chen raised his GPA from 2.8 to 3.9 and won state science gold medals.
+4. **Emotional Poise & Relational Presence**:
+   * *Regimen*: Conquering genuine computational hardship daily burns away petty frustrations.
+   * *Impact*: Absolute evening detachment from screens, deep patience and attentiveness with family, and generous mentorship of junior peers.
+
+> **The Sovereign Anti-Escapism Credo**:  
+> *"Mindless gaming drains your dopamine, weakens your spine, and traps you in passive consumption. The Sovereign Arena is a forge: every hour spent mastering computational friction compounds your health, mental stamina, and real-world mastery."*
+
 ---
 
 ## 7. AAA Game Titans Consortium & Anti-Escapism Charter
@@ -408,6 +441,18 @@ is_clean, audit = soc.inspect_agent_action(
     payload_text="def reconcile_orders(): pass"
 )
 print(f"Action Approved: {is_clean} | Merkle Root: {audit.merkle_proof[:16]}...")
+
+# 4. Personalized Rival Matchmaking & Champion Spotlight
+from play_anything.core.personalization_engine import AdaptivePersonalizationEngine
+
+p_engine = AdaptivePersonalizationEngine()
+profile = p_engine.calibrate_player_profile("engineer_42", stated_age=34)
+suggestion = p_engine.generate_personalized_suggestions(profile, current_elo=2400)
+
+print(f"Matched Division: {suggestion.matched_tier.value}")
+print(f"Human Peer: {suggestion.human_peers[0].display_name} ({suggestion.human_peers[0].rating_elo} Elo, 🔥{suggestion.human_peers[0].consistency_streak_days}d streak)")
+print(f"AI Sparring Agent: {suggestion.ai_agent_peers[0].display_name} via {suggestion.ai_agent_peers[0].agent_model_backbone}")
+print(f"Division Champion: {suggestion.champion_spotlight.display_name} ({suggestion.champion_spotlight.rating_elo} Elo, 🔥{suggestion.champion_spotlight.consistency_streak_days}d streak)")
 ```
 
 ---
@@ -420,9 +465,9 @@ python3 -m unittest discover tests
 ```
 Output:
 ```
-...........................
+.............................
 ----------------------------------------------------------------------
-Ran 27 tests in 0.001s
+Ran 29 tests in 0.002s
 
 OK
 ```

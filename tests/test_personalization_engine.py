@@ -1,5 +1,6 @@
 """
-Unit tests for Adaptive Personalization Engine & Behavioral Calibration.
+Unit tests for Adaptive Personalization Engine, Behavioral Calibration,
+Peer/AI Matchmaking, and Champion Life Enhancement Showcase.
 Uses standard library unittest.
 """
 
@@ -9,6 +10,7 @@ from play_anything.core.personalization_engine import (
     BehavioralTelemetry,
     AgeCluster,
     ExpertiseTier,
+    CompetitorType,
     OnboardingCalibrationGate
 )
 
@@ -83,6 +85,58 @@ class TestPersonalizationEngine(unittest.TestCase):
         )
         self.assertEqual(profile_pro.age_cluster, AgeCluster.PRO_ARCHITECT)
         self.assertTrue(profile_pro.skip_basic_tutorials)
+
+    def test_personalized_suggestions_generation(self):
+        profile = self.engine.calibrate_player_profile(
+            user_id="user_lead_01",
+            stated_age=34,
+            telemetry=BehavioralTelemetry(cyclomatic_comprehension_score=0.95)
+        )
+        suggestion = self.engine.generate_personalized_suggestions(profile, current_elo=2420)
+        self.assertEqual(suggestion.matched_tier, ExpertiseTier.STAFF_ARCHITECT)
+        self.assertEqual(suggestion.player_elo, 2420)
+        
+        # Verify both human peers and AI agent sparring partners are suggested
+        self.assertGreater(len(suggestion.human_peers), 0)
+        self.assertGreater(len(suggestion.ai_agent_peers), 0)
+        self.assertTrue(all(p.competitor_type == CompetitorType.HUMAN_PEER for p in suggestion.human_peers))
+        self.assertTrue(all(p.competitor_type == CompetitorType.AI_AGENT for p in suggestion.ai_agent_peers))
+        
+        # Verify champion spotlight is attached
+        self.assertIsNotNone(suggestion.champion_spotlight)
+        self.assertGreaterEqual(suggestion.champion_spotlight.consistency_streak_days, 180)
+        self.assertIn("Staff", suggestion.match_rationale)
+
+    def test_division_leaderboards_and_champion_life_enhancement(self):
+        leaderboards = self.engine.get_all_division_leaderboards()
+        self.assertIn("grandmaster_apex", leaderboards)
+        self.assertIn("staff_architect", leaderboards)
+        self.assertIn("cadet_discovery", leaderboards)
+        self.assertIn("senior_sage", leaderboards)
+
+        # 1. Grandmaster Apex Champion Test
+        apex_div = leaderboards["grandmaster_apex"]
+        self.assertEqual(apex_div.champion_spotlight.display_name, "Dr. Elena Vance")
+        self.assertGreaterEqual(apex_div.champion_spotlight.consistency_streak_days, 400)
+        self.assertIn("physical_vitality", apex_div.champion_life_mastery_breakdown)
+        self.assertIn("48 bpm", apex_div.champion_life_mastery_breakdown["physical_vitality"])
+
+        # 2. Staff Architect Champion Test
+        staff_div = leaderboards["staff_architect"]
+        self.assertEqual(staff_div.champion_spotlight.display_name, "Marcus Thorne")
+        self.assertGreaterEqual(staff_div.champion_spotlight.consistency_streak_days, 180)
+        self.assertIn("lost 32 pounds", staff_div.champion_spotlight.life_enhancement_testament)
+
+        # 3. Cadet Discovery Champion Test (Youth Anti-Escapism)
+        cadet_div = leaderboards["cadet_discovery"]
+        self.assertEqual(cadet_div.champion_spotlight.display_name, "Leo Chen (Age 14)")
+        self.assertIn("GPA from 2.8 to 3.9", cadet_div.champion_spotlight.life_enhancement_testament)
+        self.assertIn("varsity track", cadet_div.champion_spotlight.life_enhancement_testament)
+
+        # 4. Senior Sage Champion Test (Cognitive Longevity)
+        sage_div = leaderboards["senior_sage"]
+        self.assertEqual(sage_div.champion_spotlight.display_name, "Margaret O'Connor (Age 71)")
+        self.assertIn("30/30", sage_div.champion_life_mastery_breakdown["cognitive_clarity"])
 
 
 if __name__ == "__main__":
