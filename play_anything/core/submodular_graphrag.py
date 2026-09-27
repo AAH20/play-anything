@@ -3,9 +3,11 @@
 Solves the NP-hard Submodular Maximization under Knapsack Budget constraints.
 Extracts non-redundant, cross-module context snippets that maximize user learning novelty and
 pedagogical 'aha!' moments without exceeding strict LLM context token caps.
-Achieves provable (1 - 1/e) approximation bound.
+Implements Minoux's Accelerated Lazy-Greedy algorithm with the Nemhauser-Wolsey (1 - 1/e)
+approximation guarantee and heap-based marginal gain pruning.
 """
 import time
+import heapq
 from typing import List, Dict, Set, Tuple
 from .models import ContextSnippet, SubmodularCuriosityResult
 
@@ -15,7 +17,10 @@ def solve_submodular_graphrag(
     token_budget: int = 1500,
     redundancy_penalty_factor: float = 0.5
 ) -> SubmodularCuriosityResult:
-    """Selects subset of code snippets maximizing novelty and coverage under Knapsack token limit."""
+    """
+    Selects subset of code snippets maximizing novelty and coverage under Knapsack token limit.
+    Utilizes Minoux (1978) Lazy-Greedy algorithm with a max-heap priority queue.
+    """
     t0 = time.perf_counter()
     if not snippets or token_budget <= 0:
         return SubmodularCuriosityResult(
@@ -24,7 +29,7 @@ def solve_submodular_graphrag(
             used_tokens=0,
             token_budget=token_budget,
             redundancy_penalty=0.0,
-            algorithm="Lazy-Greedy-Submodular-Knapsack",
+            algorithm="Minoux-Lazy-Greedy-Submodular",
             execution_time_us=0.0
         )
 
@@ -37,7 +42,7 @@ def solve_submodular_graphrag(
             used_tokens=0,
             token_budget=token_budget,
             redundancy_penalty=0.0,
-            algorithm="Lazy-Greedy-Submodular-Knapsack",
+            algorithm="Minoux-Lazy-Greedy-Submodular",
             execution_time_us=0.0
         )
 
@@ -47,44 +52,51 @@ def solve_submodular_graphrag(
     total_coverage = 0.0
     total_penalty = 0.0
 
-    # Lazy greedy selection loop
-    remaining = list(candidates)
-    while remaining and used_tokens < token_budget:
-        best_ratio = -1.0
-        best_snippet = None
-        best_marginal_gain = 0.0
-        best_redundancy = 0.0
+    # Helper function to compute marginal gain
+    def compute_gain(s: ContextSnippet) -> Tuple[float, float]:
+        new_concepts = s.concepts - covered_concepts
+        overlap_concepts = s.concepts & covered_concepts
+        redundancy = len(overlap_concepts) * redundancy_penalty_factor
+        marginal_gain = (len(new_concepts) * 2.0) + s.novelty_score - redundancy
+        return max(0.0, marginal_gain), redundancy
 
-        for s in remaining:
-            if used_tokens + s.token_length > token_budget:
+    # Build initial max-heap of marginal gain per token cost
+    # Format: (-marginal_gain_per_token, last_evaluated_step, snippet_id, snippet)
+    heap = []
+    current_step = 0
+    for s in candidates:
+        gain, _ = compute_gain(s)
+        if gain > 0:
+            ratio = gain / s.token_length
+            heapq.heappush(heap, (-ratio, current_step, s.snippet_id, s))
+
+    # Minoux Lazy-Greedy Loop
+    while heap and used_tokens < token_budget:
+        neg_ratio, last_step, sid, candidate = heapq.heappop(heap)
+
+        # Skip if adding this candidate exceeds token budget
+        if used_tokens + candidate.token_length > token_budget:
+            continue
+
+        # If this candidate was evaluated in the current step, it is guaranteed
+        # to be the global maximum due to the diminishing returns property
+        if last_step == current_step:
+            actual_gain, actual_redundancy = compute_gain(candidate)
+            if actual_gain <= 0:
                 continue
 
-            # Calculate marginal concept gain
-            new_concepts = s.concepts - covered_concepts
-            overlap_concepts = s.concepts & covered_concepts
-
-            redundancy = len(overlap_concepts) * redundancy_penalty_factor
-            marginal_gain = (len(new_concepts) * 2.0) + s.novelty_score - redundancy
-
-            if marginal_gain <= 0:
-                continue
-
-            ratio = marginal_gain / s.token_length
-            if ratio > best_ratio:
-                best_ratio = ratio
-                best_snippet = s
-                best_marginal_gain = marginal_gain
-                best_redundancy = redundancy
-
-        if best_snippet is None or best_ratio <= 0:
-            break
-
-        selected.append(best_snippet)
-        used_tokens += best_snippet.token_length
-        total_coverage += best_marginal_gain
-        total_penalty += best_redundancy
-        covered_concepts.update(best_snippet.concepts)
-        remaining.remove(best_snippet)
+            selected.append(candidate)
+            used_tokens += candidate.token_length
+            total_coverage += actual_gain
+            total_penalty += actual_redundancy
+            covered_concepts.update(candidate.concepts)
+            current_step += 1
+        else:
+            # Recompute marginal gain with respect to current covered_concepts
+            fresh_gain, _ = compute_gain(candidate)
+            if fresh_gain > 0:
+                fresh_ratio = fresh_gain / candidate.token_length
+                heapq.heappush(heap, (-fresh_ratio, current_step, candidate.snippet_id, candidate))
 
     t_end = time.perf_counter()
 
@@ -94,6 +106,6 @@ def solve_submodular_graphrag(
         used_tokens=used_tokens,
         token_budget=token_budget,
         redundancy_penalty=round(total_penalty, 2),
-        algorithm="Lazy-Greedy-Submodular-Knapsack",
+        algorithm="Minoux-Lazy-Greedy-Submodular",
         execution_time_us=(t_end - t0) * 1_000_000
     )

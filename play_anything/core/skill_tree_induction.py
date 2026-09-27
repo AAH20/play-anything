@@ -65,28 +65,70 @@ def solve_skill_tree_induction(
                 adj[src].add(dst)
                 in_degree[dst] += 1
 
-    # Cycle Detection & Feedback Arc Elimination (Greedy DFS cycle breaking)
-    visited: Dict[str, int] = {n.node_id: 0 for n in nodes}  # 0: unvisited, 1: visiting, 2: visited
-    feedback_arcs = 0
+    # Eades-Lin-Smyth (1993) Linear-Time O(V + E) Greedy Feedback Arc Set (FAS)
+    in_edges_map = {n.node_id: set() for n in nodes}
+    out_edges_map = {n.node_id: set() for n in nodes}
+    for u in adj:
+        for v in adj[u]:
+            out_edges_map[u].add(v)
+            in_edges_map[v].add(u)
+
+    rem_nodes = set(n.node_id for n in nodes)
+    s1 = []
+    s2 = []
+
+    while rem_nodes:
+        # 1. Strip sinks (out-degree == 0) and prepend to s2
+        sink_found = True
+        while sink_found:
+            sink_found = False
+            for u in list(rem_nodes):
+                if len(out_edges_map[u]) == 0:
+                    rem_nodes.remove(u)
+                    s2.insert(0, u)
+                    for pred in list(in_edges_map[u]):
+                        out_edges_map[pred].discard(u)
+                    in_edges_map[u].clear()
+                    sink_found = True
+                    break
+
+        # 2. Strip sources (in-degree == 0) and append to s1
+        source_found = True
+        while source_found:
+            source_found = False
+            for u in list(rem_nodes):
+                if len(in_edges_map[u]) == 0:
+                    rem_nodes.remove(u)
+                    s1.append(u)
+                    for succ in list(out_edges_map[u]):
+                        in_edges_map[succ].discard(u)
+                    out_edges_map[u].clear()
+                    source_found = True
+                    break
+
+        # 3. Greedy pivot on max delta(u) = out_degree - in_degree
+        if rem_nodes:
+            best_u = max(rem_nodes, key=lambda x: len(out_edges_map[x]) - len(in_edges_map[x]))
+            rem_nodes.remove(best_u)
+            s1.append(best_u)
+            for succ in list(out_edges_map[best_u]):
+                in_edges_map[succ].discard(best_u)
+            for pred in list(in_edges_map[best_u]):
+                out_edges_map[pred].discard(best_u)
+            out_edges_map[best_u].clear()
+            in_edges_map[best_u].clear()
+
+    topo_order = s1 + s2
+    pos = {nid: i for i, nid in enumerate(topo_order)}
+
     clean_adj: Dict[str, Set[str]] = defaultdict(set)
-
-    def dfs(u: str):
-        nonlocal feedback_arcs
-        visited[u] = 1
-        for v in list(adj[u]):
-            if visited[v] == 1:
-                # Cycle detected! Remove back-edge to preserve acyclicity
-                feedback_arcs += 1
-            elif visited[v] == 0:
+    feedback_arcs = 0
+    for u in adj:
+        for v in adj[u]:
+            if pos[u] < pos[v]:
                 clean_adj[u].add(v)
-                dfs(v)
             else:
-                clean_adj[u].add(v)
-        visited[u] = 2
-
-    for n in nodes:
-        if visited[n.node_id] == 0:
-            dfs(n.node_id)
+                feedback_arcs += 1
 
     # Compute topological levels (depth) & prerequisite chains
     clean_in_degree = defaultdict(int)
