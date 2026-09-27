@@ -12,6 +12,7 @@ import time
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from play_anything.core.personalization_engine import OnboardingCalibrationGate
 
 
 class GameMode(str, Enum):
@@ -193,6 +194,7 @@ class RealmManifest:
     monetization: RealmMonetizationConfig
     evolution: EvolutionConfig = field(default_factory=EvolutionConfig)
     evaluation: EvaluationConfig = field(default_factory=EvaluationConfig)
+    onboarding_gate: OnboardingCalibrationGate = field(default_factory=lambda: OnboardingCalibrationGate(map_id="default", map_title="Default"))
     created_at: float = field(default_factory=time.time)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -217,6 +219,10 @@ class RealmManifest:
         if "evaluation" in data:
             data["evaluation"]["arena_protocol"] = ArenaProtocol(data["evaluation"]["arena_protocol"])
             data["evaluation"] = EvaluationConfig(**data["evaluation"])
+        if "onboarding_gate" in data:
+            data["onboarding_gate"] = OnboardingCalibrationGate(**data["onboarding_gate"])
+        else:
+            data["onboarding_gate"] = OnboardingCalibrationGate(map_id=data["id"], map_title=data["title"])
         return cls(**data)
 
 
@@ -430,7 +436,8 @@ class RealmStudioEngine:
             punishments=RealmPunishments(),
             monetization=RealmMonetizationConfig(),
             evolution=EvolutionConfig(),
-            evaluation=EvaluationConfig()
+            evaluation=EvaluationConfig(),
+            onboarding_gate=OnboardingCalibrationGate(map_id=realm_id, map_title=title)
         )
         return manifest
 

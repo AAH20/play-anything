@@ -155,6 +155,9 @@
     <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
       <span>🏛️</span> <span class="bg-gradient-to-r from-amber-400 via-yellow-200 to-sky-300 bg-clip-text text-transparent font-bold">Arena Studio & Model Colosseum</span>
     </button>
+    <button onclick="switchTab('personalization')" id="tab-btn-personalization" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
+      <span>🧬</span> <span class="bg-gradient-to-r from-purple-400 via-pink-200 to-sky-300 bg-clip-text text-transparent font-bold">Adaptive Personalization & Onboarding</span>
+    </button>
   </nav>
 
   <!-- MAIN VIEWPORT CONTAINER -->
@@ -1050,6 +1053,153 @@
 
       </div>
 
+      <!-- Sector 5: Adaptive Personalization & Behavioral Calibration Gateway (Meta-Muse AI Transcendence) -->
+      <div class="glass-panel p-6 rounded-2xl border-purple-500/40 bg-gradient-to-r from-purple-950/20 via-slate-900/90 to-sky-950/20 flex flex-col gap-5">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-purple-500/20 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🧬</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-sky-300">
+                  5. ADAPTIVE PERSONALIZATION & BEHAVIORAL CALIBRATION GATEWAY
+                </h3>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-purple-950 text-purple-300 border border-purple-800 font-mono font-bold">META-MUSE TRANSCENDENCE</span>
+              </div>
+              <p class="text-xs text-slate-300 mt-1 max-w-4xl">
+                Continuous biometric & behavioral monitoring tailoring map mechanics, onboarding flows, and cognitive load to player expertise. Automatically segregates into tailored tracks: <strong>Youth Cadet (8-15)</strong> visual metaphors, <strong>Senior Sage (60+)</strong> cognitive longevity preservation, and <strong>Professional Architect (25-55)</strong> zero-handholding fast-track bypassing juvenile tutorials.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 font-mono text-xs">
+            <span class="text-slate-400">ACTIVE ONBOARDING VERDICT:</span>
+            <span id="active-onboarding-badge" class="px-2.5 py-1 rounded bg-sky-950/80 border border-sky-500/60 text-sky-300 font-bold">⚡ PRO FAST-TRACK (BYPASS 100%)</span>
+          </div>
+        </div>
+
+        <!-- 3 Interactive Age & Expertise Profiles -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Card 1: Youth Cadet -->
+          <div id="cluster-card-cadet" onclick="switchPersonalizationCluster('cadet')" class="cursor-pointer p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/60 transition flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span>🧒</span> <span>Youth Cadet (Ages 8-15)</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800">SCAFFOLDED</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Transforms complex AST traversals into visual story metaphors and gamified logic spells. Positive reinforcement, gentle pacing, zero tech debt penalties.
+            </p>
+            <div class="pt-2 border-t border-slate-800/80 grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-400">
+              <div>Timer Scale: <strong class="text-amber-300">+50% (1.5x)</strong></div>
+              <div>Cognitive Cap: <strong class="text-amber-300">45 ops/min</strong></div>
+              <div>Metaphor: <strong class="text-white">Spell Crafting</strong></div>
+              <div>Jargon Shield: <strong class="text-emerald-400">Active</strong></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Pro Architect -->
+          <div id="cluster-card-pro" onclick="switchPersonalizationCluster('pro')" class="cursor-pointer p-4 rounded-xl border-2 border-sky-500/80 bg-sky-950/30 hover:border-sky-400 transition flex flex-col gap-2 shadow-lg shadow-sky-950/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                <span>⚡</span> <span>Pro Architect (Ages 25-55)</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-700">FAST-TRACK</span>
+            </div>
+            <p class="text-[11px] text-slate-200 leading-relaxed">
+              Zero handholding. Completely bypasses introductory tutorials in 15 seconds. Direct drop into high-concurrency sagas, AST diffs, and raw terminal environments.
+            </p>
+            <div class="pt-2 border-t border-sky-900/60 grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-400">
+              <div>Timer Scale: <strong class="text-sky-300">1.0x (Precision)</strong></div>
+              <div>Cognitive Cap: <strong class="text-sky-300">95 ops/min</strong></div>
+              <div>Metaphor: <strong class="text-white">Raw AST Telemetry</strong></div>
+              <div>Intro Bypassed: <strong class="text-emerald-400">100%</strong></div>
+            </div>
+          </div>
+
+          <!-- Card 3: Senior Sage -->
+          <div id="cluster-card-sage" onclick="switchPersonalizationCluster('sage')" class="cursor-pointer p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/60 transition flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                <span>🌿</span> <span>Senior Sage (Ages 60+)</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800">LONGEVITY</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Ergonomic high-contrast typography (135% scale), relaxed reaction timers, and deep cognitive vitality preservation challenges without high-frequency stress.
+            </p>
+            <div class="pt-2 border-t border-slate-800/80 grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-400">
+              <div>Timer Scale: <strong class="text-emerald-300">+100% (2.0x)</strong></div>
+              <div>Font Scale: <strong class="text-emerald-300">135% WCAG AAA</strong></div>
+              <div>Metaphor: <strong class="text-white">System Architecture</strong></div>
+              <div>Goal: <strong class="text-emerald-300">Cognitive Longevity</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Behavioral Telemetry Diagnostic Console & Map Author Config -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Live Telemetry Monitor -->
+          <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                <span>📡</span> <span>Continuous Zero-Shot Behavioral Telemetry</span>
+              </span>
+              <button onclick="simulateBehavioralTriage()" class="px-2.5 py-1 rounded bg-purple-900/60 hover:bg-purple-800 border border-purple-500/40 text-[10px] text-purple-200 font-mono transition flex items-center gap-1">
+                <span>🔄</span> <span>Simulate Onboarding Triage (15s)</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono">
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <span class="text-[9px] text-slate-400 block">KEYSTROKE CADENCE</span>
+                <span id="telemetry-cadence" class="text-xs font-bold text-sky-400">385 CPM</span>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <span class="text-[9px] text-slate-400 block">HESITATION LATENCY</span>
+                <span id="telemetry-hesitation" class="text-xs font-bold text-emerald-400">160 ms</span>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <span class="text-[9px] text-slate-400 block">CLI COMMAND DENSITY</span>
+                <span id="telemetry-cli-density" class="text-xs font-bold text-amber-400">82.4%</span>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <span class="text-[9px] text-slate-400 block">INFERRED TIER</span>
+                <span id="telemetry-inferred-tier" class="text-xs font-bold text-purple-300">STAFF ARCHITECT</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-300 font-mono bg-slate-900/50 p-2.5 rounded border border-slate-800/80 flex items-center justify-between">
+              <div><span class="text-slate-400">Routing Decision:</span> <span id="telemetry-routing-decision" class="text-emerald-300 font-bold">Fast-Track Level 1-4 Skipped -> Spawning Boss Crucible</span></div>
+              <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">CONFIDENCE: 98.7%</span>
+            </div>
+          </div>
+
+          <!-- Map Author Onboarding Calibration Controls -->
+          <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 flex flex-col gap-3">
+            <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+              <span>⚙️</span> <span>Developer Onboarding & Gate Governance</span>
+            </span>
+            <div class="space-y-2 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input type="checkbox" id="gate-allow-fasttrack" checked class="rounded border-slate-700 text-purple-500 focus:ring-0">
+                <span>Enable Instant Pro Fast-Track Bypass (Skip intro tutorials upon detected high CPM / CLI mastery)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input type="checkbox" id="gate-visual-scaffolding" checked class="rounded border-slate-700 text-purple-500 focus:ring-0">
+                <span>Enable Youth Visual Metaphor Fallback (Algorithmic spells & safe sandboxing)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input type="checkbox" id="gate-senior-ergonomics" checked class="rounded border-slate-700 text-purple-500 focus:ring-0">
+                <span>Enable Senior Cognitive Longevity Preserver (Relaxed timers & WCAG AAA contrast)</span>
+              </label>
+              <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-[11px]">
+                <span class="text-slate-400">Diagnostic Challenge Window:</span>
+                <span class="font-mono text-purple-300 font-bold">15 - 30 Seconds Auto-Calibrated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- Published Manifest Notification Bar (Hidden initially) -->
       <div id="studio-published-banner" class="hidden glass-panel p-4 rounded-xl border-emerald-500/50 bg-emerald-950/30 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -1059,6 +1209,7 @@
             <div class="text-xs text-slate-300 font-mono">Manifest ID: <span id="pub-manifest-id" class="text-sky-300">realm_8f93a102</span> | Share URL: <code id="pub-share-url" class="text-amber-300">playanything://realms/apollo-auth-fortress</code></div>
           </div>
         </div>
+      </div>
       <!-- Whales of the Game Development Industry & AAA Simulation Consortium Panel -->
       <div class="glass-panel p-6 rounded-2xl border-amber-500/40 bg-gradient-to-r from-amber-950/30 via-slate-900/80 to-purple-950/30 flex flex-col gap-5">
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-amber-500/20 pb-4">
@@ -1149,6 +1300,228 @@
 
     </div>
 
+    <!-- ==================== VIEW 7: ADAPTIVE PERSONALIZATION & BEHAVIORAL CALIBRATION ==================== -->
+    <div id="view-personalization" class="hidden flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
+      
+      <!-- Personalization Hero Banner -->
+      <div class="glass-panel p-6 rounded-2xl border-purple-500/40 bg-gradient-to-r from-purple-950/30 via-slate-900/80 to-sky-950/30 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl">🧬</span>
+            <h2 class="text-xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-200 to-sky-300">
+              ADAPTIVE PERSONALIZATION & BEHAVIORAL CALIBRATION ENGINE
+            </h2>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-purple-950 text-purple-300 border border-purple-800 font-mono font-bold">META-MUSE AI TRANSCENDENCE</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-1 max-w-4xl">
+            Ontological biometric telemetry and behavioral calibration that tailors game maps, cognitive complexity, and onboarding gates to player expertise. Featuring a <strong>15-second fast-track bypass</strong> for verified professionals, <strong>visual scaffolding</strong> for young cadets, and <strong>cognitive longevity preservation</strong> for senior scholars.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 block font-mono">CALIBRATION ENGINE STATUS:</span>
+            <span class="text-xs font-mono font-bold text-emerald-400 flex items-center justify-end gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ONLINE (ZERO-SHOT BAYESIAN)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Interactive Onboarding Gate Modal Simulator -->
+      <div class="glass-panel p-6 rounded-2xl border-sky-500/40 bg-slate-900/60 flex flex-col gap-5">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🚪</span>
+            <div>
+              <h3 class="text-sm font-bold text-sky-300 flex items-center gap-2">
+                <span>Map Onboarding Calibration Gate (Live Player Simulation)</span>
+                <span class="px-2 py-0.2 rounded text-[10px] bg-sky-950 text-sky-300 border border-sky-800 font-mono">30-SECOND DIAGNOSTIC CRUCIBLE</span>
+              </h3>
+              <p class="text-xs text-slate-400">
+                Every realm dynamically intercepts players at entry. High-cadence professionals bypass introductory basics instantly, while exploratory players receive supportive scaffolding.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="triggerOnboardingBypass('pro')" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition flex items-center gap-1 shadow-md">
+              <span>⚡</span> <span>Simulate Pro Fast-Track</span>
+            </button>
+            <button onclick="triggerOnboardingBypass('cadet')" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition flex items-center gap-1 shadow-md">
+              <span>🧒</span> <span>Simulate Youth Cadet</span>
+            </button>
+            <button onclick="triggerOnboardingBypass('sage')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1 shadow-md">
+              <span>🌿</span> <span>Simulate Senior Sage</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Onboarding Verdict Banner -->
+        <div id="onboarding-verdict-card" class="p-4 rounded-xl border border-sky-500/50 bg-sky-950/30 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-3">
+            <span id="onboarding-verdict-icon" class="text-2xl">⚡</span>
+            <div>
+              <div class="font-bold text-sky-200" id="onboarding-verdict-title">FAST-TRACK ACTIVATED: Professional Software Architect Detected</div>
+              <div class="text-[11px] text-slate-300 font-mono" id="onboarding-verdict-desc">
+                Bypassing 4 introductory tutorials in 0.04s. Routing directly to Level 8 Concurrency Crucible Dungeon.
+              </div>
+            </div>
+          </div>
+          <span id="onboarding-verdict-badge" class="px-2.5 py-1 rounded bg-sky-900/80 text-sky-300 font-mono text-[10px] font-bold border border-sky-700">
+            TIME SAVED: 22.5 MINUTES
+          </span>
+        </div>
+
+        <!-- 3 Interactive Age & Cognitive Clusters -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Cluster 1: Youth Cadet -->
+          <div id="v7-cluster-cadet" class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <span>🧒</span> <span>Youth Cadet (Ages 8-15)</span>
+                </span>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">SCAFFOLDED</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Transforms abstract AST graphs into vibrant visual story metaphors, spell crafting, and drag-and-drop logic nodes. Zero punishing tech debt; celebratory positive reinforcement.
+              </p>
+            </div>
+            <div class="space-y-1.5 pt-3 border-t border-slate-800 text-[10px] font-mono">
+              <div class="flex justify-between"><span class="text-slate-400">Timer Multiplier:</span> <span class="text-amber-300 font-bold">+50% (1.5x)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Cognitive Load Cap:</span> <span class="text-amber-300 font-bold">45 ops/min</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Visual Metaphors:</span> <span class="text-emerald-400 font-bold">Enabled (Spell Crafting)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Jargon Shield:</span> <span class="text-emerald-400 font-bold">Active (Lexical Filter)</span></div>
+            </div>
+          </div>
+
+          <!-- Cluster 2: Professional Architect -->
+          <div id="v7-cluster-pro" class="p-4 rounded-xl border-2 border-sky-500/80 bg-sky-950/30 flex flex-col justify-between gap-3 shadow-lg shadow-sky-950/40">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                  <span>⚡</span> <span>Pro Architect (Ages 25-55)</span>
+                </span>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-700">FAST-TRACK</span>
+              </div>
+              <p class="text-xs text-slate-200 leading-relaxed">
+                Zero handholding. Bypasses elementary tutorials in 15 seconds. Direct entry into raw AST diffs, bytecode inspection, git forensics, and multi-agent concurrency sagas.
+              </p>
+            </div>
+            <div class="space-y-1.5 pt-3 border-t border-sky-900/60 text-[10px] font-mono">
+              <div class="flex justify-between"><span class="text-slate-400">Timer Multiplier:</span> <span class="text-sky-300 font-bold">1.0x (Precision Speedrun)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Cognitive Load Cap:</span> <span class="text-sky-300 font-bold">95 ops/min</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Intro Basics Skipped:</span> <span class="text-emerald-400 font-bold">100% (Instant)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Terminal Shell:</span> <span class="text-emerald-400 font-bold">Raw Unrestricted WASM</span></div>
+            </div>
+          </div>
+
+          <!-- Cluster 3: Senior Sage -->
+          <div id="v7-cluster-sage" class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                  <span>🌿</span> <span>Senior Sage (Ages 60+)</span>
+                </span>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">LONGEVITY</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Ergonomic high-contrast typography (135% font scale), relaxed reaction timers, and cognitive vitality preservation challenges designed for dignified lifelong intellectual health.
+              </p>
+            </div>
+            <div class="space-y-1.5 pt-3 border-t border-slate-800 text-[10px] font-mono">
+              <div class="flex justify-between"><span class="text-slate-400">Timer Multiplier:</span> <span class="text-emerald-300 font-bold">+100% (2.0x Relaxed)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Typography Scale:</span> <span class="text-emerald-300 font-bold">135% (WCAG AAA)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Cognitive Longevity:</span> <span class="text-emerald-400 font-bold">Neuro-Plasticity Workout</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Stress Feedback:</span> <span class="text-emerald-400 font-bold">Zero High-Frequency Pressure</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Diagnostics & Map Author Governance Matrix -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Live Behavioral Telemetry Gauge Cluster -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
+              <span>📡</span> <span>Continuous Biometric & Behavioral Telemetry</span>
+            </h3>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">STREAMING 60Hz</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+              <div class="text-[10px] text-slate-400 mb-1">KEYSTROKE CADENCE (CPM)</div>
+              <div id="v7-cadence-val" class="text-lg font-bold text-sky-400">415 CPM</div>
+              <div class="text-[9px] text-slate-500 mt-1">Tier: Grandmaster Speed</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+              <div class="text-[10px] text-slate-400 mb-1">HESITATION LATENCY</div>
+              <div id="v7-latency-val" class="text-lg font-bold text-emerald-400">120 ms</div>
+              <div class="text-[9px] text-slate-500 mt-1">Sub-150ms Instant Reflex</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+              <div class="text-[10px] text-slate-400 mb-1">CLI COMMAND DENSITY</div>
+              <div id="v7-cli-val" class="text-lg font-bold text-amber-400">88.5%</div>
+              <div class="text-[9px] text-slate-500 mt-1">Terminal-First Workflow</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+              <div class="text-[10px] text-slate-400 mb-1">CYCLOMATIC COMPREHENSION</div>
+              <div id="v7-ast-val" class="text-lg font-bold text-purple-400">97.8%</div>
+              <div class="text-[9px] text-slate-500 mt-1">Zero False-Hypothesis Loops</div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">Zero-Shot Bayesian Confidence:</span>
+            <span class="text-emerald-400 font-bold">99.2% [Pro Architect Tier 3]</span>
+          </div>
+        </div>
+
+        <!-- Developer Map Author Governance & Onboarding Rules -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+              <span>🛠️</span> <span>Developer Realm Gate Policies & Configuration</span>
+            </h3>
+            <span class="text-[10px] font-mono text-sky-400 bg-sky-950 px-2 py-0.5 rounded">MAP AUTHOR CONTROLS</span>
+          </div>
+
+          <div class="flex flex-col gap-3 text-xs">
+            <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+              <div>
+                <div class="font-bold text-slate-200">Allow Pro Fast-Track Bypass</div>
+                <div class="text-[10px] text-slate-400">Skips intro levels upon verified high-cadence telemetry.</div>
+              </div>
+              <input type="checkbox" checked class="rounded border-slate-700 text-sky-500">
+            </div>
+
+            <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+              <div>
+                <div class="font-bold text-slate-200">Auto-Deploy Visual Metaphors for Youth</div>
+                <div class="text-[10px] text-slate-400">Renders AST diffs as spell runes for ages 8-15.</div>
+              </div>
+              <input type="checkbox" checked class="rounded border-slate-700 text-amber-500">
+            </div>
+
+            <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+              <div>
+                <div class="font-bold text-slate-200">Enable Senior Cognitive Longevity Preserver</div>
+                <div class="text-[10px] text-slate-400">Expands typography to 135% and relaxes reaction timers.</div>
+              </div>
+              <input type="checkbox" checked class="rounded border-slate-700 text-emerald-500">
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 flex justify-between items-center text-[11px] font-mono">
+              <span class="text-slate-400">Diagnostic Gate Timeout:</span>
+              <span class="text-purple-300 font-bold">15 - 30 Seconds Maximum</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
   </main>
@@ -1210,10 +1583,11 @@
     // --- Tab Switching ---
     function switchTab(tabId) {
       playSound('click');
-      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio'];
+      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization'];
       tabs.forEach(t => {
         const v = document.getElementById('view-' + t);
         const b = document.getElementById('tab-btn-' + t);
+        if (!v || !b) return;
         if (t === tabId) {
           v.classList.remove('hidden');
           b.className = 'px-3.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/40 flex items-center gap-1.5 transition';
@@ -1224,6 +1598,70 @@
       });
       if (tabId === 'map') {
         renderCanvas();
+      }
+    }
+
+    function triggerOnboardingBypass(cluster) {
+      playSound('unlock');
+      const cardCadet = document.getElementById('v7-cluster-cadet');
+      const cardPro = document.getElementById('v7-cluster-pro');
+      const cardSage = document.getElementById('v7-cluster-sage');
+      const banner = document.getElementById('onboarding-verdict-card');
+      const icon = document.getElementById('onboarding-verdict-icon');
+      const title = document.getElementById('onboarding-verdict-title');
+      const desc = document.getElementById('onboarding-verdict-desc');
+      const badge = document.getElementById('onboarding-verdict-badge');
+      const cadence = document.getElementById('v7-cadence-val');
+      const latency = document.getElementById('v7-latency-val');
+      const cli = document.getElementById('v7-cli-val');
+      const ast = document.getElementById('v7-ast-val');
+
+      if (cardCadet) cardCadet.className = 'p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3';
+      if (cardPro) cardPro.className = 'p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3';
+      if (cardSage) cardSage.className = 'p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3';
+
+      if (cluster === 'pro') {
+        if (cardPro) cardPro.className = 'p-4 rounded-xl border-2 border-sky-500/80 bg-sky-950/30 flex flex-col justify-between gap-3 shadow-lg shadow-sky-950/40';
+        if (banner) banner.className = 'p-4 rounded-xl border border-sky-500/50 bg-sky-950/30 flex flex-wrap items-center justify-between gap-3 text-xs';
+        if (icon) icon.textContent = '⚡';
+        if (title) title.textContent = 'FAST-TRACK ACTIVATED: Professional Software Architect Detected';
+        if (desc) desc.textContent = 'Bypassing 4 introductory tutorials in 0.04s. Routing directly to Level 8 Concurrency Crucible Dungeon.';
+        if (badge) {
+          badge.className = 'px-2.5 py-1 rounded bg-sky-900/80 text-sky-300 font-mono text-[10px] font-bold border border-sky-700';
+          badge.textContent = 'TIME SAVED: 22.5 MINUTES';
+        }
+        if (cadence) cadence.textContent = '415 CPM';
+        if (latency) latency.textContent = '120 ms';
+        if (cli) cli.textContent = '88.5%';
+        if (ast) ast.textContent = '97.8%';
+      } else if (cluster === 'cadet') {
+        if (cardCadet) cardCadet.className = 'p-4 rounded-xl border-2 border-amber-500/80 bg-amber-950/30 flex flex-col justify-between gap-3 shadow-lg shadow-amber-950/40';
+        if (banner) banner.className = 'p-4 rounded-xl border border-amber-500/50 bg-amber-950/30 flex flex-wrap items-center justify-between gap-3 text-xs';
+        if (icon) icon.textContent = '🧒';
+        if (title) title.textContent = 'YOUTH CADET TRACK: Visual Story Metaphors Activated';
+        if (desc) desc.textContent = 'Abstract syntax tree converted to algorithmic spell craft. Positive scaffolding active with +50% reaction time.';
+        if (badge) {
+          badge.className = 'px-2.5 py-1 rounded bg-amber-900/80 text-amber-300 font-mono text-[10px] font-bold border border-amber-700';
+          badge.textContent = 'JOYFUL LEARNING MODE';
+        }
+        if (cadence) cadence.textContent = '145 CPM';
+        if (latency) latency.textContent = '650 ms';
+        if (cli) cli.textContent = '24.0%';
+        if (ast) ast.textContent = '82.1%';
+      } else {
+        if (cardSage) cardSage.className = 'p-4 rounded-xl border-2 border-emerald-500/80 bg-emerald-950/30 flex flex-col justify-between gap-3 shadow-lg shadow-emerald-950/40';
+        if (banner) banner.className = 'p-4 rounded-xl border border-emerald-500/50 bg-emerald-950/30 flex flex-wrap items-center justify-between gap-3 text-xs';
+        if (icon) icon.textContent = '🌿';
+        if (title) title.textContent = 'SENIOR SAGE TRACK: Cognitive Longevity & Ergonomics Activated';
+        if (desc) desc.textContent = '135% high-contrast typography enabled. Reaction timers extended by +100% for dignified intellectual wellness.';
+        if (badge) {
+          badge.className = 'px-2.5 py-1 rounded bg-emerald-900/80 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-700';
+          badge.textContent = 'COGNITIVE VITALITY +100% TIME';
+        }
+        if (cadence) cadence.textContent = '230 CPM';
+        if (latency) latency.textContent = '420 ms';
+        if (cli) cli.textContent = '56.0%';
+        if (ast) ast.textContent = '94.3%';
       }
     }
 
@@ -1647,6 +2085,13 @@
           judge_models: ["DeepSeek-R1", "Claude-3.7-Sonnet", "GPT-4o"],
           confidence_interval_pct: 95.0
         },
+        personalization: {
+          allow_pro_fasttrack: document.getElementById('gate-allow-fasttrack')?.checked ?? true,
+          enable_youth_scaffolding: document.getElementById('gate-visual-scaffolding')?.checked ?? true,
+          enable_senior_ergonomics: document.getElementById('gate-senior-ergonomics')?.checked ?? true,
+          diagnostic_window_seconds: 30,
+          biometric_telemetry_enabled: true
+        },
         monetization: {
           creator_rev_share: 70.0,
           platform_share: 30.0,
@@ -1660,6 +2105,58 @@
       document.body.appendChild(dl);
       dl.click();
       dl.remove();
+    }
+
+    function switchPersonalizationCluster(cluster) {
+      playSound('click');
+      const cadetCard = document.getElementById('cluster-card-cadet');
+      const proCard = document.getElementById('cluster-card-pro');
+      const sageCard = document.getElementById('cluster-card-sage');
+      const badge = document.getElementById('active-onboarding-badge');
+      const decision = document.getElementById('telemetry-routing-decision');
+
+      if (!cadetCard || !proCard || !sageCard) return;
+
+      cadetCard.className = 'cursor-pointer p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/60 transition flex flex-col gap-2';
+      proCard.className = 'cursor-pointer p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-sky-500/60 transition flex flex-col gap-2';
+      sageCard.className = 'cursor-pointer p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/60 transition flex flex-col gap-2';
+
+      if (cluster === 'cadet') {
+        cadetCard.className = 'cursor-pointer p-4 rounded-xl border-2 border-amber-500/80 bg-amber-950/30 hover:border-amber-400 transition flex flex-col gap-2 shadow-lg shadow-amber-950/50';
+        badge.className = 'px-2.5 py-1 rounded bg-amber-950/80 border border-amber-500/60 text-amber-300 font-bold';
+        badge.textContent = '🧒 YOUTH CADET (SCAFFOLDED +50% TIME)';
+        decision.textContent = 'Visual Metaphor Active -> Puzzles & Algorithmic Spells';
+      } else if (cluster === 'pro') {
+        proCard.className = 'cursor-pointer p-4 rounded-xl border-2 border-sky-500/80 bg-sky-950/30 hover:border-sky-400 transition flex flex-col gap-2 shadow-lg shadow-sky-950/50';
+        badge.className = 'px-2.5 py-1 rounded bg-sky-950/80 border border-sky-500/60 text-sky-300 font-bold';
+        badge.textContent = '⚡ PRO FAST-TRACK (BYPASS 100%)';
+        decision.textContent = 'Fast-Track Level 1-4 Skipped -> Spawning Boss Crucible';
+      } else {
+        sageCard.className = 'cursor-pointer p-4 rounded-xl border-2 border-emerald-500/80 bg-emerald-950/30 hover:border-emerald-400 transition flex flex-col gap-2 shadow-lg shadow-emerald-950/50';
+        badge.className = 'px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold';
+        badge.textContent = '🌿 SENIOR SAGE (COGNITIVE LONGEVITY +100% TIME)';
+        decision.textContent = 'Ergonomic Pacing -> High-Contrast Architectural Flow';
+      }
+    }
+
+    function simulateBehavioralTriage() {
+      playSound('scanner');
+      const cadence = document.getElementById('telemetry-cadence');
+      const hesitation = document.getElementById('telemetry-hesitation');
+      const cliDensity = document.getElementById('telemetry-cli-density');
+      const inferredTier = document.getElementById('telemetry-inferred-tier');
+      const scenarios = [
+        { cpm: '415 CPM', lat: '120 ms', cli: '88.5%', tier: 'GRANDMASTER_APEX', cluster: 'pro' },
+        { cpm: '140 CPM', lat: '680 ms', cli: '22.0%', tier: 'INITIATE_EXPLORER', cluster: 'cadet' },
+        { cpm: '220 CPM', lat: '450 ms', cli: '54.0%', tier: 'SENIOR_SCHOLAR', cluster: 'sage' },
+        { cpm: '360 CPM', lat: '190 ms', cli: '76.0%', tier: 'STAFF_ARCHITECT', cluster: 'pro' }
+      ];
+      const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+      if (cadence) cadence.textContent = sc.cpm;
+      if (hesitation) hesitation.textContent = sc.lat;
+      if (cliDensity) cliDensity.textContent = sc.cli;
+      if (inferredTier) inferredTier.textContent = sc.tier;
+      switchPersonalizationCluster(sc.cluster);
     }
 
     function addCustomObjective() {
@@ -1703,7 +2200,7 @@
       initCanvas();
       updateInspector();
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio'].includes(hash)) {
+      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization'].includes(hash)) {
         switchTab(hash);
       }
     });
