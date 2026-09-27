@@ -152,6 +152,9 @@
     <button onclick="switchTab('benchmarks')" id="tab-btn-benchmarks" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
       <span>📊</span> <span>Microsecond Solvers Radar</span>
     </button>
+    <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
+      <span>🛠️</span> <span class="bg-gradient-to-r from-amber-400 to-yellow-200 bg-clip-text text-transparent font-bold">Realm Studio (Fortnite/Roblox UGC)</span>
+    </button>
   </nav>
 
   <!-- MAIN VIEWPORT CONTAINER -->
@@ -632,6 +635,261 @@
       </div>
     </div>
 
+    <!-- ==================== VIEW 6: REALM STUDIO & CREATOR ECONOMY ==================== -->
+    <div id="view-studio" class="hidden flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
+      
+      <!-- Studio Header Banner -->
+      <div class="glass-panel p-6 rounded-2xl border-amber-500/30 bg-gradient-to-r from-amber-950/20 via-slate-900/60 to-indigo-950/20 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🛠️</span>
+            <h2 class="text-xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-sky-300">
+              REALM STUDIO: DEVELOPER UGC & CREATOR ECONOMY
+            </h2>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-900/60 text-amber-300 border border-amber-700/60 font-mono">Fortnite/Roblox for Devs</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-1 max-w-3xl">
+            Design and publish custom codebase maps with custom controls, game objectives, anti-cheat benchmarks, leaderboards, and punishments. Monetize via the 70/30 Creator Economy & Roblox DevEx payouts.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="exportRealmManifestJson()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-semibold flex items-center gap-1.5 transition">
+            <span>📄</span> <span>Export Manifest JSON</span>
+          </button>
+          <button onclick="publishCustomRealm()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition">
+            <span>🚀</span> <span>Publish Realm to Mesh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio 3-Column Creator Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Column 1: Map Blueprint, Mode & Controls -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+              <span>🗺️</span> <span>1. Map Blueprint & Controls</span>
+            </h3>
+            <span class="text-[10px] text-slate-400 font-mono">SPEC v1.0</span>
+          </div>
+
+          <div class="flex flex-col gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Realm Title</label>
+              <input id="studio-title" type="text" value="Apollo Auth Fortress" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 font-medium focus:border-amber-400 outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Repository URL / Codebase Target</label>
+              <input id="studio-repo" type="text" value="https://github.com/AAH20/play-anything.git" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-2 text-sky-300 font-mono text-[11px] focus:border-amber-400 outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Game Mode (Roblox/Fortnite Paradigm)</label>
+              <select id="studio-mode" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="boss_raid">👹 Boss Raid (Co-op Bug Slaughter)</option>
+                <option value="capture_the_flag">🚩 Capture The Flag (0-Day Hunting)</option>
+                <option value="speedrun_refactor" selected>⏱️ Speedrun Refactor (Complexity Reduction)</option>
+                <option value="tower_defense">🛡️ Tower Defense (API DDoS & Rate-Limit)</option>
+                <option value="battle_royale">🏆 100-Dev Code Battle Royale</option>
+                <option value="onboarding">🎓 Guided Onboarding Walkthrough</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Sandbox Isolation Tier</label>
+              <select id="studio-sandbox" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="wasm">⚡ WASM Micro-Isolate (&lt; 1ms startup)</option>
+                <option value="docker" selected>📦 Docker Container (Full filesystem)</option>
+                <option value="firecracker">🔒 Firecracker MicroVM (Zero-trust)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Input & Control Scheme</label>
+              <select id="studio-controls" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="iso">🖱️ Isometric Point-and-Click</option>
+                <option value="wasd" selected>🕹️ WASD Spatial Realm Navigation</option>
+                <option value="vim">⌨️ Vim Modal Navigation (h/j/k/l AST tree)</option>
+                <option value="voice">🎙️ Voice-Commanded Agent Swarm (Hands-free)</option>
+                <option value="gamepad">🎮 Twin-Stick Gamepad Controller</option>
+              </select>
+            </div>
+
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <span class="text-[11px] font-bold text-slate-300 block mb-1">Active Keybinding Map:</span>
+              <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-slate-400">
+                <div><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-sky-300">WASD</kbd> Move Hero</div>
+                <div><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-sky-300">Space</kbd> Voice PTT</div>
+                <div><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300">R</kbd> Run Raid Tests</div>
+                <div><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300">Tab</kbd> Quick Diff</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Objectives, Benchmarks & Punishments -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+              <span>🎯</span> <span>2. Objectives & Benchmarks</span>
+            </h3>
+            <span class="text-[10px] text-emerald-400 font-mono">ANTI-CHEAT ON</span>
+          </div>
+
+          <div class="flex flex-col gap-3 text-xs">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-slate-400 font-semibold">Game Objectives</label>
+                <button onclick="addCustomObjective()" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold">+ Add Goal</button>
+              </div>
+              <div id="studio-objectives-list" class="space-y-2">
+                <div class="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-200">Quell Mutex Race Condition</div>
+                    <div class="text-[10px] text-slate-400">Target: 100% tests pass | Mandatory</div>
+                  </div>
+                  <span class="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded">+1,450 XP</span>
+                </div>
+                <div class="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-200">Achieve 95% Mutant Elimination</div>
+                    <div class="text-[10px] text-slate-400">Target: Kill &gt;= 95% mutation tests</div>
+                  </div>
+                  <span class="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded">+600 XP</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Anti-Cheat Strictness Matrix</label>
+              <select id="studio-anticheat" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="strict">🛡️ Strict (Exit code + Mock Detection + AST Delta)</option>
+                <option value="paranoid" selected>⚔️ Sovereign Paranoid (Mock Trap + Prompt Quarantine + Kemeny)</option>
+                <option value="relaxed">⚠️ Relaxed (Basic exit code only)</option>
+              </select>
+            </div>
+
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <span class="text-[11px] font-bold text-rose-400 block mb-1">⚖️ Punishments & Slashing System:</span>
+              <ul class="text-[10px] text-slate-300 space-y-1">
+                <li>• <strong class="text-rose-300">Token Slashing:</strong> 15% stake confiscated on detected cheat attempts.</li>
+                <li>• <strong class="text-rose-300">Tech Debt Debuff:</strong> +25% Mana cost & slowed hero speed.</li>
+                <li>• <strong class="text-rose-300">Cursed Artifact:</strong> Player tagged with "Mock Cheater of Tier 2" on public profile.</li>
+              </ul>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Leaderboard Ranking Metric</label>
+              <select id="studio-leaderboard" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="speedrun" selected>⏱️ Speedrun Any% (Wall-clock test completion)</option>
+                <option value="elo">🏅 OpenSkill / Glicko-2 Developer ELO Rating</option>
+                <option value="cleanliness">✨ Clean Code Efficiency (Cyclomatic + AST compactness)</option>
+                <option value="guild">🏰 Enterprise Guild / Clan Standings</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Multi-Layered Monetization & DevEx Simulator -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+              <span>💎</span> <span>3. Monetization & DevEx</span>
+            </h3>
+            <span class="text-[10px] text-amber-300 font-mono">70/30 REV SHARE</span>
+          </div>
+
+          <div class="flex flex-col gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Access Model</label>
+              <select id="studio-access" onchange="recalculateDevEx()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 outline-none">
+                <option value="premium" selected>🎟️ Premium Raid Ticket (50 GitCoins / $0.50)</option>
+                <option value="f2p">🆓 Free-to-Play (40% Engagement Pool Payout)</option>
+                <option value="subscription">🌟 Monthly Season Battle Pass</option>
+                <option value="sponsored">💼 Corporate Sponsored Bounty ($5,000 Prize Pool)</option>
+              </select>
+            </div>
+
+            <!-- DevEx Calculator Sliders -->
+            <div class="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800 flex flex-col gap-3">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-slate-300">DevEx Payout Simulator</span>
+                <span class="text-[10px] text-amber-300 font-mono">Roblox DevEx Equiv</span>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Monthly Active Players:</span>
+                  <span id="label-players" class="font-mono text-sky-300 font-bold">10,000</span>
+                </div>
+                <input id="slider-players" type="range" min="1000" max="50000" step="1000" value="10000" oninput="recalculateDevEx()" class="w-full accent-amber-400" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Completion / Pass Rate:</span>
+                  <span id="label-retention" class="font-mono text-emerald-400 font-bold">75%</span>
+                </div>
+                <input id="slider-retention" type="range" min="10" max="95" step="5" value="75" oninput="recalculateDevEx()" class="w-full accent-emerald-400" />
+              </div>
+
+              <!-- Payout Results Card -->
+              <div class="p-3 rounded-lg bg-emerald-950/30 border border-emerald-800/60 flex flex-col gap-1.5">
+                <div class="flex justify-between text-[11px] text-slate-300">
+                  <span>Direct 70% Ticket Sales:</span>
+                  <span id="val-ticket-payout" class="font-mono text-emerald-300 font-bold">$3,500</span>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-300">
+                  <span>Fortnite 40% Engagement Pool:</span>
+                  <span id="val-engagement-payout" class="font-mono text-sky-300 font-bold">$1,875</span>
+                </div>
+                <div class="border-t border-emerald-900/60 pt-1.5 flex justify-between items-center">
+                  <span class="text-xs font-bold text-white">Creator Net Payout (DevEx):</span>
+                  <span id="val-total-payout" class="text-base font-black text-amber-300 font-mono">$5,375 / mo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- B2B Enterprise Expansion Tiers Summary -->
+            <div class="bg-gradient-to-br from-indigo-950/40 to-slate-900 p-3 rounded-xl border border-indigo-900/50">
+              <span class="text-[11px] font-bold text-indigo-300 block mb-1">🏢 Multi-Layered B2B SaaS Tiers:</span>
+              <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="p-1.5 rounded bg-slate-900/80 border border-slate-800">
+                  <span class="font-bold text-sky-300 block">Pro Creator</span>
+                  <span class="text-slate-400">$29/mo • UGC Rights</span>
+                </div>
+                <div class="p-1.5 rounded bg-slate-900/80 border border-slate-800">
+                  <span class="font-bold text-indigo-300 block">Team Arena</span>
+                  <span class="text-slate-400">$299/mo • Hiring Raids</span>
+                </div>
+                <div class="col-span-2 p-1.5 rounded bg-slate-900/80 border border-slate-800 flex justify-between items-center">
+                  <span class="font-bold text-amber-300">Enterprise Sovereign</span>
+                  <span class="text-slate-400">$2,500 - $15,000/mo • VPC SOC2</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Published Manifest Notification Bar (Hidden initially) -->
+      <div id="studio-published-banner" class="hidden glass-panel p-4 rounded-xl border-emerald-500/50 bg-emerald-950/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl animate-bounce">🎉</span>
+          <div>
+            <div class="text-sm font-bold text-emerald-300">Realm Successfully Published to Global Mesh!</div>
+            <div class="text-xs text-slate-300 font-mono">Manifest ID: <span id="pub-manifest-id" class="text-sky-300">realm_8f93a102</span> | Share URL: <code id="pub-share-url" class="text-amber-300">playanything://realms/apollo-auth-fortress</code></div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('studio-published-banner').classList.add('hidden')" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">Dismiss</button>
+      </div>
+
+    </div>
+
   </main>
 
   <!-- JAVASCRIPT: Procedural Isometric Biome Canvas, Web Audio Synthesizer, Web Speech API -->
@@ -691,7 +949,7 @@
     // --- Tab Switching ---
     function switchTab(tabId) {
       playSound('click');
-      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks'];
+      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio'];
       tabs.forEach(t => {
         const v = document.getElementById('view-' + t);
         const b = document.getElementById('tab-btn-' + t);
@@ -1037,11 +1295,88 @@
       }
     }
 
+    function recalculateDevEx() {
+      const players = parseInt(document.getElementById('slider-players').value, 10);
+      const retention = parseInt(document.getElementById('slider-retention').value, 10) / 100.0;
+      const accessType = document.getElementById('studio-access').value;
+
+      document.getElementById('label-players').textContent = players.toLocaleString();
+      document.getElementById('label-retention').textContent = Math.round(retention * 100) + '%';
+
+      let ticketPriceTokens = 50; // default 50 GitCoins
+      if (accessType === 'f2p') ticketPriceTokens = 0;
+      if (accessType === 'subscription') ticketPriceTokens = 120;
+      if (accessType === 'sponsored') ticketPriceTokens = 0;
+
+      // 70% direct creator cut
+      const totalTicketRevTokens = players * ticketPriceTokens;
+      const directCreatorCut = Math.round(totalTicketRevTokens * 0.70 * 0.01); // 1 token = $0.01
+
+      // 40% Engagement Pool payout (Fortnite 2.0 Island Engagement Model)
+      const engagementScore = players * (0.35 + 0.65 * retention);
+      const engagementPoolCut = Math.round(engagementScore * 0.25);
+
+      const totalPayout = directCreatorCut + engagementPoolCut;
+
+      document.getElementById('val-ticket-payout').textContent = '$' + directCreatorCut.toLocaleString();
+      document.getElementById('val-engagement-payout').textContent = '$' + engagementPoolCut.toLocaleString();
+      document.getElementById('val-total-payout').textContent = '$' + totalPayout.toLocaleString() + ' / mo';
+    }
+
+    function publishCustomRealm() {
+      playSound('level_up');
+      const title = document.getElementById('studio-title').value || 'Custom Realm';
+      const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const manifestId = 'realm_' + Math.random().toString(36).substring(2, 10);
+
+      document.getElementById('pub-manifest-id').textContent = manifestId;
+      document.getElementById('pub-share-url').textContent = 'playanything://realms/' + slug;
+      document.getElementById('studio-published-banner').classList.remove('hidden');
+
+      // Update Top HUD
+      document.getElementById('realm-name').textContent = slug + '.git';
+    }
+
+    function exportRealmManifestJson() {
+      playSound('click');
+      const manifest = {
+        title: document.getElementById('studio-title').value,
+        repo: document.getElementById('studio-repo').value,
+        mode: document.getElementById('studio-mode').value,
+        sandbox: document.getElementById('studio-sandbox').value,
+        controls: document.getElementById('studio-controls').value,
+        anticheat: document.getElementById('studio-anticheat').value,
+        leaderboard: document.getElementById('studio-leaderboard').value,
+        access: document.getElementById('studio-access').value,
+        monetization: {
+          creator_rev_share: 70.0,
+          platform_share: 30.0,
+          devex_eligible: true
+        }
+      };
+      const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifest, null, 2));
+      const dl = document.createElement('a');
+      dl.setAttribute("href", jsonStr);
+      dl.setAttribute("download", (manifest.title.toLowerCase().replace(/\s+/g, '_') || "realm") + "_manifest.json");
+      document.body.appendChild(dl);
+      dl.click();
+      dl.remove();
+    }
+
+    function addCustomObjective() {
+      playSound('unlock');
+      const list = document.getElementById('studio-objectives-list');
+      const newDiv = document.createElement('div');
+      newDiv.className = 'bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between';
+      newDiv.innerHTML = `<div><div class="font-bold text-slate-200">Sub-150µs Latency Gate</div><div class="text-[10px] text-slate-400">Target: AST latency <= 150µs</div></div><span class="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded">+500 XP</span>`;
+      list.appendChild(newDiv);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       initCanvas();
       updateInspector();
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks'].includes(hash)) {
+      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio'].includes(hash)) {
         switchTab(hash);
       }
     });
