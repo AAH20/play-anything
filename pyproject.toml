@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "play-anything"
+version = "1.0.0"
+description = "Turn Any Codebase into an Interactive Living RPG World: Agentic Swarms, Voice NPCs, GraphRAG, and Computer-Use Sandboxes"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Ahmed Hassan", email = "ahmed.a.hassan@outlook.com"}
+]
+keywords = [
+    "codebase-rpg",
+    "gamification",
+    "voice-agents",
+    "graphrag",
+    "computer-use",
+    "agentic-ai",
+    "multi-agent-systems",
+    "np-hard-optimization",
+    "skill-tree",
+    "dungeon-generation",
+    "steiner-tree",
+    "developer-tools"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Games/Entertainment :: Role-Playing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/AAH20/play-anything"
+Repository = "https://github.com/AAH20/play-anything"
+Issues = "https://github.com/AAH20/play-anything/issues"
+
+[project.scripts]
+play-anything = "play_anything.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["play_anything*"]
