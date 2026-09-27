@@ -1040,6 +1040,10 @@
     window.addEventListener('DOMContentLoaded', () => {
       initCanvas();
       updateInspector();
+      const hash = window.location.hash.replace('#', '');
+      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks'].includes(hash)) {
+        switchTab(hash);
+      }
     });
   </script>
 </body>
