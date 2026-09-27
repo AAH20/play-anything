@@ -96,6 +96,18 @@ def run_play_interactive(repo_path: str = None):
     print("=" * 85 + "\n")
 
 
+def open_dashboard():
+    """Opens the interactive 3D Codebase RPG World in the user's browser."""
+    import webbrowser
+    dashboard_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard.html")
+    if os.path.exists(dashboard_path):
+        uri = "file://" + os.path.abspath(dashboard_path)
+        print(f"Launching Play-Anything Spatial RPG Dashboard: {uri}")
+        webbrowser.open(uri)
+    else:
+        print(f"Dashboard file not found at: {dashboard_path}")
+
+
 def main():
     """Main CLI entrypoint."""
     args = sys.argv[1:]
@@ -104,6 +116,7 @@ def main():
         print("\nUsage:")
         print("  python3 cli.py benchmark-all        Run microsecond benchmark suite across 10 solvers")
         print("  python3 cli.py play [repo_path]     Launch interactive playable terminal RPG")
+        print("  python3 cli.py dashboard            Open interactive 3D RPG Web Dashboard in browser")
         print("  python3 cli.py demo-world           Generate and inspect procedural world state")
         sys.exit(0)
 
@@ -113,6 +126,8 @@ def main():
     elif cmd == "play":
         path = args[1] if len(args) > 1 else None
         run_play_interactive(path)
+    elif cmd == "dashboard":
+        open_dashboard()
     elif cmd == "demo-world":
         engine = PlayAnythingEngine()
         world = engine.generate_world()
