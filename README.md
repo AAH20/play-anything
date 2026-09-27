@@ -1,35 +1,86 @@
 # 🎮 Play-Anything (`play-anything`)
+### The Apex Living Codebase RPG, Sovereign Model Arena & Neuro-Adaptive Personalization Engine
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/python-3.10+-brightgreen.svg)](pyproject.toml)
 [![Dependencies: Zero](https://img.shields.io/badge/dependencies-zero-success.svg)](pyproject.toml)
-[![Tests: 100% Passing](https://img.shields.io/badge/tests-100%25%20passing-brightgreen.svg)](tests/)
-[![Pipeline Latency: < 1ms](https://img.shields.io/badge/full%20pipeline-<1ms-orange.svg)](cli.py)
+[![Tests: 24/24 Passing](https://img.shields.io/badge/tests-24%2F24%20passing-brightgreen.svg)](tests/)
+[![Pipeline Latency: < 0.6ms](https://img.shields.io/badge/full%20pipeline-<0.6ms-orange.svg)](cli.py)
+[![Model Evaluation: Kaggle Game Arena](https://img.shields.io/badge/benchmark-Kaggle%20Game%20Arena-blueviolet.svg)](play_anything/core/realm_studio.py)
+[![Personalization: Beyond Meta Muse](https://img.shields.io/badge/personalization-Neuro--Adaptive-emerald.svg)](play_anything/core/personalization_engine.py)
 
 **Don't just read code. Play it.**  
-Turn any Git repository or codebase into an **interactive, living RPG world** powered by **Agentic Swarm Intelligence, GraphRAG, Full-Duplex Voice NPCs, and Autonomous Computer-Use Sandboxes**.
+Turn any Git repository into an **interactive, living RPG world** powered by **Deterministic Combinatorial Graph Solvers (< 0.6ms), Agentic Swarm Intelligence, Submodular GraphRAG, Full-Duplex Voice NPCs, Autonomous Computer-Use Sandboxes, Frontier Model Evaluation Colosseums, and Neuro-Adaptive Onboarding Gates**.
+
+---
+
+## 🌟 Interactive Showcase Experience
+
+![Play-Anything Living Codebase World Showcase](screenshots/play_anything_showcase.gif)
+
+> *Real-time animated walkthrough cycling through the 7 interactive interfaces of `play-anything`: 3D Archipelago Dungeon, Constellation Skill Tree, Computer-Use Boss Arena, Voice NPC Sanctuary, Microsecond Solvers Radar, Model Evaluation Colosseum, and Adaptive Personalization Engine.*
+
+---
+
+## 📸 Flagship System Views
+
+### 1. Adaptive Personalization & Behavioral Calibration Engine (Meta-Muse Transcendence)
+*Continuous 60Hz biometric telemetry tracking keystroke cadence (CPM), first-action hesitation latency, and command-line density. Features a **30-second Onboarding Diagnostic Gate** offering a **15-second Fast-Track Bypass** for verified senior professionals, while providing **visual algorithmic metaphors** for young cadets and **WCAG AAA 135% cognitive longevity preservation** for senior scholars.*
+
+![Adaptive Personalization & Behavioral Calibration Engine](screenshots/07_adaptive_personalization_and_behavioral_calibration.png)
+
+---
+
+### 2. 3D Procedural Archipelago & Fog-of-War Dungeon Realm
+*Transforms code directories and microservice layers into an explorable 3D isometric biome world using Spectral Graph Min-Cut partitioning under dynamic Fog-of-War.*
+
+![3D Archipelago Dungeon Realm](screenshots/01_archipelago_dungeon_map.png)
+
+---
+
+### 3. Sovereign Arena Studio & Frontier Model Evaluation Colosseum
+*Kaggle Game Arena standard head-to-head model evaluation. Simulates multi-agent pairwise matches, computes Bradley-Terry Elo ratings with 95% confidence intervals, and provides a 70/30 creator revenue-sharing yield engine for user-generated realms.*
+
+![Sovereign Arena Studio & Model Colosseum](screenshots/06_sovereign_arena_and_model_evaluation.png)
+
+---
+
+## 🗺️ Interactive Dashboard Views Directory
+
+| View Tab | Engine Module | Primary Gameplay / Institutional Mechanism | Visual Asset |
+| :---: | :--- | :--- | :---: |
+| **View 1** | `core/world_gen.py` | **3D Archipelago Dungeon Realm**: Spectral min-cut biomes under dynamic fog-of-war | [01 PNG](screenshots/01_archipelago_dungeon_map.png) |
+| **View 2** | `core/skill_tree.py` | **Constellation Skill Tree DAG**: Acyclic topological progression (like *Path of Exile*) | [02 PNG](screenshots/02_constellation_skill_tree.png) |
+| **View 3** | `core/computer_use.py` | **Computer-Use Boss Arena**: Sandboxed code raids with Byzantine anti-cheat audits | [03 PNG](screenshots/03_computer_use_boss_arena.png) |
+| **View 4** | `core/voice_swarm.py` | **Voice NPC Swarm Sanctuary**: Full-duplex conversational NPCs with sub-180ms latency | [04 PNG](screenshots/04_voice_npc_sanctuary.png) |
+| **View 5** | `core/benchmark_radar.py` | **Microsecond Solvers Radar**: 10 NP-hard graph solvers executing in 582 microseconds | [05 PNG](screenshots/05_microsecond_solvers_radar.png) |
+| **View 6** | `core/realm_studio.py` | **Model Colosseum & Studio**: Kaggle Game Arena Elo, DevEx yield, and AAA Whales Consortium | [06 PNG](screenshots/06_sovereign_arena_and_model_evaluation.png) |
+| **View 7** | `core/personalization_engine.py` | **Neuro-Adaptive Personalization**: 30s onboarding gate, Pro Fast-Track, Cadet & Sage tracks | [07 PNG](screenshots/07_adaptive_personalization_and_behavioral_calibration.png) |
 
 ---
 
 ## 1. The Core Premise: Why Legacy Code Understanding Fails
 
-Developers spend 70% of their time reading and comprehending code. Yet the tools built to help them are fundamentally broken:
+Developers spend 70% of their career reading and comprehending code. Yet legacy tooling remains passive, static, and fragile:
 
-| Paradigm / Tool | Representation | Structural Fatal Flaw | User Emotion |
+| Paradigm / Tool | Internal Representation | Structural Fatal Flaw | User Emotion |
 |---|---|---|---|
 | **Obsidian Vaults** | Static Markdown links | Zero runtime awareness, zero execution, passive text | Boredom |
 | **LangGraph / AutoGen** | Hardcoded State Machine | $\mathcal{O}(N^2)$ chat loops, unbounded prompt tokens, deadlocks | Frustration |
 | **Cognee** | Vector + Relational DB | Shallow pipeline, no agent autonomy, no live execution | Disconnect |
 | **Hermes / Open Manus** | Linear ReAct agent loops | Ungrounded stochastic loops, file corruption risk, \$5–\$25/run | Anxiety |
 | **Understand-Anything** | Static visual AST graph | Passive, read-only graph with no gamification or live action | Observation |
+| **Meta Muse AI** | Generative asset diffusion | Cognitively blind to human expertise; forces infant tutorials on pros | Alienation |
 
 ### The Apex Paradigm: Codebase-as-a-Living-RPG-World
 `play-anything` replaces passive documentation and fragile prompt chains with **deterministic combinatorial graph engineering**:
 
 * **Git Repository $\to$ Procedural RPG World**: Code files and folders become dungeons, citadels, and caverns partitioned by architectural biomes under dynamic fog-of-war.
 * **Classes & Modules $\to$ Guilds & Skill Trees**: Dependencies are transformed into an unlockable, progression-balanced RPG Skill Tree (like *Path of Exile* or *Skyrim*).
-* **Bugs, CVEs & Debt $\to$ Corrupted Dungeon Bosses**: Defeated **only** when your code patch passes real unit tests inside isolated computer-use sandboxes.
+* **Bugs, CVEs & Tech Debt $\to$ Corrupted Dungeon Bosses**: Defeated **only** when your code patch passes real unit tests inside isolated computer-use sandboxes.
 * **Autonomous Agent Swarms $\to$ Living Voice NPCs**: Senior Architect Wizards, Security Rogues, and DevOps Blacksmiths converse via streaming full-duplex voice with sub-180ms latency.
+* **Frontier Model Evaluation $\to$ Colosseum Leaderboards**: AI models and agent policies compete head-to-head on AST correctness, reasoning efficiency, and code mutations (Kaggle Game Arena standard).
+* **Deep Biometrics $\to$ Neuro-Adaptive Personalization**: Experienced professionals bypass juvenile basics in 15 seconds, kids learn via visual spell craft, and seniors preserve mental vitality.
 
 ```
                     PASSIVE CODE READING (Legacy)
@@ -38,12 +89,12 @@ Developers spend 70% of their time reading and comprehending code. Yet the tools
 =============================================================================================
 
                PLAY-ANYTHING: THE LIVING RPG WORLD (Deterministic)
-   [Raw Git Repo] ───► [10 NP-Hard Graph Solvers (< 1ms)] ───► [Interactive Living RPG World]
+   [Raw Git Repo] ───► [10 NP-Hard Graph Solvers (< 0.6ms)] ───► [Interactive Living RPG World]
                             │
-       ┌────────────────────┼─────────────────────┐
-       ▼                    ▼                     ▼
-  [Skill Tree DAG]    [Dungeon Biomes]    [Voice NPCs & Bosses]
-  (Unlock abilities)  (Explore fog-of-war) (Sandboxed Code Raids)
+       ┌────────────────────┼─────────────────────┬─────────────────────┐
+       ▼                    ▼                     ▼                     ▼
+  [Skill Tree DAG]    [Dungeon Biomes]    [Voice NPCs & Bosses]   [Model Arena & Gate]
+  (Unlock abilities)  (Explore fog-of-war) (Sandboxed Code Raids) (Personalized Speedrun)
 ```
 
 ---
@@ -110,39 +161,7 @@ Run `python3 cli.py play` to turn any repository into an interactive terminal RP
 
 ---
 
-## 3. Master System Architecture
-
-```mermaid
-flowchart TD
-    subgraph IngestionWorldGen ["Phase I: World Synthesis & Spatial Partitioning"]
-        REPO["Raw Git Repository (AST + Git History)"]
-        REPO --> P1["P1: Pedagogical Skill-Tree DAG Induction (Min Feedback Arc Set)"]
-        REPO --> P2["P2: Dungeon Biome Fog-of-War Partitioning (Balanced Min-Cut)"]
-        P1 & P2 --> WORLD["Living RPG Game Graph (Nodes, Dungeons, Skills)"]
-    end
-
-    subgraph AgenticNPCs ["Phase II: Swarm NPC Alignment & Quest Engineering"]
-        WORLD --> P3["P3: Multi-Agent NPC Role & Persona Assignment (GAP / Bi-Matching)"]
-        WORLD --> P4["P4: Dynamic Quest & Boss Path Synthesis (Prize-Collecting Steiner)"]
-        P3 & P4 --> SWARM["Autonomous NPC Fleet (Architects, Bosses, Mentors)"]
-    end
-
-    subgraph RuntimeInteraction ["Phase III: Full-Duplex Voice & Computer-Use Battles"]
-        SWARM --> P5["P5: Deadline-Constrained Voice Agent Graph Routing (< 180ms)"]
-        SWARM --> P6["P6: GraphRAG Submodular Curiosity Context Distillation (1 - 1/e)"]
-        SWARM --> P7["P7: Disjunctive Computer-Use Sandbox Task Scheduler (Deadlock-Free)"]
-    end
-
-    subgraph GameEconomyEmergence ["Phase IV: In-Game Economy & Evolution Engine"]
-        P5 & P6 & P7 --> P8["P8: In-Game XP & Compute Tokenomics Equilibrium (Arrow-Debreu)"]
-        P5 & P6 & P7 --> P9["P9: Temporal Code Drift & Quest Invalidation (Temporal Iso)"]
-        P5 & P6 & P7 --> P10["P10: Multi-Agent Byzantine Fair-Play Anti-Cheat (Kemeny-Young)"]
-    end
-```
-
----
-
-## 4. The 10 Apex NP-Hard Formulations
+## 3. The 10 Apex NP-Hard Formulations
 
 | ID | Problem Formulation | Complexity | Algorithmic Mechanism | Invariant / Guarantee |
 |:---:|---|---|---|---|
@@ -159,9 +178,9 @@ flowchart TD
 
 ---
 
-## 5. Microsecond Benchmark Suite
+## 4. Microsecond Benchmark Suite
 
-Execution on Apple Silicon (Pure Python 3.12 Standard Library, Single Core, Zero C-extensions):
+Execution on Apple Silicon (Pure Python Standard Library, Single Core, Zero C-extensions):
 
 ```
 =====================================================================================
@@ -188,7 +207,56 @@ Every single component executes in **microseconds**, and the entire 10-solver pi
 
 ---
 
-## 6. Commercial Unit Economics
+## 5. Adaptive Personalization & Age-Clustered Tracks
+
+Rather than treating all players identically, the engine tailors mechanics, onboarding flows, and cognitive load dynamically:
+
+```
++---------------------------------------------------------------------------------------------------------+
+|                                 TRI-TIER COGNITIVE SPECIALIZATION TRACKS                                |
++---------------------------------------------------------------------------------------------------------+
+| 🧒 Track 1: YOUTH CADET (Ages 8-15)                                                                    |
+| • Scaffolding: Visual Story Metaphors (Algorithmic spells, puzzle analogies, spatial runes)             |
+| • Timer Multiplier: +50% (1.5x) - Zero high-frequency failure pressure                                  |
+| • Cognitive Load Cap: 45 operations/minute                                                             |
+| • Lexical Jargon Shield: Filters out hostile terminology (e.g. "race condition" -> "clashing keys")   |
+| • Objective: Joyful foundational mastery and algorithmic intuition without intimidation                |
++---------------------------------------------------------------------------------------------------------+
+| ⚡ Track 2: PRO ARCHITECT (Ages 25-55) [THE 15-SECOND FAST-TRACK BYPASS]                                |
+| • Scaffolding: Raw AST Telemetry (Bytecode inspect, git-blame forensics, terminal pipelines)           |
+| • Timer Multiplier: 1.0x (High-precision competitive speedrunning)                                    |
+| • Cognitive Load Cap: 95 operations/minute                                                             |
+| • Introductory Bypass: 100% of introductory tutorials and juvenile basics skipped in 0.04s             |
+| • Objective: Maximum time-efficiency, direct drop into high-concurrency sagas and crucible dungeons     |
++---------------------------------------------------------------------------------------------------------+
+| 🌿 Track 3: SENIOR SAGE (Ages 60+)                                                                     |
+| • Scaffolding: Ergonomic Paced Scholar (System architecture bridges, historical context)              |
+| • Timer Multiplier: +100% (2.0x) - Relaxed, dignified reaction windows                                |
+| • UI Ergonomics: 135% font scale, WCAG AAA high-contrast theme, enlarged click/touch targets            |
+| • Cognitive Objective: Mental longevity preservation, neuro-plasticity exercise, zero burnout          |
++---------------------------------------------------------------------------------------------------------+
+```
+
+### The 15-Second Professional Fast-Track Bypass
+Forcing a senior engineer with 10+ years of Linux kernel or distributed systems experience to endure 20 minutes of "What is a variable?" causes immediate attrition.  
+`play-anything` includes a **30-second Onboarding Diagnostic Gate**:
+- When the telemetry monitor detects **$>350\text{ CPM}$** and **$<180\text{ ms}$ hesitation latency**, or when the player toggles **Pro Fast-Track**:
+- **All introductory tutorial levels (Levels 1–4) are bypassed in 0.04s**.
+- The player drops directly into the **Level 8 Concurrency Crucible Dungeon**, saving **22.5 minutes** of executive time.
+
+---
+
+## 6. AAA Game Titans Consortium & Anti-Escapism Charter
+
+For game development titans leveraging **Unreal Engine 5 (Chaos/Lumen)** and **Unity (DOTS/Netcode)** with massive-scale networking, ECS state synchronizers, and global cloud distribution:
+
+* **Custom Institutional Quotes**: We coordinate bespoke games development, high-stakes business and war games, and apex surveillance and weaponization systems with real-world mechanics and real risk management (far beyond *Rise of Kingdoms, Red Alert, War Thunder*, or Steam assembly sims).
+* **The Anti-Escapism Governance Charter**:
+  > **Mandatory Rule**: Games must encourage players to enhance their real-world lives, master real systems engineering, join competitive problem-solving challenges, and cultivate genuine health and mental resilience—never trapping them in endless, destructive virtual reality bubbles that damage cognitive vitality.
+
+---
+
+## 7. Commercial Unit Economics
 
 | Cost & Operational Dimension | Legacy Chat Swarms (AutoGen / Hermes) | `play-anything` Kernel | Economic Impact |
 |---|---|---|---|
@@ -200,10 +268,10 @@ Every single component executes in **microseconds**, and the entire 10-solver pi
 
 ---
 
-## 7. Quick Start & CLI Usage
+## 8. Quick Start & CLI Usage
 
 ### Installation
-Clone and install locally with zero pip dependencies:
+Clone and run locally with **zero pip dependencies**:
 ```bash
 git clone https://github.com/AAH20/play-anything.git
 cd play-anything
@@ -212,59 +280,76 @@ pip install -e .
 
 ### CLI Commands
 ```bash
-# 1. Run the full microsecond benchmark pipeline
+# 1. Run the full microsecond benchmark pipeline (10 NP-hard solvers)
 python3 cli.py benchmark-all
 
 # 2. Launch the interactive terminal RPG on your current repository!
 python3 cli.py play .
 
-# 3. Procedural world state inspector
+# 3. Inspect procedural world state
 python3 cli.py demo-world
 ```
+
+### Interactive Web UI
+Open the standalone dashboard directly in your browser:
+```bash
+open play_anything/dashboard.html
+```
+Or jump directly to any tab via URL hash:
+* `#map` — 3D Archipelago Dungeon Realm
+* `#skills` — Constellation Skill Tree DAG
+* `#battle` — Computer-Use Boss Raid Arena
+* `#voice` — Voice NPC Swarm Sanctuary
+* `#benchmarks` — Microsecond Solvers Radar
+* `#studio` — Realm Studio & Model Colosseum
+* `#personalization` — Adaptive Personalization & Onboarding Gate
 
 ### Python API Example
 ```python
 from play_anything.engine import PlayAnythingEngine
+from play_anything.core.personalization_engine import AdaptivePersonalizationEngine, AgeCluster
 
 engine = PlayAnythingEngine()
 
-# Generate a living RPG world from your repository
+# 1. Generate a living RPG world from your repository
 world = engine.generate_world("/path/to/my-repo")
 print(f"Realm Name: {world.repo_name}")
 print(f"Chambers: {len(world.dungeon.rooms)}")
 print(f"Unlockable Skills: {len(world.skill_tree.skill_nodes)}")
 
-# Converse with a resident code NPC wizard
-wizard = world.personas[0]
-response = engine.voice.converse_with_npc(
-    persona=wizard,
-    user_speech_text="Where is the database pool configured?",
-    codebase_nodes=world.nodes,
-    codebase_edges=world.edges
+# 2. Calibrate player profile and bypass basics for verified pros
+p_engine = AdaptivePersonalizationEngine()
+profile = p_engine.calibrate_from_telemetry(
+    stated_age=32,
+    keystrokes_per_min=415,
+    hesitation_latency_ms=120,
+    cli_command_density=0.88
 )
-print(f"{wizard.name} says: {response['dialogue']}")
+print(f"Assigned Cluster: {profile.cluster.value}") # 'pro_architect'
+print(f"Intro Basics Bypassed: {profile.bypass_introductory_basics}") # True
 ```
 
 ---
 
-## 8. Verification & Test Suite
+## 9. Verification & Test Suite
 
-Run the unit test suite:
+Run the comprehensive unit test suite:
 ```bash
 python3 -m unittest discover tests
 ```
 Output:
 ```
-.............
+........................
 ----------------------------------------------------------------------
-Ran 13 tests in 0.002s
+Ran 24 tests in 0.001s
 
 OK
 ```
+*Zero external test frameworks required. Runs portably on Python standard library.*
 
 ---
 
-## 9. License
+## 10. License
 
 Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE) for full details.  
 Copyright (c) 2026 Ahmed Hassan (AAH20). All rights reserved.
