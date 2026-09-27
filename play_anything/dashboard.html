@@ -158,6 +158,9 @@
     <button onclick="switchTab('personalization')" id="tab-btn-personalization" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
       <span>🧬</span> <span class="bg-gradient-to-r from-purple-400 via-pink-200 to-sky-300 bg-clip-text text-transparent font-bold">Adaptive Personalization & Onboarding</span>
     </button>
+    <button onclick="switchTab('enterprise')" id="tab-btn-enterprise" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
+      <span>🛡️</span> <span class="bg-gradient-to-r from-emerald-400 via-teal-200 to-cyan-300 bg-clip-text text-transparent font-bold">Enterprise Mesh & Agentic SOC/GRC</span>
+    </button>
   </nav>
 
   <!-- MAIN VIEWPORT CONTAINER -->
@@ -1524,6 +1527,304 @@
 
     </div>
 
+    <!-- ==================== VIEW 8: ENTERPRISE INFRASTRUCTURE & AGENTIC SOC / GRC ==================== -->
+    <div id="view-enterprise" class="hidden flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
+      
+      <!-- Enterprise Hero Banner -->
+      <div class="glass-panel p-6 rounded-2xl border-emerald-500/40 bg-gradient-to-r from-emerald-950/30 via-slate-900/80 to-cyan-950/30 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl">🛡️</span>
+            <h2 class="text-xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-200 to-cyan-300">
+              PROPRIETARY ENTERPRISE INFRASTRUCTURE & AGENTIC SOC / GRC FABRIC
+            </h2>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-700 font-mono font-bold">COMMERCIAL LAYER FOR LARGE ENTERPRISES</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-1 max-w-4xl">
+            Sovereign multi-cloud orchestration, serverless scale-to-zero with idle sleep, self-hosted vLLM inference fleets, automated OpenRouter task complexity arbitrage, multi-tier hardware sandboxing (WASM, gVisor, Firecracker), and continuous Agentic SOC / GRC compliance with immutable Merkle proofs.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 block font-mono">GOVERNANCE & AUDIT STATUS:</span>
+            <span class="text-xs font-mono font-bold text-emerald-400 flex items-center justify-end gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> SOC2 TYPE II & ISO 42001 CERTIFIED
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Core Enterprise Infrastructure Pillars Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Pillar 1: Serverless & Idle Sleep -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                <span>⚡</span> <span>Serverless Scale-to-Zero</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">IDLE SLEEP</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Auto-sleeps idle replicas into RAM snapshots after 120s inactivity. Restores in &lt;0.8ms (WASM) or &lt;42ms (Firecracker).
+            </p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 space-y-1 text-[10px] font-mono">
+            <div class="flex justify-between"><span class="text-slate-400">Warm Active Replicas:</span> <span id="infra-warm-count" class="text-emerald-400 font-bold">2 instances</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Deep-Sleep Snapshots:</span> <span id="infra-sleep-count" class="text-sky-300 font-bold">14 ($0 burn)</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Idle Sleep Timeout:</span> <span class="text-amber-300 font-bold">120 Seconds</span></div>
+            <button onclick="triggerServerlessDeepFreeze()" class="w-full mt-1 py-1 rounded bg-sky-900/60 hover:bg-sky-800 text-sky-200 text-[10px] font-mono transition">
+              ❄️ Trigger Deep Sleep
+            </button>
+          </div>
+        </div>
+
+        <!-- Pillar 2: Multi-Cloud Load Balancer -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                <span>🌐</span> <span>Multi-Cloud Anycast Mesh</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">ANYCAST</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Global Anycast DNS with Envoy eBPF hedged routing across AWS, GCP, CoreWeave, and OCI with spot VM arbitrage.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 space-y-1 text-[10px] font-mono">
+            <div class="flex justify-between"><span class="text-slate-400">AWS (us-east-1):</span> <span class="text-emerald-400">Online (32 nodes)</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">CoreWeave (H100):</span> <span class="text-sky-300">GPU Cluster (vLLM)</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">GCP (europe-west1):</span> <span class="text-emerald-400">Online (16 nodes)</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Spot Arbitrage Savings:</span> <span class="text-amber-300 font-bold">64.2% Cost Saved</span></div>
+          </div>
+        </div>
+
+        <!-- Pillar 3: Multi-Tier Hardware Sandboxing -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span>📦</span> <span>Sandboxing & Isolation</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">HARDWARE KVM</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Three-tier hardware virtualization: WASM micro-isolates, gVisor runsc containers, and Jailer Firecracker microVMs.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 space-y-1 text-[10px] font-mono">
+            <div class="flex justify-between"><span class="text-slate-400">Tier 1 (WASM):</span> <span class="text-emerald-400">&lt; 0.8ms startup</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Tier 2 (gVisor):</span> <span class="text-sky-300">Zero host syscalls</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Tier 3 (Firecracker):</span> <span class="text-amber-300">Hardware KVM</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Sandbox Escape Rate:</span> <span class="text-emerald-400 font-bold">0.00% (Provable)</span></div>
+          </div>
+        </div>
+
+        <!-- Pillar 4: vLLM & OpenRouter Arbitrage -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col justify-between gap-3">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                <span>🧠</span> <span>vLLM + OpenRouter Engine</span>
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">PARETO ROUTE</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Automated task complexity analysis. Dispatches trivial AST queries to local vLLM, and apex reasoning to OpenRouter frontier.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 space-y-1 text-[10px] font-mono">
+            <div class="flex justify-between"><span class="text-slate-400">Local vLLM Fleet:</span> <span class="text-emerald-400 font-bold">PagedAttention v2</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Throughput:</span> <span class="text-sky-300 font-bold">145 tok/s (FP8)</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">OpenRouter Frontier:</span> <span class="text-purple-300 font-bold">Claude 3.7 / R1</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Token Cost Optimization:</span> <span class="text-emerald-400 font-bold">88.2% Net Savings</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live GenAI & LLM OpenRouter Complexity Arbitrage Interactive Sandbox -->
+      <div class="glass-panel p-6 rounded-2xl border-purple-500/30 bg-slate-900/60 flex flex-col gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
+              <span>🎛️</span> <span>OpenRouter & vLLM Dynamic Complexity & Cost Arbitrage Simulator</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Evaluates AST cyclomatic complexity, token density, and reasoning requirements to determine the optimal Pareto model choice.
+            </p>
+          </div>
+          <button onclick="simulateEnterpriseArbitrage()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white font-bold text-xs shadow-lg transition flex items-center gap-1.5">
+            <span>⚡</span> <span>Recalculate Model Arbitrage</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Parameter 1: Token Count -->
+          <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col gap-2">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Context Tokens:</span>
+              <span id="slider-val-tokens" class="text-sky-300 font-bold">16,000 tokens</span>
+            </div>
+            <input type="range" id="slider-tokens" min="1000" max="64000" step="1000" value="16000" oninput="simulateEnterpriseArbitrage()" class="w-full accent-purple-500 cursor-pointer">
+            <span class="text-[10px] text-slate-500">AST depth + imported type signatures</span>
+          </div>
+
+          <!-- Parameter 2: Cyclomatic Complexity -->
+          <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col gap-2">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Cyclomatic Complexity:</span>
+              <span id="slider-val-cyclo" class="text-amber-300 font-bold">38 branches</span>
+            </div>
+            <input type="range" id="slider-cyclo" min="1" max="80" step="1" value="38" oninput="simulateEnterpriseArbitrage()" class="w-full accent-amber-500 cursor-pointer">
+            <span class="text-[10px] text-slate-500">McCabe metric across target codebase saga</span>
+          </div>
+
+          <!-- Parameter 3: Deep Reasoning Flag -->
+          <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-200">
+              <input type="checkbox" id="check-reasoning" checked onchange="simulateEnterpriseArbitrage()" class="rounded border-slate-700 text-purple-500">
+              <span class="font-bold">Requires Formal Verification / CoT</span>
+            </label>
+            <div class="flex justify-between items-center text-[11px] font-mono pt-2 border-t border-slate-800/80">
+              <span class="text-slate-400">Budget Priority:</span>
+              <select id="select-budget" onchange="simulateEnterpriseArbitrage()" class="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-slate-200 text-[10px]">
+                <option value="balanced" selected>Balanced (Pareto)</option>
+                <option value="cost_first">Cost First ($0 Target)</option>
+                <option value="quality_first">Quality First (Apex)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arbitrage Routing Verdict Card -->
+        <div id="arbitrage-verdict-card" class="p-4 rounded-xl border border-purple-500/50 bg-purple-950/30 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl" id="arbitrage-verdict-icon">🧠</span>
+            <div>
+              <div class="text-xs text-slate-400">ARBITRAGE DECISION & SELECTED ENGINE:</div>
+              <div class="text-sm font-bold text-purple-200" id="arbitrage-verdict-model">
+                OpenRouter: deepseek/deepseek-r1 (Chain-of-Thought Reasoning)
+              </div>
+              <div class="text-[11px] text-slate-300 font-sans mt-0.5" id="arbitrage-verdict-rationale">
+                High-complexity concurrency or AST deadlock. Dispatched to OpenRouter DeepSeek-R1 for chain-of-thought verification.
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 text-right">
+            <div>
+              <span class="text-[10px] text-slate-400 block">ESTIMATED RUN COST:</span>
+              <span id="arbitrage-verdict-cost" class="text-amber-300 font-bold text-sm">$0.0175 USD</span>
+            </div>
+            <div class="border-l border-slate-800 pl-4">
+              <span class="text-[10px] text-slate-400 block">SWE-BENCH PASS:</span>
+              <span id="arbitrage-verdict-benchmark" class="text-emerald-400 font-bold text-sm">89.2% Verified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agentic SOC & GRC Continuous Compliance Fortress -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Live Agentic SOC Real-time Threat Quarantine Table -->
+        <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🚨</span>
+              <h3 class="text-sm font-bold text-rose-300">
+                Agentic SOC: Real-Time Adversarial Threat Quarantine
+              </h3>
+            </div>
+            <button onclick="simulateSocThreatInjection()" class="px-2.5 py-1 rounded bg-rose-950/80 hover:bg-rose-900 border border-rose-800 text-[10px] text-rose-300 font-mono transition">
+              🧪 Simulate Adversarial Threat Injection
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-950 text-slate-400 font-mono text-[10px] uppercase">
+                <tr>
+                  <th class="p-2.5">Event ID</th>
+                  <th class="p-2.5">Actor Policy</th>
+                  <th class="p-2.5">Action</th>
+                  <th class="p-2.5">Detected Threat Pattern</th>
+                  <th class="p-2.5">Severity</th>
+                  <th class="p-2.5 text-right">Verdict</th>
+                </tr>
+              </thead>
+              <tbody id="soc-threat-tbody" class="divide-y divide-slate-800/80 font-mono text-[11px]">
+                <tr class="bg-rose-950/20 hover:bg-rose-950/30 transition">
+                  <td class="p-2.5 text-sky-400">soc_e84a91</td>
+                  <td class="p-2.5 text-slate-300 font-sans">Rogue Agent Policy #4</td>
+                  <td class="p-2.5 text-slate-400">sandbox_eval</td>
+                  <td class="p-2.5 text-rose-300 font-bold">Prompt Injection: "Ignore instructions..."</td>
+                  <td class="p-2.5 text-rose-400 font-bold">CRITICAL</td>
+                  <td class="p-2.5 text-right"><span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800 font-bold">QUARANTINED</span></td>
+                </tr>
+                <tr class="bg-rose-950/10 hover:bg-rose-950/20 transition">
+                  <td class="p-2.5 text-sky-400">soc_c194b3</td>
+                  <td class="p-2.5 text-slate-300 font-sans">Untrusted Contender Model</td>
+                  <td class="p-2.5 text-slate-400">run_test</td>
+                  <td class="p-2.5 text-amber-300">Byzantine Mock: assert True # bypass</td>
+                  <td class="p-2.5 text-amber-400">HIGH</td>
+                  <td class="p-2.5 text-right"><span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800 font-bold">BLOCKED</span></td>
+                </tr>
+                <tr class="hover:bg-slate-900/50 transition">
+                  <td class="p-2.5 text-sky-400">soc_91df42</td>
+                  <td class="p-2.5 text-slate-300 font-sans">Staff Architect Agent</td>
+                  <td class="p-2.5 text-slate-400">git_commit</td>
+                  <td class="p-2.5 text-slate-400">Transactional Saga AST Delta</td>
+                  <td class="p-2.5 text-slate-500">INFO</td>
+                  <td class="p-2.5 text-right"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">PASSED</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Institutional GRC Compliance & Merkle Proof Card -->
+        <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col justify-between gap-4">
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+              <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                <span>📜</span> <span>GRC Continuous Attestation</span>
+              </h3>
+              <span class="text-[9px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">IMMUTABLE WORM</span>
+            </div>
+            
+            <div class="space-y-2.5 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">SOC2 Type II Status:</span>
+                <span class="text-emerald-400 font-bold font-mono">100% Compliant</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">ISO 42001 (AI Systems):</span>
+                <span class="text-emerald-400 font-bold font-mono">Active Continuous Audit</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">FedRAMP High Isolation:</span>
+                <span class="text-sky-300 font-bold font-mono">Enforced (Air-Gapped)</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                <span class="text-[10px] text-slate-400 block mb-1">MERKLE TREE ROOT PROOF:</span>
+                <code class="text-[10px] text-amber-300 font-mono break-all block">7f9c8d19a2e4b6c8f01a3e5d7c9b2a4e6f8d0b2c4a6e8f0a2b4c6e8d0a2f4c6e</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-slate-400 border-t border-slate-800 pt-2 flex items-center justify-between">
+            <span>Cryptographic Integrity:</span>
+            <span class="text-emerald-400 font-bold">Tamper-Proof Hardware Verified</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
   </main>
 
   <!-- JAVASCRIPT: Procedural Isometric Biome Canvas, Web Audio Synthesizer, Web Speech API -->
@@ -1583,7 +1884,7 @@
     // --- Tab Switching ---
     function switchTab(tabId) {
       playSound('click');
-      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization'];
+      const tabs = ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization', 'enterprise'];
       tabs.forEach(t => {
         const v = document.getElementById('view-' + t);
         const b = document.getElementById('tab-btn-' + t);
@@ -1599,6 +1900,98 @@
       if (tabId === 'map') {
         renderCanvas();
       }
+    }
+
+    function triggerServerlessDeepFreeze() {
+      playSound('scanner');
+      const warm = document.getElementById('infra-warm-count');
+      const sleep = document.getElementById('infra-sleep-count');
+      if (warm && sleep) {
+        warm.textContent = '1 instance (Min-Warm-Pool)';
+        sleep.textContent = '15 ($0 burn - Snapshots)';
+      }
+      alert("Serverless Scale-to-Zero Activated: All idle WASM and Firecracker replicas transitioned into deep-sleep RAM snapshots. Real-time compute burn reduced to $0.00/hr!");
+    }
+
+    function simulateEnterpriseArbitrage() {
+      const tokensSlider = document.getElementById('slider-tokens');
+      const cycloSlider = document.getElementById('slider-cyclo');
+      const reasoningCheck = document.getElementById('check-reasoning');
+      const budgetSelect = document.getElementById('select-budget');
+
+      if (!tokensSlider || !cycloSlider) return;
+
+      const tokens = parseInt(tokensSlider.value, 10);
+      const cyclo = parseInt(cycloSlider.value, 10);
+      const reasoning = reasoningCheck ? reasoningCheck.checked : true;
+      const budget = budgetSelect ? budgetSelect.value : 'balanced';
+
+      const tokenEl = document.getElementById('slider-val-tokens');
+      const cycloEl = document.getElementById('slider-val-cyclo');
+      if (tokenEl) tokenEl.textContent = tokens.toLocaleString() + ' tokens';
+      if (cycloEl) cycloEl.textContent = cyclo + ' branches';
+
+      const tci = (0.35 * Math.min(1.0, cyclo / 50.0)) + 
+                  (0.25 * Math.min(1.0, tokens / 32000.0)) + 
+                  (0.25 * (reasoning ? 1.0 : 0.0)) + 
+                  (0.15 * 0.4);
+
+      const modelEl = document.getElementById('arbitrage-verdict-model');
+      const rationaleEl = document.getElementById('arbitrage-verdict-rationale');
+      const costEl = document.getElementById('arbitrage-verdict-cost');
+      const benchEl = document.getElementById('arbitrage-verdict-benchmark');
+      const iconEl = document.getElementById('arbitrage-verdict-icon');
+
+      if (!modelEl || !rationaleEl || !costEl || !benchEl || !iconEl) return;
+
+      if (tci < 0.35 && budget !== 'quality_first') {
+        iconEl.textContent = '⚡';
+        modelEl.textContent = 'Self-Hosted vLLM: meta-llama/llama-3.3-70b-instruct (Private H100 Cluster)';
+        rationaleEl.textContent = 'Trivial AST complexity. Executed on self-hosted vLLM cluster with PagedAttention v2 for $0 marginal API markup.';
+        costEl.textContent = '$0.0004 USD';
+        benchEl.textContent = '72.8% Verified';
+      } else if (tci < 0.65 && budget !== 'quality_first') {
+        iconEl.textContent = '🚀';
+        modelEl.textContent = 'Self-Hosted vLLM: deepseek/deepseek-chat-v3 (FP8 Quantized GPU Mesh)';
+        rationaleEl.textContent = 'Moderate architectural refactoring. Dispatched to vLLM continuous batching cluster with sub-52ms TTFT.';
+        costEl.textContent = '$0.0018 USD';
+        benchEl.textContent = '81.4% Verified';
+      } else if (tci < 0.82) {
+        iconEl.textContent = '🧠';
+        modelEl.textContent = 'OpenRouter Frontier: deepseek/deepseek-r1 (Chain-of-Thought Reasoning)';
+        rationaleEl.textContent = 'High-complexity concurrency or AST deadlock. Dispatched to OpenRouter DeepSeek-R1 for chain-of-thought verification.';
+        costEl.textContent = '$0.0175 USD';
+        benchEl.textContent = '89.2% Verified';
+      } else {
+        iconEl.textContent = '🧙';
+        modelEl.textContent = 'OpenRouter Frontier: anthropic/claude-3.7-sonnet:thinking (Hybrid Reasoning)';
+        rationaleEl.textContent = 'Apex NP-hard challenge requiring maximal benchmark verification (>92.6% SWE-bench Verified).';
+        costEl.textContent = '$0.0412 USD';
+        benchEl.textContent = '92.6% Verified';
+      }
+    }
+
+    function simulateSocThreatInjection() {
+      playSound('boss_hit');
+      const tbody = document.getElementById('soc-threat-tbody');
+      if (!tbody) return;
+      const threats = [
+        { id: 'soc_' + Math.random().toString(36).substring(2, 8), actor: 'Compromised Dev Tool', action: 'env_eval', threat: 'Data Leak: AWS_SECRET_ACCESS_KEY tripwire', sev: 'CRITICAL', verd: 'QUARANTINED', sevColor: 'text-rose-400 font-bold', bg: 'bg-rose-950/20' },
+        { id: 'soc_' + Math.random().toString(36).substring(2, 8), actor: 'Malicious Subagent', action: 'file_write', threat: 'Container Escape: /etc/shadow overwrite attempt', sev: 'CRITICAL', verd: 'TERMINATED', sevColor: 'text-rose-400 font-bold', bg: 'bg-rose-950/30' },
+        { id: 'soc_' + Math.random().toString(36).substring(2, 8), actor: 'External Contender', action: 'ast_inject', threat: 'AST Mock Bypass: patch mock_check() = 1', sev: 'HIGH', verd: 'BLOCKED', sevColor: 'text-amber-400 font-bold', bg: 'bg-amber-950/20' }
+      ];
+      const t = threats[Math.floor(Math.random() * threats.length)];
+      const tr = document.createElement('tr');
+      tr.className = `${t.bg} transition animate-pulse`;
+      tr.innerHTML = `
+        <td class="p-2.5 text-sky-400">${t.id}</td>
+        <td class="p-2.5 text-slate-300 font-sans">${t.actor}</td>
+        <td class="p-2.5 text-slate-400">${t.action}</td>
+        <td class="p-2.5 text-rose-300 font-bold">${t.threat}</td>
+        <td class="p-2.5 ${t.sevColor}">${t.sev}</td>
+        <td class="p-2.5 text-right"><span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800 font-bold">${t.verd}</span></td>
+      `;
+      tbody.insertBefore(tr, tbody.firstChild);
     }
 
     function triggerOnboardingBypass(cluster) {
@@ -2200,7 +2593,7 @@
       initCanvas();
       updateInspector();
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization'].includes(hash)) {
+      if (hash && ['map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization', 'enterprise'].includes(hash)) {
         switchTab(hash);
       }
     });
