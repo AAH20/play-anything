@@ -1,5 +1,33 @@
 """Dated list-price scenarios, not provider invoices. Standard library only."""
-from decimal import Decimal
+import math
+from decimal import (
+    Context, Decimal, DecimalException, DivisionByZero, InvalidOperation,
+    Overflow, ROUND_HALF_EVEN, Underflow, localcontext,
+)
+
+
+def _calculation_context():
+    context = Context(
+        prec=50,
+        rounding=ROUND_HALF_EVEN,
+        Emin=-999999,
+        Emax=999999,
+        capitals=1,
+        clamp=0,
+    )
+    for signal in context.traps:
+        context.traps[signal] = False
+    for signal in (DivisionByZero, InvalidOperation, Overflow, Underflow):
+        context.traps[signal] = True
+    context.clear_flags()
+    return context
+
+
+def _as_finite_float(value, name):
+    result = float(value)
+    if not math.isfinite(result) or (value != 0 and result == 0):
+        raise ValueError(f"Hosting estimate for {name} exceeds the finite output range.")
+    return result
 
 DEFAULTS = dict(web='local', database='none', commercial=True, seats=1,
                 builds=30, requests=10000, cpu_ms=5, mau=1000, db_gb=.1,
@@ -13,6 +41,17 @@ SOURCES = {'Vercel Pro': 'https://vercel.com/docs/plans/pro-plan',
 
 
 def estimate_hosting(settings=None):
+    """Estimate hosting in a stable Decimal context independent of callers."""
+    with localcontext(_calculation_context()) as context:
+        try:
+            return _estimate_hosting(settings)
+        except DecimalException as exc:
+            if context.flags[Underflow]:
+                raise ValueError("Hosting estimate underflowed the supported Decimal range.") from exc
+            raise ValueError("Hosting estimate exceeded the supported Decimal range.") from exc
+
+
+def _estimate_hosting(settings=None):
     if settings is not None and not isinstance(settings, dict):
         raise ValueError('Hosting settings must be an object.')
     a = {**DEFAULTS, **(settings or {})}
@@ -36,7 +75,7 @@ def estimate_hosting(settings=None):
         raise ValueError('At least one deploying seat is required.')
     rows, warnings = [], []
     def add(name, amount, formula):
-        rows.append(dict(name=name, amount=float(amount), formula=formula))
+        rows.append(dict(name=name, amount=_as_finite_float(amount, name), formula=formula))
     def excess(key, limit, rate):
         return max(Decimal(0), a[key] - Decimal(str(limit))) * Decimal(str(rate))
     if a['web'] == 'vercel_hobby' and a['commercial']:
@@ -60,7 +99,7 @@ def estimate_hosting(settings=None):
             add('Supabase ' + key, excess(key,limit,rate), f'max(0, {key} − {limit}) × ${rate}')
     add('Other hosting and add-ons allowance', a['extra'], 'Editable allowance: domains, email, backups, extra projects, observability, taxes as applicable')
     total = round(sum(r['amount'] for r in rows), 6)
-    return dict(settings={k:float(v) if isinstance(v,Decimal) else v for k,v in a.items()},
+    return dict(settings={k:_as_finite_float(v, k) if isinstance(v,Decimal) else v for k,v in a.items()},
                 monthly=total, rows=rows, warnings=warnings, eligible=not warnings,
                 estimate_type='illustrative', price_verified=False, verified_on=None,
                 estimate_basis='Editable planning scenario using modeled rates; not a quote or live-verified provider price list.',

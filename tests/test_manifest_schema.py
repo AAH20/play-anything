@@ -1,6 +1,7 @@
 from copy import deepcopy
 import json
 from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit
 import unittest
 
 from play_anything.core.realm_studio import RealmManifest, RealmStudioEngine, SandboxTier
@@ -78,6 +79,21 @@ class ManifestSchemaTests(unittest.TestCase):
         self.assertIn("$.requirements.max_memory_mb", result["errors"][0])
         with self.assertRaises(ValueError):
             self.manifest.to_json()
+
+    def test_published_share_url_keeps_arbitrary_slug_in_one_path_segment(self):
+        ordinary = self.studio.publish_realm(self.manifest)
+        self.assertEqual(ordinary["share_url"], "playanything://realms/example-realm")
+
+        self.manifest.slug = "café 🌍/name?query=1#fragment%2F"
+        published = self.studio.publish_realm(self.manifest)
+        parsed = urlsplit(published["share_url"])
+        encoded_slug = parsed.path.removeprefix("/")
+        self.assertEqual(parsed.scheme, "playanything")
+        self.assertEqual(parsed.netloc, "realms")
+        self.assertEqual(parsed.path, "/" + quote(self.manifest.slug, safe=""))
+        self.assertEqual(parsed.query, "")
+        self.assertEqual(parsed.fragment, "")
+        self.assertEqual(unquote(encoded_slug), self.manifest.slug)
 
     def test_json_schema_integer_semantics(self):
         self.data["requirements"]["max_memory_mb"] = 512.0

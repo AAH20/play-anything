@@ -1,6 +1,6 @@
 # PlayAnything: verified enhancement audit
 
-Audit date: 2026-10-01. This report records implemented behavior and verification
+Audit log started: 2026-10-01; latest enhancement pass: 2026-10-07. This report records implemented behavior and verification
 limits. It does not establish competitive superiority or exact solutions to
 NP-hard optimization problems.
 
@@ -749,3 +749,200 @@ Node run passed 45 tests and skipped six optional Sharp integration tests,
 with no failures. The full local run with Sharp had already passed all 51.
 The corrective commit retains zero-threshold pixel comparison and adds no
 Python runtime dependency.
+
+
+## Ninth enhancement pass — 2026-10-07
+
+This pass began at 07:21:43 UTC, with a requested continuous one-hour enhancement
+window ending at 08:21:43 UTC. Three delegated workstreams covered repository
+indexing/resource lifetimes, manifest/accounting contracts, and browser flows.
+The local Default skill inventory contained 151 entries. Relevant grounding,
+output-contract, test remediation, and UI quality guidance informed the work;
+no skill packages or external Python runtime dependencies were installed.
+Private profiles and strategic documents were not included in the publication.
+
+### Reproduced gaps and resulting behavior
+
+- Invalid source-cache rows previously returned malformed summaries or raised
+  decoder errors. Shape/path/status/import/complexity checks now treat invalid
+  rows as cache misses, rescan source, and repair the derived row.
+- A raw source descriptor leaked if file-object creation raised an unexpected
+  exception. Ownership cleanup now closes the descriptor for every failure while
+  preserving the original exception and partial-read byte accounting.
+- The full graph source reader could block when a source became a FIFO after
+  inventory, or follow a replaced symlink. Nonblocking/no-follow descriptor flags
+  and regular-file checks reject those cases where supported. Regression probes
+  confirm zero external bytes are read in the tested symlink replacement.
+- Repeated qualified Python declaration names could bypass the full graph's
+  symbol limit: a two-symbol limit emitted 30 functions. A separate declaration
+  counter now enforces the cap across Python and lexical JS/TS declarations.
+- Malformed authentication text could cause an uncaught comparison exception.
+  Non-ASCII tokens and duplicate security headers are rejected without dispatch
+  or credential echo; malformed request targets receive controlled responses.
+- Share slugs containing spaces, Unicode, slashes, query/fragment markers or
+  percent escapes now encode as one URI path segment. Ordinary slugs retain their
+  original URL representation.
+- Accounting ratios and break-even counts could raise Decimal errors or produce
+  unserializable values. Calculators now use explicit local Decimal contexts,
+  validate supported output ranges, and return controlled errors. Exact zero is
+  distinct from a nonzero value lost to arithmetic underflow. Caller context
+  settings are restored. The existing six-place plan output policy is retained.
+- Browser calculation errors now clear stale plans/figures, announce a local
+  alert, and disable export until valid input restores a finite preview.
+- Static runtime verification previously accepted nonexistent explicit internal
+  imports and relative escapes. It now checks source paths without importing
+  code, recognizes namespace packages, and reports missing targets/escapes.
+  Source symlinks/special files and parser-depth failures produce failed audits;
+  supported Python source encodings follow AST parser rules.
+- Two CLI test fixtures used SQLite transaction contexts without closing the
+  connections. Explicit closing removed the observed Python 3.14 finalizer
+  warnings. CI now also checks ignored finalizer exceptions with the standard-
+  library verification runner; warning-as-error alone had still exited zero.
+
+### Bounded graph-page query observation
+
+Incident-edge counting now starts from the selected page and uses existing
+importer/dependency indexes, excluding edges already counted by the first branch.
+Hub, self-edge, filtered, and isolated-node tests retain exact internal/omitted
+counts. A separate 13-file import oracle matched seven persisted edges to the
+import resolver, including relative imports, src layouts, duplicate statements,
+namespace packages and ambiguous-module omission. Rebuild removed deleted-module
+edges; an injected failed rebuild preserved the prior active generation.
+
+The 25,000-module synthetic ring contained 11,725,000 source bytes, 25,000 import
+edges, ten functions per module, and a 55,140,352-byte main SQLite file. The
+post-change index build took 42.13 s. Two 100-file page queries took 32.4 ms and
+23.0 ms, returned 99 internal edges, explicitly omitted two cross-page edges,
+and used ten SQL statements with approximately 144/139 KB of traced Python
+allocations. Measurements exclude fixture creation/index build, include the
+statement observer, and are not process RSS or production latency bounds.
+
+The earlier complete run measured 9.70 s and 1.529 s for the same workload shape;
+load was not controlled between complete runs, so the full difference cannot be
+attributed solely to SQL. A separate direct 25,000-edge incident-count comparison
+measured about 11.3 ms for the old edge-first query versus 0.18 ms for page-first
+indexed lookup, with equal counts. Global status counts and substring searches
+can still scan rows; the export remains a bounded file/import page rather than
+an on-disk symbol/call graph. Full RPG worlds still materialize in RAM.
+
+### Verification and remaining limits
+
+Final runtime audit passed Python 3.10 grammar and standard-library boundaries
+across 33 runtime files; all explicit internal targets in the actual package
+exist. This is a static check, not proof of imported-member availability,
+dynamic import behavior, or runtime execution on every platform.
+
+The resource guard is regression-tested against ordinary test failures, immediate
+and cyclic finalizer failures, interruption, hook/filter restoration, and a CLI
+negative fixture that exits nonzero for an otherwise ignored ResourceWarning.
+It records only exception-type counts. It cannot observe finalizers deferred by
+live references until after the guard or interpreter shutdown. Benchmark tests
+manage their own tracemalloc sessions; a globally traced full run produced four
+intentional benchmark rejections, so allocation tracing was used on the specific
+leak reproduction instead.
+
+The historical <0.05-second/29-test target is not a measured claim for the expanded
+suite. Browser checks use local fixed graph fixtures, block external requests,
+and verify interaction/markup/geometry rather than live-provider capability.
+These changes establish no cloud deployment, neural inference latency, hardware
+sandbox, certification, competitive superiority, or optimal NP-hard solution.
+
+
+Local verification observations before the final cache consistency regression:
+
+| Interpreter/check | Count | Measured elapsed | Outcome |
+| --- | ---: | ---: | --- |
+| Python 3.14.7, mandatory unittest command | 435 tests | 7.255 s | Passed |
+| Python 3.14.7, finalizer-aware runner | 435 tests | 6.669 s | Passed; no ignored finalizer exceptions |
+| Python 3.11.15, finalizer-aware runner | 435 tests | 5.987 s | Passed |
+| Python 3.12.10, finalizer-aware runner | 435 tests | 7.870 s | Passed |
+
+The final browser models additionally reject `null`, arrays, Boolean numeric
+costs, invalid record containers, and inherited setting names rather than
+coercing them to zero/one. Fifty-nine JavaScript contract checks passed with the
+existing optional Sharp installation. With optional Sharp absent, PNG integration
+checks are explicitly skipped rather than counted as exercised coverage.
+
+The fixed-fixture browser ledger contains 47 independent expected checks,
+including Creator initial/progression announcements, Compose/Costing and graph
+layouts at 320/768/1024/1920 pixels, keyboard node/inspector behavior, and invalid
+cost alert/export suppression followed by valid recovery. Graph interaction and
+indexed-import helpers separately passed all eight and 23 checks. No page errors
+were recorded. Scrollable cost tables retain local overflow without document
+horizontal overflow. Temporary verification servers were stopped.
+
+Two final fixed-fixture runs passed their complete ledgers and the strict
+zero-threshold comparison matched all 21 PNG captures, with zero changed pixels
+and zero channel delta. This pair is an observation on one local browser/build,
+not a guarantee across operating systems or GPU stacks; the prior pass's border
+variation remains historical evidence, with no established renderer cause.
+
+Static site build completed locally; copied source assets matched their inputs,
+HTML div tags balanced, Python compilation passed, and exported schema matched
+the checked-in schema artifact. No hosting deployment was part of this pass.
+
+### Clean staged-package release check
+
+An archive of the staged source tree was extracted to a fresh temporary directory.
+It passed the mandatory unittest command (435 tests, 7.215 s) and the
+finalizer-aware runner (435 tests, 6.823 s), with no ignored finalizer failures.
+All 59 JavaScript checks passed using the existing optional Sharp installation.
+With Sharp deliberately unavailable, the same suite passed 53 checks and
+explicitly skipped six PNG integration checks. Compilation and the 33-file
+static runtime audit also passed from the extracted package. This verifies
+packaged source availability; it does not establish a clean machine installation
+of optional browser tooling.
+
+The final static bundle was rebuilt after the cost-alert wording change; all 15
+copied assets, including the Creator index, matched source bytes. Its generated
+graph contained 1,641 unique nodes and 4,108 edges with no dangling endpoints.
+A targeted staged-content check found no generated databases, workspace/profile
+artifacts, or credential-shaped additions; this is a bounded inspection rather
+than a guarantee that every possible secret format has been recognized.
+
+A final read-only review found a further cache consistency case: valid field types
+with `unparsed_language` or `python_parse_error` could carry fabricated imports
+or nondefault complexity. Such rows now require the parser's empty-import/1.0
+defaults or are recomputed and repaired. A focused regression covers both statuses;
+the final suite count after this change is reported below.
+
+The extracted-package browser run passed all 47 independently enumerated
+behavior checks without page errors. An additional comparison against the earlier
+source capture passed the comparator's default tolerance but failed at zero
+tolerance. This is retained as separate evidence and is not described as an exact
+package/source pixel match; the two earlier final source captures matched exactly.
+
+The final clean archive with the cache consistency fix passed the resource-aware
+runner (436 tests, 10.105 s). Final source results after the fix were:
+
+| Interpreter/check | Count | Measured elapsed | Outcome |
+| --- | ---: | ---: | --- |
+| Python 3.14.7, mandatory unittest command | 436 tests | 9.534 s | Passed |
+| Python 3.14.7, finalizer-aware runner | 436 tests | 7.336 s | Passed |
+| Python 3.11.15, finalizer-aware runner | 436 tests | 7.627 s | Passed |
+| Python 3.12.10, finalizer-aware runner | 436 tests | 7.179 s | Passed |
+
+The cache regression was then strengthened into four independent subtests:
+complexity-only and imports-only corruption for each rejected non-AST status.
+This leaves the suite's method count at 436.
+
+The packaged browser discrepancy was traced to comparing different executables:
+the initial archive capture used bundled Playwright Chromium, while the earlier
+source capture used system Chrome 154.0.8037.97 through Playwright 1.63.0. Repeating
+the final archive run with the same Chrome, fixture and viewport setup passed
+all 47 behavior checks and matched all 21 source captures at zero tolerance,
+with zero changed pixels. This controls the compared browser environment; it
+does not claim identical rendering across Chrome and Chromium builds.
+
+After the four cache-corruption cases were separated, the exact mandatory suite
+passed again (436 tests, 7.691 s), as did the resource-aware runner (436 tests,
+7.876 s). AST comparison preserved all 43 existing public signatures in the
+modified runtime files. The static bundle was rebuilt once more after that
+regression addition; its graph has 1,642 unique nodes and 4,112
+edges, with no dangling endpoints. Earlier graph counts above identify the
+pre-final-cache-fix build rather than a promised static total.
+
+The continuous enhancement/release-preparation window completed at
+2026-10-07 08:21:52 UTC (60.16 minutes after
+07:21:43 UTC). Source edits were frozen after the final independent cache cases;
+commit and push follow this completed window. No cloud deployment was performed.

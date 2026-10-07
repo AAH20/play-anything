@@ -134,6 +134,58 @@ class RepositoryStoreTests(unittest.TestCase):
             store.rebuild(self.root, max_files=None)
             self.assertEqual(store.imports(self.root), [])
 
+    def test_graph_page_counts_hubs_self_edges_and_filtered_incidence(self):
+        for index in range(80):
+            self.write(f"module_{index:03}.py", "value = 1\n")
+        self.write("zz_isolated.py", "value = 2\n")
+
+        with SQLiteRepositoryStore(self.db_path) as store:
+            status = store.rebuild(self.root, max_files=None)
+            generation = status["generation"]
+            edges = [
+                (status["root"], generation, f"module_{source:03}.py", f"module_{importer:03}.py")
+                for source in range(80) for importer in range(80)
+            ]
+            store._db.executemany(
+                "INSERT INTO pa_repo_import_edges VALUES (?, ?, ?, ?)", edges
+            )
+            store._db.commit()
+
+            statements = []
+            store._db.set_trace_callback(statements.append)
+            try:
+                page = store.graph_page(self.root, limit=3, max_edges=4)
+            finally:
+                store._db.set_trace_callback(None)
+
+            coverage = page["coverage"]
+            self.assertEqual(coverage["total_import_edges"], 80 * 80)
+            self.assertEqual(coverage["returned_page_edges"], 4)
+            self.assertEqual(coverage["omitted_page_edges"], 3 * 3 - 4)
+            self.assertEqual(coverage["omitted_cross_page_edges"], 80 * 3 + 80 * 3 - 2 * 3 * 3)
+
+            filtered = store.graph_page(self.root, limit=10, search="module_000")
+            self.assertEqual(filtered["coverage"]["matching_nodes"], 1)
+            self.assertEqual(filtered["coverage"]["omitted_page_edges"], 0)
+            self.assertEqual(filtered["coverage"]["omitted_cross_page_edges"], 80 * 2 - 2)
+
+            isolated = store.graph_page(self.root, limit=10, search="zz_isolated.py")
+            self.assertEqual(isolated["coverage"]["returned_nodes"], 1)
+            self.assertEqual(isolated["edges"], [])
+            self.assertEqual(isolated["coverage"]["omitted_page_edges"], 0)
+            self.assertEqual(isolated["coverage"]["omitted_cross_page_edges"], 0)
+
+            incident_sql = next(
+                statement for statement in statements
+                if "CROSS JOIN pa_repo_import_edges e" in statement and "UNION ALL" in statement
+            )
+            plan = [row[3] for row in store._db.execute(
+                "EXPLAIN QUERY PLAN " + incident_sql
+            ).fetchall()]
+            self.assertFalse(any(detail.startswith("SCAN e") for detail in plan), plan)
+            self.assertTrue(any("importer=?" in detail for detail in plan), plan)
+            self.assertTrue(any("dependency=?" in detail for detail in plan), plan)
+
     def test_file_cap_and_source_cap_are_visible_in_persisted_status(self):
         self.write("a.py", "x = 1\n")
         self.write("b.py", "x = 2\n")

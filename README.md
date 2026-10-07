@@ -481,9 +481,13 @@ python3 -m unittest discover tests
 For resource-leak checks and the Python 3.10 syntax/import boundary:
 
 ```bash
-python3 -W error::ResourceWarning -m unittest discover tests
+python3 -W error::ResourceWarning scripts/run_verified_tests.py
 python3 scripts/verify_runtime_contracts.py
 ```
+
+The stricter runner also fails on ignored finalizer exceptions; the static audit
+checks standard-library imports, Python 3.10 syntax, and explicit internal module
+paths without executing repository code.
 
 The suite has expanded beyond the original 29 tests. Actual results and remaining
 boundaries are recorded in the [enhancement audit](docs/verified-enhancement-audit.md).

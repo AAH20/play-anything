@@ -3,6 +3,7 @@
 import contextlib
 import io
 import json
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 import tempfile
@@ -92,7 +93,7 @@ class RepositoryIndexCLI(unittest.TestCase):
             common = [str(root), '--database', str(database)]
             code, output, error = self.invoke('index-repository', common + ['--all-files'])
             self.assertEqual(code, 0, error)
-            with sqlite3.connect(database) as db:
+            with closing(sqlite3.connect(database)) as db:
                 before = db.execute('SELECT generation FROM pa_repo_active').fetchone()[0]
                 db.execute("UPDATE pa_repo_files SET summary_json = '[]'")
                 db.commit()
@@ -106,7 +107,7 @@ class RepositoryIndexCLI(unittest.TestCase):
                     self.assertIn('Repository index error:', error)
                     self.assertNotIn('Traceback', error)
 
-            with sqlite3.connect(database) as db:
+            with closing(sqlite3.connect(database)) as db:
                 after = db.execute('SELECT generation FROM pa_repo_active').fetchone()[0]
             self.assertEqual(after, before)
 

@@ -344,7 +344,10 @@ class CreatorServiceTests(unittest.TestCase):
 
         class DuplicateLengthHeaders(dict):
             def get_all(self, name, failobj=None):
-                return [str(len(payload)), str(len(payload))] if name == 'Content-Length' else failobj
+                if name == 'Content-Length':
+                    return [str(len(payload)), str(len(payload))]
+                value = self.get(name)
+                return failobj if value is None else [value]
 
         handler.headers = DuplicateLengthHeaders({
             'Host': '127.0.0.1:8765', 'X-Play-Token': self.state.token,

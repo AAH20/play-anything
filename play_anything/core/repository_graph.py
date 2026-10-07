@@ -6,11 +6,13 @@ are lexical hints, explicitly labeled inferred. Unsupported files remain visible
 import ast
 from collections import Counter
 import io
+import errno
 import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import stat
 import tokenize
 
 
@@ -21,17 +23,28 @@ def _raise_walk_error(error):
 def _read_capped_source(path, max_file_bytes, *, on_read=None):
     """Read at most cap+1 bytes without allocating the configured cap up front."""
     content = bytearray()
-    with path.open('rb') as source:
-        remaining = None if max_file_bytes is None else max_file_bytes + 1
-        while remaining is None or remaining:
-            chunk = source.read(65536 if remaining is None else min(65536, remaining))
-            if not chunk:
-                break
-            if on_read is not None:
-                on_read(len(chunk))
-            content.extend(chunk)
-            if remaining is not None:
-                remaining -= len(chunk)
+    descriptor = None
+    try:
+        flags = os.O_RDONLY | getattr(os, 'O_BINARY', 0)
+        flags |= getattr(os, 'O_NONBLOCK', 0) | getattr(os, 'O_NOFOLLOW', 0)
+        descriptor = os.open(path, flags)
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise OSError(errno.EINVAL, 'source is not a regular file', os.fspath(path))
+        with os.fdopen(descriptor, 'rb') as source:
+            descriptor = None
+            remaining = None if max_file_bytes is None else max_file_bytes + 1
+            while remaining is None or remaining:
+                chunk = source.read(65536 if remaining is None else min(65536, remaining))
+                if not chunk:
+                    break
+                if on_read is not None:
+                    on_read(len(chunk))
+                content.extend(chunk)
+                if remaining is not None:
+                    remaining -= len(chunk)
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
     return bytes(content)
 
 
@@ -49,6 +62,7 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000,
     nodes, edges, files, trees, definitions, imports, calls = {}, set(), {}, {}, {}, [], []
     unresolved, warnings = [], []
     symbol_limit_reached = False
+    symbol_count = 0
     analysis_counts = dict(analyzed_files=0, parse_errors=0, unreadable_files=0,
                            too_large_files=0, unparsed_files=0, source_budget_exceeded_files=0)
     source_bytes_read = 0
@@ -156,7 +170,7 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000,
                                 lambda m: ''.join('\n' if c == '\n' else ' ' for c in m[0]), source)
                 pattern = r'\b(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(|\bclass\s+([A-Za-z_$][\w$]*)|\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>'
                 for match in re.finditer(pattern, masked):
-                    if len(definitions) >= max_symbols:
+                    if symbol_count >= max_symbols:
                         symbol_limit_reached = True
                         break
                     name = next(g for g in match.groups() if g)
@@ -165,6 +179,7 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000,
                     kind = 'class' if match.group(2) else 'function'
                     node(sid, name=name, kind=kind, path=relative, line=line,
                          summary='Lexically detected declaration. JavaScript/TypeScript scope and calls are not resolved.', confidence='inferred')
+                    symbol_count += 1
                     definitions[(relative, f'{name}@{line}')] = sid
                     edge(fid, sid, 'defines', 'inferred', line)
                 # Dependency strings are evidence, but resolution is heuristic without a JS parser.
@@ -185,8 +200,8 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000,
             self.path, self.scope, self.owner, self.class_scope = path, '', files[path], None
 
         def declaration(self, item, kind):
-            nonlocal symbol_limit_reached
-            if len(definitions) >= max_symbols:
+            nonlocal symbol_limit_reached, symbol_count
+            if symbol_count >= max_symbols:
                 symbol_limit_reached = True
                 return
             name = item.name if hasattr(item, 'name') else f'<lambda>@{item.lineno}'
@@ -195,6 +210,7 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000,
                        path=self.path, line=item.lineno, end_line=item.end_lineno,
                        summary=((ast.get_docstring(item) if not isinstance(item, ast.Lambda) else None) or
                        f'{kind.title()} declared at {self.path}:{item.lineno}')[:400], confidence='parsed')
+            symbol_count += 1
             definitions[(self.path, qualified)] = sid
             edge(self.owner, sid, 'defines', line=item.lineno)
             previous = self.scope, self.owner, self.class_scope

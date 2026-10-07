@@ -45,9 +45,10 @@ report.checks.push = (...checks) => {
 const routes = ['graph', 'quickstart', 'map', 'skills', 'battle', 'voice', 'benchmarks', 'studio', 'personalization', 'enterprise', 'swarm'];
 function expectedDashboardChecks(fixed) {
   const expected = [
-    'creator_loaded', 'creator_prepares_handoff_without_provider', 'failed_endpoint_clears_key_and_prior_connection',
+    'creator_loaded', 'creator_initial_progress_is_announced', 'creator_progress_tracks_tutorial_completion',
+    'creator_prepares_handoff_without_provider', 'failed_endpoint_clears_key_and_prior_connection',
     fixed ? 'creator_fixed_fixture_provenance' : 'creator_bundled_repository_provenance',
-    'creator_module_selection', 'creator_business_preview', 'graph_keyboard_selection_retains_focus',
+    'creator_module_selection', 'creator_business_preview', 'creator_tiny_price_rejects_and_recovers', 'graph_keyboard_selection_retains_focus',
     'graph_search_filters_nodes', 'graph_detail_filter_selects_files',
     'map_keyboard_selection_reveals_fog_and_updates_inspector', 'illustrative_metrics_are_labeled_as_demo',
   ];
@@ -61,6 +62,7 @@ function expectedDashboardChecks(fixed) {
     if (width <= 720) expected.push(`mobile_map_overlays_leave_canvas_clear:${width}`);
     expected.push(`map_document_fits_viewport:${width}`, `map_renders_after_resize:${width}`);
     if (width === 320) expected.push('map_canvas_pixel_stability_under_reduced_motion:320');
+    expected.push(`creator_compose_costing_responsive:${width}`, `graph_detail_responsive:${width}`);
   }
   expected.push('keyboard_view_selection');
   return expected;
@@ -171,6 +173,14 @@ try {
   await page.locator('h1').waitFor({ state: 'visible' });
   await page.screenshot({ path: path.join(output, 'creator-desktop.png'), fullPage: true });
   report.checks.push({ name: 'creator_loaded', passed: true, title: await page.title() });
+  const initialProgress = await page.evaluate(() => ({
+    sidebar: [...document.querySelectorAll('#side-steps [aria-current="step"]')].map(element => element.dataset.step),
+    stepper: [...document.querySelectorAll('.stepper [aria-current="step"]')].map(element => element.dataset.step),
+    visiblePanel: [...document.querySelectorAll('[data-panel]')].filter(element => !element.hidden).map(element => element.dataset.panel),
+  }));
+  report.checks.push({ name: 'creator_initial_progress_is_announced', passed:
+    JSON.stringify(initialProgress.sidebar) === '["0"]' && JSON.stringify(initialProgress.stepper) === '["0"]' &&
+    JSON.stringify(initialProgress.visiblePanel) === '["0"]', progress: initialProgress });
   await page.locator('#service-status').filter({ hasText: 'Local service ready' }).waitFor();
   await page.locator('#connect').click();
   await page.locator('#connection-status').filter({ hasText: 'Handoff ready' }).waitFor();
@@ -208,6 +218,14 @@ try {
   await page.locator('[name="rights"][value="review"]').check();
   await page.locator('#complete-tutorial').click();
   await page.locator('[data-panel="2"]').waitFor({ state: 'visible' });
+  const composeProgress = await page.evaluate(() => ({
+    sidebar: [...document.querySelectorAll('#side-steps [aria-current="step"]')].map(element => element.dataset.step),
+    stepper: [...document.querySelectorAll('.stepper [aria-current="step"]')].map(element => element.dataset.step),
+    activePanel: document.activeElement?.closest('[data-panel]')?.dataset.panel || null,
+  }));
+  report.checks.push({ name: 'creator_progress_tracks_tutorial_completion', passed:
+    JSON.stringify(composeProgress.sidebar) === '["2"]' && JSON.stringify(composeProgress.stepper) === '["2"]' &&
+    composeProgress.activePanel === '2', progress: composeProgress });
   await page.locator('[data-preset="tool"]').click();
   await page.locator('#module-grid [data-module="agent"]').check();
   report.checks.push({ name: 'creator_module_selection', passed: await page.locator('#module-grid [data-module="agent"]').isChecked() });
@@ -358,6 +376,110 @@ try {
     benchmark_label: benchmarkLabels.includes('Illustrative reference: 582.7 µs (not a live measurement)'),
     telemetry_heading: telemetryLabels.includes('Illustrative Behavioral Telemetry (Demo)'),
     telemetry_badge: telemetryLabels.includes('SAMPLE VALUES') });
+  for (const width of [320, 768, 1024, 1920]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto(new URL('/creator.html', base).href, { waitUntil: 'domcontentloaded' });
+    await page.locator('#service-status').filter({ hasText: 'Local service ready' }).waitFor();
+    await page.locator('#side-steps [data-step="2"]').click();
+    await page.locator('[data-panel="2"]').waitFor({ state: 'visible' });
+    const compose = await page.evaluate(() => ({
+      viewport: innerWidth, document: document.documentElement.scrollWidth,
+      workspace: document.querySelector('.workspace').getBoundingClientRect().toJSON(),
+      currentStep: document.querySelector('#side-steps [aria-current="step"]')?.dataset.step,
+      progressStep: document.querySelector('.stepper [aria-current="step"]')?.dataset.step,
+      focusedPanel: document.activeElement?.closest('[data-panel]')?.dataset.panel,
+    }));
+    if (width === 320) await page.screenshot({ path: path.join(output, 'creator-compose-320.png'), fullPage: true });
+    await page.locator('#side-steps [data-step="3"]').click();
+    await page.locator('[data-panel="3"]').waitFor({ state: 'visible' });
+    const costing = await page.evaluate(() => {
+      const table = document.querySelector('.table-scroll');
+      return { viewport: innerWidth, document: document.documentElement.scrollWidth,
+        workspace: document.querySelector('.workspace').getBoundingClientRect().toJSON(),
+        currentStep: document.querySelector('#side-steps [aria-current="step"]')?.dataset.step,
+        progressStep: document.querySelector('.stepper [aria-current="step"]')?.dataset.step,
+        focusedPanel: document.activeElement?.closest('[data-panel]')?.dataset.panel,
+        table: table ? { clientWidth: table.clientWidth, scrollWidth: table.scrollWidth,
+          overflowX: getComputedStyle(table).overflowX } : null };
+    });
+    if (width === 320) await page.screenshot({ path: path.join(output, 'creator-costing-320.png'), fullPage: true });
+    const creatorPass = compose.document <= width && compose.workspace.right <= width + 1 &&
+      compose.currentStep === '2' && compose.progressStep === '2' && compose.focusedPanel === '2' &&
+      costing.document <= width && costing.workspace.right <= width + 1 && costing.currentStep === '3' &&
+      costing.progressStep === '3' && costing.focusedPanel === '3' &&
+      costing.table?.overflowX === 'auto' && costing.table.clientWidth <= width;
+    report.checks.push({ name: `creator_compose_costing_responsive:${width}`, passed: creatorPass, width, compose, costing });
+
+    if (width === 320) {
+      const priceInput = page.locator('[data-assumption="price"]');
+      await priceInput.fill('1e-320');
+      await page.waitForFunction(() => document.querySelector('#cost-error')?.textContent.includes('Cost preview unavailable:'));
+      const rejected = await page.evaluate(() => ({
+        message: document.querySelector('#cost-error')?.textContent || '',
+        errorRole: document.querySelector('#cost-error')?.getAttribute('role'),
+        errorVisible: !document.querySelector('#cost-error')?.hidden,
+        staleBreakdownCleared: !document.querySelector('#cost-breakdown')?.textContent?.trim(),
+        topDisabled: document.querySelector('#export-top')?.disabled,
+        planCleared: window.CreatorWorkbench?.getPlan() === null,
+      }));
+      await priceInput.fill('1e-300');
+      await page.waitForFunction(() => {
+        const plan = window.CreatorWorkbench?.getPlan();
+        const finite = value => typeof value === 'number' ? Number.isFinite(value) : Array.isArray(value) ? value.every(finite) : value && typeof value === 'object' ? Object.values(value).every(finite) : true;
+        return plan && finite(plan) && !document.querySelector('#cost-breakdown')?.textContent.includes('Cost preview unavailable:');
+      });
+      const recovered = await page.evaluate(() => ({
+        price: window.CreatorWorkbench?.getPlan()?.assumptions.price,
+        margin: window.CreatorWorkbench?.getPlan()?.margin_pct,
+        topDisabled: document.querySelector('#export-top')?.disabled,
+        errorHidden: document.querySelector('#cost-error')?.hidden,
+        containsNonfiniteText: /Infinity|NaN/.test(document.querySelector('#cost-breakdown')?.textContent || ''),
+      }));
+      await priceInput.fill('0');
+      const zeroPrice = await page.evaluate(() => ({
+        price: window.CreatorWorkbench?.getPlan()?.assumptions.price,
+        margin: window.CreatorWorkbench?.getPlan()?.margin_pct,
+        valid: !document.querySelector('#export-top')?.disabled,
+      }));
+      report.checks.push({ name: 'creator_tiny_price_rejects_and_recovers',
+        passed: rejected.message.includes('Contribution margin exceeds the supported numeric range') && !rejected.message.includes('plan.') && rejected.topDisabled && rejected.planCleared &&
+          rejected.errorRole === 'alert' && rejected.errorVisible && rejected.staleBreakdownCleared &&
+          recovered.price === 1e-300 && Number.isFinite(recovered.margin) && !recovered.topDisabled && recovered.errorHidden && !recovered.containsNonfiniteText &&
+          zeroPrice.price === 0 && zeroPrice.margin === null && zeroPrice.valid,
+        rejected, recovered, zero_price: zeroPrice });
+    }
+
+    await page.goto(new URL('/graph.html', base).href, { waitUntil: 'domcontentloaded' });
+    const node = page.locator('svg g[data-node]').first();
+    await node.waitFor({ state: 'visible', timeout: 60000 });
+    const graphLayout = await page.evaluate(() => {
+      const bounds = selector => document.querySelector(selector)?.getBoundingClientRect().toJSON() || null;
+      return { viewport: innerWidth, document: document.documentElement.scrollWidth, body: document.body.scrollWidth,
+        main: bounds('main'), shell: bounds('.graph-shell'), canvas: bounds('.graph-canvas'), inspector: bounds('.graph-inspector') };
+    });
+    const graphLabel = await node.getAttribute('aria-label');
+    const graphTitle = await node.locator('title').textContent();
+    await node.focus();
+    await page.keyboard.press('Enter');
+    const graphSelection = await page.evaluate(() => ({
+      activeLabel: document.activeElement?.getAttribute('aria-label'),
+      pressed: document.activeElement?.getAttribute('aria-pressed'),
+      inspectorName: document.querySelector('.graph-inspector h4')?.textContent?.trim(),
+      focusStroke: getComputedStyle(document.activeElement?.querySelector('rect')).strokeWidth,
+      document: document.documentElement.scrollWidth, viewport: innerWidth,
+    }));
+    if (width === 320) await page.screenshot({ path: path.join(output, 'graph-responsive-320.png'), fullPage: true });
+    const graphPass = graphLayout.document <= width && graphLayout.body <= width && graphLayout.main.right <= width + 1 &&
+      graphLayout.shell.right <= width + 1 && graphLayout.canvas.right <= width + 1 &&
+      graphLayout.inspector.left >= -1 && graphLayout.inspector.right <= width + 1 &&
+      Boolean(graphTitle?.trim()) && graphLabel === graphSelection.activeLabel && graphSelection.pressed === 'true' &&
+      graphSelection.inspectorName && graphLabel.includes(graphSelection.inspectorName) && graphSelection.focusStroke !== '0px' &&
+      graphSelection.document <= width && graphSelection.viewport === width;
+    report.checks.push({ name: `graph_detail_responsive:${width}`, passed: graphPass, width, layout: graphLayout,
+      tooltip: graphTitle, accessible_label: graphLabel, selection: graphSelection });
+  }
+  await page.goto(new URL('/dashboard.html#map', base).href, { waitUntil: 'domcontentloaded' });
+  await page.locator('#tab-btn-skills').waitFor({ state: 'visible' });
   await page.locator('#tab-btn-skills').focus();
   await page.keyboard.press('Enter');
   report.checks.push({ name: 'keyboard_view_selection', passed: await page.locator('#view-skills').isVisible() && await page.locator('#tab-btn-skills').getAttribute('aria-current') === 'page' });

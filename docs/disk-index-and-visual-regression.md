@@ -356,3 +356,51 @@ JSON, non-object values, or do not match their indexed path. These are bounded
 `ValueError` diagnostics without stored-content excerpts; CLI queries return
 exit 1 without a traceback. They leave the active generation unchanged, so a
 failed read is not presented as a successful rebuild or a newly empty index.
+
+
+### Cache repair, page membership, and resource verification
+
+The optional source-summary cache is derived data. Malformed JSON, mismatched
+paths, impossible complexity values, or invalid import/status fields cause a
+source rescan and replacement of the damaged cache row. This preserves the
+summary contract; a well-shaped modified cache is not cryptographic evidence of
+a source analysis.
+
+Graph-page incident-edge counting starts from the selected page and uses the
+existing importer/dependency indexes. The second branch excludes edges already
+counted by the first, including self-edges. Exact counts and cross-page omissions
+are retained. Global status counts and literal substring search can still scan
+rows; paging bounds returned data rather than every operation's cost.
+
+Use the ordinary mandatory suite command first:
+
+```bash
+python3 -m unittest discover tests
+```
+
+The stricter development/CI runner also collects cycles before checking ignored
+finalizer exceptions:
+
+```bash
+python3 -W error::ResourceWarning scripts/run_verified_tests.py
+```
+
+A plain warning-as-error run can still exit successfully after Python reports an
+exception ignored in an object's finalizer. The stricter runner fails in that
+case, records exception-type counts without object/argument contents, and restores
+the process hook and warning filters. It cannot observe finalizers deferred until
+later interpreter shutdown by remaining live references, and it is intended for
+one test run per process. Benchmark tests own their tracemalloc sessions; do not
+start global tracemalloc for the full suite. Use targeted tracing to investigate
+an allocation site.
+
+The static runtime audit rejects symlinked/special source files, reads Python
+source encodings through the AST parser, and reports parser-depth failures as a
+failed audit. It also checks that explicit internal module targets exist,
+including namespace packages, and rejects relative imports that escape the
+package. It does not resolve imported members, extension modules, or dynamic
+imports; the static checks do not prove that every runtime import will succeed. Descriptor checks close source handles on failure and use nonblocking
+and no-follow flags where available; they do not freeze a repository's directory
+tree or replace a hardware sandbox. The full source graph also counts emitted
+declarations independently of the last binding for a qualified Python name,
+preventing repeated names from bypassing its symbol cap.

@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from play_anything.adapters import repository_index
 from play_anything.adapters.repository_index import (
     DEFAULT_MAX_SOURCE_BYTES,
     iter_repository_summaries,
@@ -94,6 +95,26 @@ class RepositoryIndexTests(unittest.TestCase):
                    side_effect=PermissionError):
             summary = next(iter_repository_summaries(self.root))
         self.assertEqual(summary["analysis"], "unreadable_file")
+
+    def test_source_descriptor_closes_if_file_wrapper_creation_fails(self):
+        source = self.write("a.py", "value = 1\n")
+        real_open = os.open
+        opened = []
+
+        def track_open(*args, **kwargs):
+            descriptor = real_open(*args, **kwargs)
+            opened.append(descriptor)
+            return descriptor
+
+        with patch("play_anything.adapters.repository_index.os.open", side_effect=track_open), \
+                patch("play_anything.adapters.repository_index.os.fdopen",
+                      side_effect=RuntimeError("wrapper creation failed")):
+            with self.assertRaisesRegex(RuntimeError, "wrapper creation failed"):
+                repository_index._read_bounded_source(source, 1024)
+
+        self.assertEqual(len(opened), 1)
+        with self.assertRaises(OSError):
+            os.fstat(opened[0])
 
     def test_oversized_file_is_reported_without_reading_its_contents(self):
         source = self.root / "large.py"
@@ -214,6 +235,70 @@ class RepositoryIndexTests(unittest.TestCase):
             self.assertEqual(db.execute("SELECT COUNT(*) FROM repository_summaries").fetchone()[0], 1)
             stored = json.loads(db.execute("SELECT summary FROM repository_summaries").fetchone()[0])
             self.assertEqual(stored["lines_of_code"], 2)
+
+    def test_corrupt_or_mismatched_cache_summaries_are_recomputed_and_repaired(self):
+        self.write("a.py", "import json\nvalue = 1\n")
+        cache = self.root / "index.sqlite"
+        expected = list(iter_repository_summaries(self.root, cache_path=cache))
+        invalid_rows = (
+            "[]",
+            "{invalid json",
+            42,
+            json.dumps({"path": "other.py", "lines_of_code": 2, "complexity": 1.0,
+                        "imports": [], "analysis": "python_ast"}),
+            json.dumps({"path": "a.py", "lines_of_code": "two", "complexity": 1.0,
+                        "imports": [], "analysis": "python_ast"}),
+            json.dumps({"path": "a.py", "lines_of_code": 2, "complexity": 1e309,
+                        "imports": [], "analysis": "python_ast"}),
+            json.dumps({"path": "a.py", "lines_of_code": 2, "complexity": 0.0,
+                        "imports": [], "analysis": "python_ast"}),
+            json.dumps({"path": "a.py", "lines_of_code": 2, "complexity": 1.0,
+                        "imports": [], "analysis": "invented_status"}),
+            json.dumps({"path": "a.py", "lines_of_code": 2, "complexity": 1.0,
+                        "imports": [], "analysis": []}),
+            json.dumps({"path": "a.py", "lines_of_code": 2, "complexity": 1.0,
+                        "imports": ["not an import record"], "analysis": "python_ast"}),
+        )
+
+        for invalid in invalid_rows:
+            with self.subTest(invalid=invalid):
+                with closing(sqlite3.connect(cache)) as db:
+                    db.execute("UPDATE repository_summaries SET summary = ?", (invalid,))
+                    db.commit()
+
+                actual = list(iter_repository_summaries(self.root, cache_path=cache))
+                self.assertEqual(actual, expected)
+                with closing(sqlite3.connect(cache)) as db:
+                    repaired = json.loads(db.execute(
+                        "SELECT summary FROM repository_summaries").fetchone()[0])
+                self.assertEqual(repaired, expected[0])
+
+    def test_non_ast_cache_statuses_require_parser_default_complexity_and_imports(self):
+        self.write("a.py", "import json\nvalue = 1\n")
+        cache = self.root / "index.sqlite"
+        expected = list(iter_repository_summaries(self.root, cache_path=cache))
+
+        for status in ("unparsed_language", "python_parse_error"):
+            for corruption in ("complexity", "imports"):
+                with self.subTest(status=status, corruption=corruption):
+                    impossible = dict(expected[0], analysis=status)
+                    if corruption == "complexity":
+                        impossible["complexity"] = 2.0
+                    else:
+                        impossible["imports"] = [{"module": "fabricated", "level": 0,
+                                                   "names": []}]
+                    with closing(sqlite3.connect(cache)) as db:
+                        db.execute("UPDATE repository_summaries SET summary = ?",
+                                   (json.dumps(impossible),))
+                        db.commit()
+
+                    actual = list(iter_repository_summaries(self.root, cache_path=cache))
+
+                    self.assertEqual(actual, expected)
+                    with closing(sqlite3.connect(cache)) as db:
+                        repaired = json.loads(db.execute(
+                            "SELECT summary FROM repository_summaries").fetchone()[0])
+                    self.assertEqual(repaired, expected[0])
 
     def test_cache_writes_are_batched_without_holding_locks_across_yields(self):
         for index in range(100):

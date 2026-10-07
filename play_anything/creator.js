@@ -192,15 +192,25 @@
       return `<tr><td>${m.title}</td>${['hours','fixed','variable'].map(key=>`<td><input aria-label="${m.title} ${key}" type="number" min="0" max="1000000000" step="any" data-cost-module="${m.id}" data-cost-key="${key}" value="${esc(costs[key])}"></td>`).join('')}<td id="cost-total-${m.id}">${money(Number(costs.fixed)+Number(costs.variable)*Number(state.assumptions.active))}</td></tr>`;
     }).join('');
   }
+  function costErrorMessage(error) {
+    const message=String(error?.message||error);
+    const finiteError=message.match(/^plan\.([a-z_]+) must be finite\.$/);
+    if(!finiteError)return message;
+    const labels={margin_pct:'Contribution margin',setup_payback_months:'Setup payback',break_even_payers:'Break-even customer estimate'};
+    const label=labels[finiteError[1]];
+    return `${label||'A calculated value'} exceeds the supported numeric range. Review your inputs.`;
+  }
   function renderBusiness() {
     try {
       const p=CreatorModel.calculate(state.selected,state.assumptions,state.overrides,state.hosting);latestPlan=p;
+      $('export-top').disabled=false;$('export-plan').disabled=false;
+      $('cost-error').hidden=true;$('cost-error').textContent='';
       $('business-stats').innerHTML=[['Gross revenue',money(p.gross)],['Operating result',money(p.profit)],['Break-even payers',p.break_even_payers===null?'Not viable':p.break_even_payers]].map(([title,value])=>`<div class="stat"><span>${title}</span><strong>${value}</strong></div>`).join('');
       const rows=[['Gross revenue',p.gross],['Expected refunds',-p.refunds],['Platform & payment fees',-p.fees],['Variable module costs',-p.module_variable],['Model usage',-p.ai],['Contribution',p.contribution],['Fixed costs, maintenance & overhead',-p.fixed],['Acquisition spend',-p.assumptions.acquisition],['Operating result (before tax)',p.profit],['One-time setup labor',p.setup],['Acquisition cost / new customer',p.cac],['Contribution / paying customer',p.contribution_per_payer]];
       $('cost-breakdown').innerHTML=rows.map(([label,value])=>`<div class="${label.startsWith('Operating')?'total':''}"><dt>${label}</dt><dd>${money(value)}</dd></div>`).join('')+`<div><dt>Contribution margin</dt><dd>${p.margin_pct===null?'Not available':p.margin_pct.toFixed(1)+'%'}</dd></div><div><dt>Setup payback at this run rate</dt><dd>${p.setup_payback_months===null?'No positive operating result':p.setup_payback_months.toFixed(1)+' months'}</dd></div>`;
       p.rows.forEach(m=>{const cell=$('cost-total-'+m.id);if(cell)cell.textContent=money(m.monthly);});
       summary();save();
-    } catch(error) {latestPlan=null;$('business-stats').innerHTML='';$('cost-breakdown').textContent=error.message;summary();}
+    } catch(error) {latestPlan=null;$('export-top').disabled=true;$('export-plan').disabled=true;$('business-stats').innerHTML='';$('cost-breakdown').innerHTML='';$('cost-error').textContent='Cost preview unavailable: '+costErrorMessage(error);$('cost-error').hidden=false;summary();}
   }
   function renderCompetitors() {
     const rows=[

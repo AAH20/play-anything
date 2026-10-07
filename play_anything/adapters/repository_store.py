@@ -649,12 +649,18 @@ class SQLiteRepositoryStore:
                 internal_edge_count = db.execute(
                     internal_sql, (*page_params, root_key, generation)).fetchone()[0]
                 incident_sql = (page_cte +
-                    "SELECT COUNT(*) FROM pa_repo_import_edges e "
-                    "WHERE e.root = ? AND e.generation = ? AND "
-                    "(EXISTS (SELECT 1 FROM page p WHERE p.path = e.importer) OR "
-                    "EXISTS (SELECT 1 FROM page p WHERE p.path = e.dependency))")
+                    "SELECT COUNT(*) FROM ("
+                    "SELECT e.dependency, e.importer FROM page p "
+                    "CROSS JOIN pa_repo_import_edges e "
+                    "WHERE e.root = ? AND e.generation = ? AND e.importer = p.path "
+                    "UNION ALL "
+                    "SELECT e.dependency, e.importer FROM page p "
+                    "CROSS JOIN pa_repo_import_edges e "
+                    "WHERE e.root = ? AND e.generation = ? AND e.dependency = p.path "
+                    "AND NOT EXISTS (SELECT 1 FROM page q WHERE q.path = e.importer))")
                 incident_count = db.execute(
-                    incident_sql, (*page_params, root_key, generation)).fetchone()[0]
+                    incident_sql, (*page_params, root_key, generation,
+                                   root_key, generation)).fetchone()[0]
                 cross_page_edge_count = incident_count - internal_edge_count
                 edge_sql = (page_cte +
                     "SELECT e.importer, e.dependency FROM pa_repo_import_edges e "

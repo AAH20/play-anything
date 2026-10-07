@@ -91,8 +91,20 @@ per active user. Setup hours are multiplied by the shared hourly labor rate.
   modeled. Enter relevant allowances; check each vendor's actual terms.
 
 Python uses Decimal arithmetic; browser calculations use JavaScript numbers.
-Display rounds money to cents. Six cross-runtime scenarios were checked for
-agreement within 0.000002 USD. Outputs are scenario calculations, not audited books.
+Backend estimates use a local Decimal context with 50 significant digits,
+independent of the caller's precision, rounding, exponent settings, or traps.
+The JSON plan retains the existing six-decimal half-even output policy. Arithmetic underflow/overflow and ratios outside finite
+numeric output range return a controlled error. Exact zero usage or price remains
+valid. Break-even counts must fit at most 4,300 decimal digits, or the interpreter's
+smaller configured JSON integer limit. Hosting inputs that would silently become
+zero during Decimal-to-float conversion are rejected. These bounds describe the
+calculator's supported representation, not a minimum commercial price.
+
+Display rounds money to cents; very small nonzero inputs can round to zero in
+the six-place JSON summary. Preserve the original inputs when reproducing a
+scenario. Six ordinary cross-runtime scenarios were checked for agreement within
+0.000002 USD; that observation is not an all-input precision guarantee. Outputs
+are scenario calculations, not audited books.
 
 ## Comparisons and learning signals
 

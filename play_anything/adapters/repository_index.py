@@ -9,6 +9,7 @@ import errno
 import hashlib
 import io
 import json
+import math
 import os
 from pathlib import Path
 import sqlite3
@@ -84,6 +85,34 @@ def _summarize(path, relative_path, content):
     return result
 
 
+def _valid_cached_summary(summary, relative_path):
+    """Accept only summaries matching the parser's compact public shape."""
+    if not isinstance(summary, dict) or summary.get("path") != relative_path:
+        return False
+    if type(summary.get("lines_of_code")) is not int or summary["lines_of_code"] < 0:
+        return False
+    complexity = summary.get("complexity")
+    if type(complexity) is not float or not math.isfinite(complexity) or complexity < 1.0:
+        return False
+    analysis = summary.get("analysis")
+    if (not isinstance(analysis, str) or
+            analysis not in {"unparsed_language", "python_parse_error", "python_ast"}):
+        return False
+    imports = summary.get("imports")
+    if not isinstance(imports, list):
+        return False
+    if analysis in {"unparsed_language", "python_parse_error"} and (
+            complexity != 1.0 or imports):
+        return False
+    for item in imports:
+        if (not isinstance(item, dict) or not isinstance(item.get("module"), str) or
+                type(item.get("level")) is not int or item["level"] < 0 or
+                not isinstance(item.get("names"), list) or
+                any(not isinstance(name, str) for name in item["names"])):
+            return False
+    return True
+
+
 def _read_bounded_source(path, limit):
     """Read a source prefix in bounded chunks, returning one overflow sentinel."""
     content = bytearray()
@@ -108,12 +137,13 @@ def _read_bounded_source(path, limit):
                 if remaining is not None:
                     remaining -= len(chunk)
     except OSError as exc:
+        raise _SourceReadError(exc, len(content)) from exc
+    finally:
         if descriptor is not None:
             try:
                 os.close(descriptor)
             except OSError:
                 pass
-        raise _SourceReadError(exc, len(content)) from exc
     return bytes(content)
 
 
@@ -244,7 +274,16 @@ def iter_repository_summaries(directory_path, max_files=50, *, cache_path=None,
                             key = hashlib.sha256(identity.encode()).hexdigest()
                             cached = db.execute("SELECT summary FROM repository_summaries WHERE cache_key = ?",
                                                 (key,)).fetchone() if db is not None else None
-                            summary = json.loads(cached[0]) if cached else _summarize(path, relative, content)
+                            cached_summary = None
+                            if cached:
+                                try:
+                                    candidate = json.loads(cached[0])
+                                except (TypeError, ValueError, RecursionError):
+                                    candidate = None
+                                if _valid_cached_summary(candidate, relative):
+                                    cached_summary = candidate
+                            summary = (cached_summary if cached_summary is not None else
+                                       _summarize(path, relative, content))
                             if db is not None:
                                 sequence += 1
                                 pending_cache_rows.append(

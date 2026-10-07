@@ -13,6 +13,7 @@ from decimal import Decimal
 import uuid
 import time
 from typing import List, Dict, Any, Optional
+from urllib.parse import quote
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from play_anything.core.personalization_engine import OnboardingCalibrationGate
@@ -543,7 +544,7 @@ class RealmStudioEngine:
             "status": "PUBLISHED",
             "realm_id": published_manifest.id,
             "slug": published_manifest.slug,
-            "share_url": f"playanything://realms/{published_manifest.slug}",
+            "share_url": f"playanything://realms/{quote(published_manifest.slug, safe='')}",
             "creator_rev_share": f"{published_manifest.monetization.creator_rev_share_pct}%",
             "eval_protocol": published_manifest.evaluation.arena_protocol.value
         }

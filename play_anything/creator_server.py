@@ -709,9 +709,38 @@ class CreatorHandler(BaseHTTPRequestHandler):
         # URLs and request bodies can contain user data; do not log them.
         pass
 
+    def _header_values(self, name):
+        get_all = getattr(self.headers, 'get_all', None)
+        if get_all:
+            return get_all(name, [])
+        value = self.headers.get(name)
+        return [] if value is None else [value]
+
     def trusted_host(self):
         port = self.server.server_address[1]
-        return self.headers.get('Host') in {f'127.0.0.1:{port}', f'localhost:{port}'}
+        hosts = self._header_values('Host')
+        return len(hosts) == 1 and hosts[0] in {
+            f'127.0.0.1:{port}', f'localhost:{port}'}
+
+    def _authorized_request(self):
+        if not self.trusted_host():
+            return False
+        origins = self._header_values('Origin')
+        expected = 'http://' + self._header_values('Host')[0]
+        if len(origins) > 1 or (origins and origins[0] != expected):
+            return False
+        tokens = self._header_values('X-Play-Token')
+        # compare_digest(str, str) raises for non-ASCII text. Reject malformed
+        # header values before comparing, without echoing supplied credentials.
+        return (len(tokens) == 1 and isinstance(tokens[0], str)
+                and tokens[0].isascii()
+                and secrets.compare_digest(tokens[0], self.state.token))
+
+    def _request_path(self):
+        try:
+            return urlsplit(self.path).path
+        except ValueError:
+            raise ValueError('Invalid request target.') from None
 
     def send(self, status, data, content_type='application/json'):
         payload = json.dumps(data, allow_nan=False).encode() if content_type == 'application/json' else data
@@ -734,7 +763,10 @@ class CreatorHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.trusted_host():
             return self.send(403, {'error': 'Invalid host.'})
-        path = urlsplit(self.path).path
+        try:
+            path = self._request_path()
+        except ValueError as exc:
+            return self.send(400, {'error': str(exc)})
         if path == '/api/session':
             return self.send(200, {'token': self.state.token, 'instance': self.state.instance, 'catalog': CATALOG, 'defaults': DEFAULTS})
         if path == '/api/events':
@@ -794,10 +826,7 @@ class CreatorHandler(BaseHTTPRequestHandler):
         return b''.join(chunks)
 
     def do_POST(self):
-        origin = self.headers.get('Origin')
-        expected = 'http://' + self.headers.get('Host', '')
-        if (not self.trusted_host() or (origin and origin != expected) or
-                not secrets.compare_digest(self.headers.get('X-Play-Token', ''), self.state.token)):
+        if not self._authorized_request():
             return self.send(403, {'error': 'Reload the local workbench to establish a session.'})
         try:
             if 'Transfer-Encoding' in self.headers:
@@ -821,7 +850,7 @@ class CreatorHandler(BaseHTTPRequestHandler):
             body = _decode_request_json(payload)
             if not isinstance(body, dict):
                 raise ValueError('Expected a JSON object.')
-            self.send(200, self.state.dispatch(urlsplit(self.path).path, body))
+            self.send(200, self.state.dispatch(self._request_path(), body))
         except (ValueError, TypeError, OSError) as exc:
             self.send(400, {'error': str(exc)[:1000]})
 

@@ -227,10 +227,12 @@ function resolve(selected) {
   return catalog.filter(m => result.has(m.id)).map(m => m.id);
 }
 function calculate(selected, assumptions = {}, overrides = {}, hostingSettings = {}) {
+  if (!isRecord(assumptions)) throw Error('Accounting assumptions must be an object.');
+  if (!isRecord(overrides)) throw Error('Module cost overrides must be an object.');
   const a = {...defaults, ...assumptions};
-  if (Object.keys(a).some(k => !(k in defaults))) throw Error('Unknown accounting assumption.');
+  if (Object.keys(a).some(k => !Object.prototype.hasOwnProperty.call(defaults, k))) throw Error('Unknown accounting assumption.');
   Object.keys(a).forEach(k => {
-    if (a[k] === '' || typeof a[k] === 'boolean' || !Number.isFinite(Number(a[k])) || Number(a[k]) < 0 || Number(a[k]) > 1e9) throw Error(k + ' must be between 0 and 1 billion.');
+    if (!isNumericInput(a[k]) || !Number.isFinite(Number(a[k])) || isNonzeroUnderflow(a[k]) || Number(a[k]) < 0 || Number(a[k]) > 1e9) throw Error(k + ' must be between 0 and 1 billion and representable as a finite number.');
     a[k] = Number(a[k]);
   });
   for (const k of ['active', 'paying', 'new_customers']) if (!Number.isInteger(a[k])) throw Error(k + ' must be a whole number.');
@@ -239,9 +241,11 @@ function calculate(selected, assumptions = {}, overrides = {}, hostingSettings =
   if (['platform_pct','payment_pct','refund_pct'].some(k => a[k] > 100)) throw Error('Percentages must be between 0 and 100.');
   const modules = resolve(selected);
   const rows = catalog.filter(m => modules.includes(m.id)).map(m => {
-    const values = {...m, ...(overrides[m.id] || {})};
+    const moduleOverride = overrides[m.id];
+    if (moduleOverride !== undefined && !isRecord(moduleOverride)) throw Error(m.title + ': cost overrides must be an object.');
+    const values = {...m, ...(moduleOverride || {})};
     ['hours','fixed','variable'].forEach(k => {
-      if (values[k] === '' || !Number.isFinite(Number(values[k])) || Number(values[k]) < 0 || Number(values[k]) > 1e9) throw Error(m.title + ': enter a nonnegative cost.');
+      if (!isNumericInput(values[k]) || !Number.isFinite(Number(values[k])) || isNonzeroUnderflow(values[k]) || Number(values[k]) < 0 || Number(values[k]) > 1e9) throw Error(m.title + ': enter a nonnegative, finite cost.');
       values[k] = Number(values[k]);
     });
     return {...values, setup: values.hours*a.hourly, monthly: values.fixed + values.variable*a.active};
@@ -256,12 +260,40 @@ function calculate(selected, assumptions = {}, overrides = {}, hostingSettings =
   const contribution = gross-refunds-fees-module_variable-ai;
   const profit = contribution-fixed-a.acquisition;
   const contribution_per_payer = a.paying ? contribution/a.paying : null;
-  return {hosting, modules, assumptions:a, rows, gross, refunds, fees, module_variable, ai, fixed, contribution, profit,
+  const plan = {hosting, modules, assumptions:a, rows, gross, refunds, fees, module_variable, ai, fixed, contribution, profit,
     setup:sum('setup'), total_monthly:refunds+fees+module_variable+ai+fixed+a.acquisition,
     contribution_per_payer, margin_pct:gross ? contribution/gross*100 : null,
     cac:a.new_customers ? a.acquisition/a.new_customers : null,
     break_even_payers: contribution_per_payer>0 ? Math.ceil((fixed+a.acquisition)/contribution_per_payer) : null,
     setup_payback_months: profit>0 ? sum('setup')/profit : null};
+  assertFiniteNumbers(plan, 'plan');
+  return plan;
+}
+function isRecord(value) {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+function isNumericInput(value) {
+  return (typeof value === 'number' || typeof value === 'string') && !(typeof value === 'string' && value.trim() === '');
+}
+function isNonzeroUnderflow(value) {
+  if (typeof value !== 'string' || Number(value) !== 0) return false;
+  const match = value.trim().match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(?:e[+-]?\d+)?$/i);
+  return !!match && /[1-9]/.test(match[1]);
+}
+function assertFiniteNumbers(value, path) {
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw Error(path + ' must be finite.');
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertFiniteNumbers(item, `${path}[${index}]`));
+    return;
+  }
+  if (value && typeof value === 'object') {
+    Object.entries(value).forEach(([key, item]) => assertFiniteNumbers(item, `${path}.${key}`));
+  }
 }
 return {catalog, defaults, resolve, calculate};
 })();

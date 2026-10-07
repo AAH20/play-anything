@@ -1,4 +1,5 @@
 import unittest
+from decimal import Inexact, ROUND_DOWN, localcontext
 from play_anything.core.hosting_costs import estimate_hosting
 from play_anything.core.venture_planner import calculate_plan
 
@@ -42,3 +43,33 @@ class HostingTests(unittest.TestCase):
     def test_invalid_usage(self):
         for setting in ({'mau':-1},{'mau':1.2},{'extra':'NaN'},{'web':'fake'},{'seats':0},{'commercial':'yes'}):
             with self.assertRaises(ValueError): estimate_hosting(setting)
+
+    def test_estimate_is_independent_of_callers_decimal_context(self):
+        settings = {
+            'web': 'cloudflare_workers',
+            'requests': 123456789,
+            'cpu_ms': '123456.789012345',
+            'database': 'pro',
+            'db_gb': '123.456789012345',
+            'storage_gb': '123.456789012345',
+            'egress_gb': '123.456789012345',
+            'cached_gb': '123.456789012345',
+            'extra': '123.456789012345',
+        }
+        expected = estimate_hosting(settings)
+        with localcontext() as context:
+            context.prec = 2
+            context.rounding = ROUND_DOWN
+            context.Emin = -10
+            context.Emax = 10
+            context.traps[Inexact] = True
+            actual = estimate_hosting(settings)
+            self.assertEqual(context.prec, 2)
+            self.assertEqual(context.rounding, ROUND_DOWN)
+            self.assertEqual(context.Emin, -10)
+            self.assertTrue(context.traps[Inexact])
+        self.assertEqual(actual, expected)
+
+    def test_positive_usage_too_small_for_output_float_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "db_gb.*finite output range"):
+            estimate_hosting({'database': 'pro', 'db_gb': '1e-999999999'})

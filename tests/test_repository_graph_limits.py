@@ -1,5 +1,7 @@
 from pathlib import Path
 import sys
+import os
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -8,6 +10,82 @@ from play_anything.core.repository_graph import build_repository_graph, _read_ca
 
 
 class RepositoryGraphSourceLimits(unittest.TestCase):
+    @unittest.skipUnless(hasattr(os, 'mkfifo') and hasattr(os, 'O_NONBLOCK'),
+                         'Requires POSIX FIFO/nonblocking support')
+    def test_fifo_source_is_rejected_without_blocking(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'source.py'
+            os.mkfifo(path)
+            code = ("from pathlib import Path; import sys; "
+                    "from play_anything.core.repository_graph import _read_capped_source; "
+                    "\ntry: _read_capped_source(Path(sys.argv[1]),1000)"
+                    "\nexcept OSError: print('rejected')")
+            result = subprocess.run([sys.executable, '-c', code, str(path)],
+                                    capture_output=True, text=True, timeout=3)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.strip(), 'rejected')
+
+    @unittest.skipUnless(hasattr(os, 'mkfifo') and hasattr(os, 'O_NONBLOCK'),
+                         'Requires POSIX FIFO/nonblocking support')
+    def test_source_replaced_by_fifo_after_inventory_is_reported_unreadable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory).resolve() / 'race.py'
+            source.write_text('def old_source(): pass\n')
+            original_open = os.open
+
+            def replace_before_open(path, flags, *args, **kwargs):
+                if Path(path) == source:
+                    source.unlink()
+                    os.mkfifo(source)
+                return original_open(path, flags, *args, **kwargs)
+
+            with patch('play_anything.core.repository_graph.os.open', replace_before_open):
+                graph = build_repository_graph(directory)
+            self.assertEqual(graph['summary']['files'], 1)
+            self.assertEqual(graph['analysis']['unreadable_files'], 1)
+            self.assertEqual(graph['analysis']['source_bytes_read'], 0)
+            self.assertFalse(graph['analysis']['complete'])
+
+    @unittest.skipUnless(hasattr(os, 'O_NOFOLLOW'), 'Requires no-follow open support')
+    def test_source_replaced_by_symlink_never_reads_external_source(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:
+            source = Path(directory).resolve() / 'race.py'
+            source.write_text('def old_source(): pass\n')
+            external = Path(outside) / 'external.py'
+            external.write_text('def private_external_symbol(): pass\n')
+            original_open = os.open
+
+            def replace_before_open(path, flags, *args, **kwargs):
+                if Path(path) == source:
+                    source.unlink()
+                    source.symlink_to(external)
+                return original_open(path, flags, *args, **kwargs)
+
+            with patch('play_anything.core.repository_graph.os.open', replace_before_open):
+                graph = build_repository_graph(directory)
+            self.assertEqual(graph['analysis']['unreadable_files'], 1)
+            self.assertEqual(graph['analysis']['source_bytes_read'], 0)
+            self.assertFalse(any(n.get('name') == 'private_external_symbol'
+                                 for n in graph['nodes']))
+
+    def test_repeated_qualified_names_cannot_bypass_symbol_limit(self):
+        fixtures = [
+            'def same(): pass\n' * 30,
+            'class Same: pass\n' * 30,
+            'class Owner:\n' + '    def same(self): pass\n' * 30,
+        ]
+        for source in fixtures:
+            with self.subTest(source=source[:30]), tempfile.TemporaryDirectory() as directory:
+                (Path(directory) / 'repeated.py').write_text(source)
+                graph = build_repository_graph(directory, max_symbols=2)
+                symbols = [n for n in graph['nodes'] if n['kind'] in ('class', 'function')]
+                self.assertEqual(len(symbols), 2)
+                self.assertTrue(graph['analysis']['symbol_limit_reached'])
+                self.assertFalse(graph['analysis']['complete'])
+                identifiers = {n['id'] for n in graph['nodes']}
+                self.assertTrue(all(e['source'] in identifiers and e['target'] in identifiers
+                                    for e in graph['edges']))
+
     def test_total_budget_keeps_inventory_and_stops_source_analysis(self):
         with tempfile.TemporaryDirectory() as directory:
             for name in ['a.py', 'b.py']:
@@ -41,19 +119,18 @@ class RepositoryGraphSourceLimits(unittest.TestCase):
             root = Path(directory)
             (root / 'a.py').write_bytes(b'a')
             (root / 'b.py').write_bytes(b'b')
-            original = Path.open
+            original = os.open
             calls = []
 
             def grow_before_read(path, *args, **kwargs):
-                if path.name == 'a.py' and args == ('rb',):
-                    with original(path, 'wb') as output:
-                        output.write(b'x = 1\n')
-                    calls.append(path.name)
-                elif path.name == 'b.py' and args == ('rb',):
-                    calls.append(path.name)
+                if Path(path).name == 'a.py':
+                    Path(path).write_bytes(b'x = 1\n')
+                    calls.append(Path(path).name)
+                elif Path(path).name == 'b.py':
+                    calls.append(Path(path).name)
                 return original(path, *args, **kwargs)
 
-            with patch.object(Path, 'open', grow_before_read):
+            with patch('play_anything.core.repository_graph.os.open', grow_before_read):
                 graph = build_repository_graph(root, max_total_source_bytes=1)
             self.assertEqual(calls, ['a.py'])
             self.assertEqual(graph['analysis']['source_bytes_read'], 2)
@@ -118,15 +195,13 @@ class RepositoryGraphSourceLimits(unittest.TestCase):
             root = Path(directory)
             source = root.resolve() / 'a.py'
             source.write_bytes(b'x=1\n')
-            original_open = Path.open
             reader = FailingReader()
 
-            def partial_open(path, *args, **kwargs):
-                if path == source:
-                    return reader
-                return original_open(path, *args, **kwargs)
+            def partial_open(descriptor, *_args, **_kwargs):
+                os.close(descriptor)
+                return reader
 
-            with patch.object(Path, 'open', autospec=True, side_effect=partial_open):
+            with patch('play_anything.core.repository_graph.os.fdopen', side_effect=partial_open):
                 graph = build_repository_graph(root, max_total_source_bytes=4)
 
         self.assertEqual(graph['analysis']['unreadable_files'], 1)
