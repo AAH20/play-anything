@@ -10,6 +10,7 @@ import time
 import unittest
 import uuid
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -26,21 +27,29 @@ TOKEN = "test-local-runner-access-token-long-enough"
 
 def _check_loopback_available() -> bool:
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("127.0.0.1", 0))
-        port = s.getsockname()[1]
-        s.listen(1)
-        c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        c.settimeout(0.2)
-        c.connect(("127.0.0.1", port))
-        c.close()
-        s.close()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+            server.bind(("127.0.0.1", 0))
+            port = server.getsockname()[1]
+            server.listen(1)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
+                client.settimeout(0.2)
+                client.connect(("127.0.0.1", port))
         return True
     except (OSError, PermissionError):
         return False
 
 
 LOOPBACK_AVAILABLE = _check_loopback_available()
+
+
+class LoopbackProbeTests(unittest.TestCase):
+    def test_socket_is_closed_when_bind_fails(self):
+        probe_socket = MagicMock()
+        probe_socket.__enter__.return_value = probe_socket
+        probe_socket.bind.side_effect = OSError("loopback unavailable")
+        with patch("tests.test_harness_runner.socket.socket", return_value=probe_socket):
+            self.assertFalse(_check_loopback_available())
+        probe_socket.__exit__.assert_called_once()
 
 
 def python_profile(script: str, *, enabled: bool = True, integration: str = "harness", harness: str = "codex", auth: str = "subscription", operation: str = "run"):
@@ -60,8 +69,14 @@ class RunningBridge:
     def __init__(self, profiles, **kwargs):
         self.runner = HarnessRunner({profile.key: profile for profile in profiles}, TOKEN, **kwargs)
         self.server = make_server(self.runner, port=0)
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.started = threading.Event()
+        self.server.service_actions = self.started.set
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True)
         self.thread.start()
+        if not self.started.wait(2):
+            self.server.server_close()
+            raise RuntimeError("Harness test server did not enter its request loop.")
         self.base = f"http://127.0.0.1:{self.server.server_address[1]}"
 
     def close(self):

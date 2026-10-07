@@ -4,14 +4,15 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/python-3.10+-brightgreen.svg)](pyproject.toml)
 [![Dependencies: Zero](https://img.shields.io/badge/dependencies-zero-success.svg)](pyproject.toml)
-[![Tests: 27/27 Passing](https://img.shields.io/badge/tests-27%2F27%20passing-brightgreen.svg)](tests/)
-[![Pipeline Latency: < 0.6ms](https://img.shields.io/badge/full%20pipeline-<0.6ms-orange.svg)](cli.py)
+[![Verification: Documented](https://img.shields.io/badge/verification-documented-brightgreen.svg)](docs/verified-enhancement-audit.md)
 [![Model Evaluation: Kaggle Game Arena](https://img.shields.io/badge/benchmark-Kaggle%20Game%20Arena-blueviolet.svg)](play_anything/core/realm_studio.py)
-[![Personalization: Beyond Meta Muse](https://img.shields.io/badge/personalization-Neuro--Adaptive-emerald.svg)](play_anything/core/personalization_engine.py)
-[![Enterprise Mesh: SOC2 Type II](https://img.shields.io/badge/enterprise-SOC2%20Type%20II%20%2F%20ISO%2042001-cyan.svg)](play_anything/core/enterprise_infra.py)
+[![Personalization: Profile Calibration](https://img.shields.io/badge/personalization-profile%20calibration-emerald.svg)](play_anything/core/personalization_engine.py)
+[![Enterprise Mesh: Simulation](https://img.shields.io/badge/enterprise-infrastructure%20simulation-cyan.svg)](play_anything/core/enterprise_infra.py)
 
 **Don't just read code. Play it.**  
-Turn any Git repository into an **interactive, living RPG world** powered by **Deterministic Combinatorial Graph Solvers (< 0.6ms), Agentic Swarm Intelligence, Submodular GraphRAG, Full-Duplex Voice NPCs, Autonomous Computer-Use Sandboxes, Frontier Model Evaluation Colosseums, Neuro-Adaptive Onboarding Gates, Multi-Cloud Serverless Auto-Scaling, and Enterprise Agentic SOC/GRC**.
+Turn a software repository into an interactive RPG world, repository graph and developer workbench using deterministic Python analysis and a local browser dashboard.
+
+> **Implementation and evidence scope:** The Python runtime uses only the standard library. Infrastructure allocation, provider routing and several enterprise/evaluation views are simulations or planning models. Historical timing, cost, certification, model-superiority and scaling statements below are not independently established production results. SOC/GRC abstractions do not establish SOC 2 or ISO certification. Current measured tests, reproducibility limits and implemented analysis boundaries are recorded in the [enhancement audit](docs/verified-enhancement-audit.md).
 
 ---
 
@@ -25,29 +26,29 @@ Turn any Git repository into an **interactive, living RPG world** powered by **D
 
 ## 📸 Flagship System Views
 
-### 1. Proprietary Enterprise Infrastructure & Agentic SOC / GRC Fabric (Commercial Layer)
-*Multi-cloud Anycast load balancing across AWS, GCP, CoreWeave, and OCI; serverless auto-scaling with 120s idle sleep ($0 compute burn during zero-load); self-hosted vLLM clusters with automated OpenRouter task complexity arbitrage; three-tier hardware sandboxing (WASM, gVisor, Firecracker); and real-time Agentic SOC threat quarantine with immutable Merkle proofs.*
+### 1. Enterprise Infrastructure & Agentic SOC / GRC Planning
+*Explore simulated replica lifecycles, cloud/provider choices, task-complexity model routing, sandbox tiers, and SHA-256 audit records. These planning interfaces do not provision cloud infrastructure or establish security certification.*
 
 ![Proprietary Enterprise Infrastructure & Agentic SOC / GRC Fabric](screenshots/08_enterprise_infra_and_agentic_soc_grc.png)
 
 ---
 
-### 2. Adaptive Personalization & Behavioral Calibration Engine (Meta-Muse Transcendence)
-*Continuous 60Hz biometric telemetry tracking keystroke cadence (CPM), first-action hesitation latency, and command-line density. Features a **30-second Onboarding Diagnostic Gate** offering a **15-second Fast-Track Bypass** for verified senior professionals, while providing **visual algorithmic metaphors** for young cadets and **WCAG AAA 135% cognitive longevity preservation** for senior scholars.*
+### 2. Adaptive Personalization & Behavioral Calibration
+*Calibrate profiles from supplied keystroke, hesitation, recovery, and command-density measurements. The dashboard offers an onboarding diagnostic, an explicit professional fast track, and different presentation tracks. These are interaction features, without clinical or WCAG certification claims.*
 
 ![Adaptive Personalization & Behavioral Calibration Engine](screenshots/07_adaptive_personalization_and_behavioral_calibration.png)
 
 ---
 
 ### 3. 3D Procedural Archipelago & Fog-of-War Dungeon Realm
-*Transforms code directories and microservice layers into an explorable 3D isometric biome world using Spectral Graph Min-Cut partitioning under dynamic Fog-of-War.*
+*Transforms grouped repository modules into an explorable isometric biome world with fog-of-war. Room partitioning currently groups and chunks nodes by layer.*
 
 ![3D Archipelago Dungeon Realm](screenshots/01_archipelago_dungeon_map.png)
 
 ---
 
 ### 4. Sovereign Arena Studio & Frontier Model Evaluation Colosseum
-*Kaggle Game Arena standard head-to-head model evaluation. Simulates multi-agent pairwise matches, computes Bradley-Terry Elo ratings with 95% confidence intervals, and provides a 70/30 creator revenue-sharing yield engine for user-generated realms.*
+*Create and validate realm manifests, inspect simulated arena ratings, and calculate creator/platform token allocations. Arena results and settlement estimates are local demonstrations; they are not live Kaggle submissions, external model benchmarks, or payments.*
 
 ![Sovereign Arena Studio & Model Colosseum](screenshots/06_sovereign_arena_and_model_evaluation.png)
 
@@ -57,60 +58,56 @@ Turn any Git repository into an **interactive, living RPG world** powered by **D
 
 | View Tab | Engine Module | Primary Gameplay / Institutional Mechanism | Visual Asset |
 | :---: | :--- | :--- | :---: |
-| **View 1** | `core/world_gen.py` | **3D Archipelago Dungeon Realm**: Spectral min-cut biomes under dynamic fog-of-war | [01 PNG](screenshots/01_archipelago_dungeon_map.png) |
-| **View 2** | `core/skill_tree.py` | **Constellation Skill Tree DAG**: Acyclic topological progression (like *Path of Exile*) | [02 PNG](screenshots/02_constellation_skill_tree.png) |
-| **View 3** | `core/computer_use.py` | **Computer-Use Boss Arena**: Sandboxed code raids with Byzantine anti-cheat audits | [03 PNG](screenshots/03_computer_use_boss_arena.png) |
-| **View 4** | `core/voice_swarm.py` | **Voice NPC Swarm Sanctuary**: Full-duplex conversational NPCs with sub-180ms latency | [04 PNG](screenshots/04_voice_npc_sanctuary.png) |
-| **View 5** | `core/benchmark_radar.py` | **Microsecond Solvers Radar**: 10 NP-hard graph solvers executing in 582 microseconds | [05 PNG](screenshots/05_microsecond_solvers_radar.png) |
-| **View 6** | `core/realm_studio.py` | **Model Colosseum & Studio**: Kaggle Game Arena Elo, DevEx yield, and AAA Whales Consortium | [06 PNG](screenshots/06_sovereign_arena_and_model_evaluation.png) |
-| **View 7** | `core/personalization_engine.py` | **Neuro-Adaptive Personalization**: 30s onboarding gate, Pro Fast-Track, Cadet & Sage tracks | [07 PNG](screenshots/07_adaptive_personalization_and_behavioral_calibration.png) |
+| **View 1** | `core/dungeon_partitioner.py` | **3D Archipelago Dungeon Realm**: Layer-grouped biomes under dynamic fog-of-war | [01 PNG](screenshots/01_archipelago_dungeon_map.png) |
+| **View 2** | `core/skill_tree_induction.py` | **Constellation Skill Tree DAG**: Acyclic topological progression (like *Path of Exile*) | [02 PNG](screenshots/02_constellation_skill_tree.png) |
+| **View 3** | `adapters/computer_use_sandbox_adapter.py` | **Computer-Use Boss Arena**: Sandboxed code raids with Byzantine anti-cheat audits | [03 PNG](screenshots/03_computer_use_boss_arena.png) |
+| **View 4** | `adapters/voice_agent_adapter.py` | **Voice NPC Sanctuary**: Browser speech facilities and modeled intent routing | [04 PNG](screenshots/04_voice_npc_sanctuary.png) |
+| **View 5** | `engine.py` | **Solver Radar**: Timed local examples for ten solver interfaces | [05 PNG](screenshots/05_microsecond_solvers_radar.png) |
+| **View 6** | `core/realm_studio.py` | **Model Colosseum & Studio**: Simulated ratings, realm manifests, and token allocation | [06 PNG](screenshots/06_sovereign_arena_and_model_evaluation.png) |
+| **View 7** | `core/personalization_engine.py` | **Adaptive Personalization**: 30s onboarding gate, Pro Fast-Track, Cadet & Sage tracks | [07 PNG](screenshots/07_adaptive_personalization_and_behavioral_calibration.png) |
 | **View 8** | `core/enterprise_infra.py` | **Enterprise Mesh & Agentic SOC/GRC**: Serverless idle-sleep, vLLM / OpenRouter arbitrage, Merkle audit | [08 PNG](screenshots/08_enterprise_infra_and_agentic_soc_grc.png) |
 
 ---
 
-## 1. The Core Premise: Why Legacy Code Understanding Fails
+## 1. Explore a Repository Through a Playable World
 
-Developers spend 70% of their career reading and comprehending code. Yet legacy tooling remains passive, static, and fragile:
+Play-Anything turns repository structure into a navigable world and developer
+workbench. Deterministic source analysis supplies the map; optional model
+connections can explain bounded metadata. The RPG presentation is a way to
+explore code, while manifests, graph exports, and explicit analysis limits keep
+the underlying evidence inspectable.
 
-| Paradigm / Tool | Internal Representation | Structural Fatal Flaw | User Emotion |
-|---|---|---|---|
-| **Obsidian Vaults** | Static Markdown links | Zero runtime awareness, zero execution, passive text | Boredom |
-| **LangGraph / AutoGen** | Hardcoded State Machine | $\mathcal{O}(N^2)$ chat loops, unbounded prompt tokens, deadlocks | Frustration |
-| **Cognee** | Vector + Relational DB | Shallow pipeline, no agent autonomy, no live execution | Disconnect |
-| **Hermes / Open Manus** | Linear ReAct agent loops | Ungrounded stochastic loops, file corruption risk, \$5–\$25/run | Anxiety |
-| **Understand-Anything** | Static visual AST graph | Passive, read-only graph with no gamification or live action | Observation |
-| **Meta Muse AI** | Generative asset diffusion | Cognitively blind to human expertise; forces infant tutorials on pros | Alienation |
-
-### The Apex Paradigm: Codebase-as-a-Living-RPG-World
-`play-anything` replaces passive documentation and fragile prompt chains with **deterministic combinatorial graph engineering**:
-
-* **Git Repository $\to$ Procedural RPG World**: Code files and folders become dungeons, citadels, and caverns partitioned by architectural biomes under dynamic fog-of-war.
-* **Classes & Modules $\to$ Guilds & Skill Trees**: Dependencies are transformed into an unlockable, progression-balanced RPG Skill Tree (like *Path of Exile* or *Skyrim*).
-* **Bugs, CVEs & Tech Debt $\to$ Corrupted Dungeon Bosses**: Defeated **only** when your code patch passes real unit tests inside isolated computer-use sandboxes.
-* **Autonomous Agent Swarms $\to$ Living Voice NPCs**: Senior Architect Wizards, Security Rogues, and DevOps Blacksmiths converse via streaming full-duplex voice with sub-180ms latency.
-* **Frontier Model Evaluation $\to$ Colosseum Leaderboards**: AI models and agent policies compete head-to-head on AST correctness, reasoning efficiency, and code mutations (Kaggle Game Arena standard).
-* **Deep Biometrics $\to$ Neuro-Adaptive Personalization**: Experienced professionals bypass juvenile basics in 15 seconds, kids learn via visual spell craft, and seniors preserve mental vitality.
-* **Enterprise Infrastructure $\to$ Multi-Cloud Mesh**: Serverless auto-scaling with scale-to-zero, self-hosted vLLM inference fleets, automated OpenRouter task complexity arbitrage, and Agentic SOC / GRC compliance.
-
+```mermaid
+flowchart LR
+    Repo[Repository] --> Reader[Filtered and byte-bounded reader]
+    Reader --> Summaries[Source and import summaries]
+    Summaries --> World[In-memory RPG world]
+    World --> Dashboard[Map and skill-tree dashboard]
+    Summaries --> Index[Optional SQLite index]
+    Index --> Page[Bounded file and import graph pages]
+    Repo --> Creator[Creator repository analysis]
+    Creator --> Graph[Repository graph and tutorial]
+    Page --> Graph
+    Graph --> Plan[Selected modules and illustrative cost plan]
+    Plan --> Manifest[Validated realm manifest and local workspace]
+    Model[Optional user model endpoint] --> Creator
 ```
-                    PASSIVE CODE READING (Legacy)
-   [200k LOC Codebase] ───► [Static Diagrams / Text Docs] ───► Developer Burnout & Fatigue
 
-=============================================================================================
-
-               PLAY-ANYTHING: THE LIVING RPG WORLD (Deterministic)
-   [Raw Git Repo] ───► [10 NP-Hard Graph Solvers (< 0.6ms)] ───► [Interactive Living RPG World]
-                            │
-       ┌────────────────────┼─────────────────────┬─────────────────────┐
-       ▼                    ▼                     ▼                     ▼
-  [Skill Tree DAG]    [Dungeon Biomes]    [Voice NPCs & Bosses]   [Model Arena & Gate]
-  (Unlock abilities)  (Explore fog-of-war) (Sandboxed Code Raids) (Personalized Speedrun)
-                            │
-       ┌────────────────────┴─────────────────────┐
-       ▼                                          ▼
-  [Enterprise Multi-Cloud Mesh]              [Agentic SOC & GRC]
-  (Serverless Idle-Sleep, vLLM / OpenRouter)  (Merkle Proofs, Zero-Trust Hardening)
-```
+* **Repository exploration:** Inspect module relationships, search and filter
+  graph nodes, and import a bounded index preview without generating a whole
+  world. Missing or capped source is identified as partial analysis.
+* **Playable progression:** Layer-grouped rooms, skill dependencies, NPC
+  archetypes, and quest heuristics give code exploration a game structure.
+  RPG previews, boss narratives, and arena scenarios include simulated data.
+* **Creator workflow:** Analyze a repository, complete understanding checks,
+  select source modules and planning options, review rights, and create a local
+  venture workspace. Importing a graph does not satisfy the tutorial or prove
+  that its code was verified.
+* **Interchange and accounting:** Export schema-validated realm manifests and
+  inspect conservative token allocations with explicit cost assumptions.
+* **Infrastructure planning:** Explore replica, provider-routing, and security
+  audit models. Real isolation, production deployment, and live model evaluation
+  require additional integrations and measured evidence.
 
 ---
 
@@ -176,26 +173,30 @@ Run `python3 cli.py play` to turn any repository into an interactive terminal RP
 
 ---
 
-## 3. The 10 Apex NP-Hard Formulations
+## 3. Ten Graph, Scheduling, and Evaluation Interfaces
 
-| ID | Problem Formulation | Complexity | Algorithmic Mechanism | Invariant / Guarantee |
-|:---:|---|---|---|---|
-| **P1** | **Pedagogical Skill-Tree DAG Induction** | NP-hard | Greedy Minimum Feedback Arc Set with layer priority slack ordering | Provably acyclic skill progression; zero circular unlock deadlocks |
-| **P2** | **Dungeon Fog-of-War Partitioning** | NP-hard | Balanced spectral modular bisection with Kernighan-Lin refinement | Thematic biome cohesion; minimized inter-room edge cuts |
-| **P3** | **Multi-Agent NPC Role Assignment** | NP-hard | Lagrangian Relaxation of Generalized Assignment Problem (GAP) | Optimal persona-code affinity; archetype specialization |
-| **P4** | **Dynamic Quest & Boss Synthesis** | NP-hard | Primal-Dual Prize-Collecting Directed Steiner Tree (PCST) | $(2 - 1/|V|)$ bound; minimal traversal cost to boss |
-| **P5** | **Full-Duplex Voice Agent Routing** | NP-hard | Dual-Lagrangian Delay-Constrained Least-Cost Path (DCLC) | Guarantees sub-180ms total voice roundtrip deadline |
-| **P6** | **Submodular GraphRAG Distillation** | NP-hard | Lazy Greedy under Knapsack context limits with redundancy penalty | $(1 - 1/e) \approx 63.2\%$ information coverage bound |
-| **P7** | **Computer-Use Sandbox Scheduler** | NP-hard | Shifting Bottleneck heuristic with topological critical-path tracking | Guaranteed deadlock-free browser and test container execution |
-| **P8** | **Tokenomics Market Equilibrium** | PPAD-complete | Proportional Response Dynamics over Fisher / Arrow-Debreu markets | General equilibrium balancing player XP with compute costs |
-| **P9** | **Temporal Code Drift Synchronization** | NP-complete | Incremental Rete-Graph pattern matcher with invalidation cones | Sub-50µs git commit sync without rebuilding world graph |
-| **P10** | **Byzantine Fair-Play Anti-Cheat** | NP-hard | Kemeny-Young Condorcet consensus over multi-agent sandbox audits | 100% quarantine of mock-assert and prompt-injection cheats |
+These interfaces are inspired by difficult combinatorial formulations. Their
+implementations range from deterministic rules to greedy heuristics; they do
+not establish that the general NP-hard problems have been solved optimally.
+
+| ID | Subsystem | Implemented mechanism | Practical boundary |
+| --- | --- | --- | --- |
+| **P1** | Skill-tree induction | Layer orientation and greedy feedback-arc ordering; removes backward arcs | Acyclic progression; no minimum-feedback-arc optimum. Depth cap affects the reported depth. |
+| **P2** | Dungeon partitioning | Groups by layer, chunks rooms, then counts cross-room edges | No spectral partitioning or minimum-cut guarantee. |
+| **P3** | NPC assignment | Greedy affinity ordering, with shared-node fallback | No globally optimal persona assignment. |
+| **P4** | Quest synthesis | Dijkstra trunk in a transformed graph, plus qualifying one-hop prize branches | Shortest trunk; no global Steiner optimum or approximation bound. |
+| **P5** | Voice intent routing | Entity matching and bounded-hop traversal with modeled audio costs | Predicted deadline check; no guaranteed audio round trip. |
+| **P6** | Graph context selection | Lazy marginal-gain/token heuristic with novelty and overlap penalties | Enforces a context budget; no general coverage approximation guarantee. |
+| **P7** | Sandbox scheduling | Deterministic precedence/resource list scheduling | Plans start times and flags cycles; does not execute jobs or minimize makespan globally. |
+| **P8** | Tokenomics | Fixed-iteration price updates and proportional allocation | Illustrative simulation; its clearing flag is not a feasibility or convergence proof. |
+| **P9** | Temporal drift | Changed-file/function set and substring checks | Local invalidation heuristic, without transitive dependency analysis. |
+| **P10** | Fair-play audit | Exit-code, patch, mock-pattern, and injection-phrase checks | Limited heuristic coverage; requires independent tests and real isolation. |
 
 ---
 
-## 4. Microsecond Benchmark Suite
+## 4. Local Solver Timing Examples
 
-Execution on Apple Silicon (Pure Python Standard Library, Single Core, Zero C-extensions):
+Historical example output for small synthetic inputs, retained to illustrate the report format. It is not a current measurement, a production latency guarantee, or evidence that an NP-hard problem was solved optimally. Run `python3 cli.py benchmark-all` for observations on your machine; simulated voice deadlines remain separate from measured Python execution time.
 
 ```
 =====================================================================================
@@ -222,54 +223,41 @@ Every single component executes in **microseconds**, and the entire 10-solver pi
 
 ---
 
-## 5. Enterprise Infrastructure & Agentic SOC / GRC (Proprietary Commercial Layer)
+## 5. Enterprise Infrastructure & Agentic SOC / GRC Planning
 
-> [!IMPORTANT]
-> The infrastructure orchestration, multi-cloud federation, hardware virtualization hierarchy, and Agentic SOC / GRC compliance fabric documented below constitute **a proprietary commercial layer** architected specifically for Fortune 500 enterprises, national laboratories, and sovereign institutions.
+`core/enterprise_infra.py` supplies deterministic planning and simulation APIs.
+The standard-library runtime does not provision cloud replicas, install a
+hypervisor, manage a live GPU fleet, or certify a deployment.
 
-### A. Design Patterns & Algorithmic Best Practices
-* **Flyweight AST Representation**: Millions of code tokens and AST nodes are interned into read-only immutable flyweights, keeping resident memory below 45MB even on 200,000 LOC codebases.
-* **Saga Pattern for Distributed Code Raids**: Multimodal computer-use agent tasks execute as transactional sagas with compensating rollbacks: if a test failure occurs or an adversary attempts prompt injection, changes are atomically reverted via git working-tree rollback.
-* **CQRS & Merkle Event Sourcing**: High-throughput read operations (isometric map rendering, NPC queries) are completely decoupled from state mutations (unit test results, Elo updates), which are written to an append-only cryptographic Merkle DAG.
-* **Circuit Breakers with Jittered Exponential Backoff**: Prevents cascading failures during multi-cloud network partitions across AWS, GCP, CoreWeave, and OCI.
+### Replica lifecycle and sandbox tiers
 
-### B. Serverless Auto-Scaling with Idle-Time Sleep ($0 Idle Burn)
-* **Scale-to-Zero Architecture**: When user activity drops below threshold, idle sandbox replicas automatically transition into **RAM-snapshot hibernation** after 120 seconds of inactivity, reducing compute burn to **$0.00/hour**.
-* **Sub-Millisecond Snapshot Resumption**: 
-  - **WASM Micro-Isolates**: Restore state in **0.8ms**.
-  - **Firecracker MicroVMs**: Snapshot memory restore in **42ms**.
-* **LRU Inactivity Ring**: O(1) replica allocation and dynamic warm-pool retention (guaranteeing minimum warm capacity for high-priority tenants).
+`ServerlessScaleToZeroManager` models allocation, idle transitions, and sandbox
+tier selection. WASM, gVisor, and Firecracker names describe intended deployment
+choices; modeled restore times and billing rates are assumptions. Real
+Firecracker execution needs Linux/KVM support and a separately implemented
+isolation boundary. Local mocks do not provide that protection.
 
-### C. Multi-Cloud Anycast Mesh & Cost Optimization
-* **Global Anycast DNS**: Directs traffic to the geographically nearest point of presence (PoP) with Envoy eBPF hedged routing.
-* **Spot Instance Arbitrage**: Continuously tracks spot VM spot pricing across AWS EC2, GCP Preemptible VMs, and Hetzner bare-metal, achieving **64.2% net compute cost reduction**.
-* **Zero Egress Architecture**: AST parsing, embeddings, and voice token generation run locally inside the edge micro-isolate, preventing cross-region egress surcharges.
+### Provider routing and inference economics
 
-### D. Sandboxing, Virtualization & Containerization Hierarchy
-* **Tier 1: WASM Micro-Isolates (Wasmtime / Wasmer)**: Sub-millisecond instantiation, linear memory bounding, zero host syscall escape. Used for fast AST parsing and stateless linting.
-* **Tier 2: gVisor OCI Containers (runsc)**: Intercepts all system calls in user space, completely shielding the host Linux kernel during complex multi-language test runs.
-* **Tier 3: Firecracker MicroVMs with Jailer**: Hardware-assisted KVM virtualization with dedicated unprivileged Jailer boundaries. Used for untrusted third-party code execution and adversarial red-teaming.
+`OpenRouterComplexityArbitrageEngine` calculates a task-complexity score and
+returns a modeled route. Its built-in model profiles are scenario data, not a
+live model catalogue, current price list, SWE-bench result, or measured
+inference service. A self-hosted model still incurs compute, power, storage,
+and operating costs.
 
-### E. GenAI & LLM Integration: vLLM Clusters + Automated OpenRouter Arbitrage
-* **Self-Hosted vLLM Inference Fleet**: High-throughput private GPU clusters (H100 / B200) utilizing **PagedAttention v2**, continuous batching, and FP8/AWQ quantization generating **145 tokens/second** at zero marginal API cost.
-* **Comprehensive OpenRouter Dynamic Arbitrage**:
-  - Computes the **Task Complexity Index (TCI)**:
-    $$\text{TCI} = 0.35 \cdot \frac{\text{Cyclomatic}}{50} + 0.25 \cdot \frac{\text{Tokens}}{32000} + 0.25 \cdot \text{Reasoning} + 0.15 \cdot \frac{\text{Deps}}{20}$$
-  - **Pareto-Optimal Dispatch**:
-    - $\text{TCI} < 0.35$: Dispatched to local **vLLM (Llama 3.3 70B)** ($0 marginal cost).
-    - $0.35 \le \text{TCI} < 0.65$: Dispatched to **vLLM (DeepSeek-V3)** for fast sub-52ms TTFT refactoring.
-    - $0.65 \le \text{TCI} < 0.82$: Dispatched to **OpenRouter (DeepSeek-R1)** for formal chain-of-thought verification.
-    - $\text{TCI} \ge 0.82$: Dispatched to **OpenRouter (Claude 3.7 Sonnet: Thinking)** for apex NP-hard challenges (>92.6% SWE-bench Verified).
+The Creator workbench can separately connect to a user-supplied compatible
+model endpoint. That connection makes actual HTTP requests; its credentials
+stay in local session memory and are excluded from connection responses.
+Provider availability, capabilities, and billing depend on the chosen endpoint.
 
-### F. Proprietary Agentic SOC & Continuous GRC Compliance
-* **Agentic SOC (Security Operations Center)**:
-  - Real-time detection and quarantine of prompt injection attacks, Canary token exfiltration, and Byzantine mock-test cheats.
-  - MITRE ATT&CK mapping for autonomous agent actions.
-* **GRC Continuous Compliance Attestation**:
-  - **SOC2 Type II**: Verified least-privilege role boundaries and cryptographic identity enforcement.
-  - **ISO 42001 (Artificial Intelligence Management Systems)**: Continuous auditing of model drift, prompt fairness, and decision provenance.
-  - **FedRAMP High & Air-Gapped Ready**: Strict isolation allowing deployment in air-gapped defense and governmental sovereign enclaves.
-  - **Immutable Merkle Tree Ledger**: Every agent action, git commit, and test execution is hashed into a tamper-proof SHA-256 Merkle root.
+### Security audit scope
+
+`EnterpriseAgenticSOCGRC` exposes heuristic inspection and SHA-256 audit records.
+Hashes can support inspection of a recorded payload; they do not prove that
+all actions were recorded or that a host is tamper-proof. Production operation
+requires threat-specific testing, access controls, isolation, durable retention,
+and independent review. These interfaces do not establish SOC 2, ISO 42001,
+FedRAMP, or any other certification.
 
 ---
 
@@ -298,7 +286,7 @@ Rather than treating all players identically, the engine tailors mechanics, onbo
 | 🌿 Track 3: SENIOR SAGE (Ages 60+)                                                                     |
 | • Scaffolding: Ergonomic Paced Scholar (System architecture bridges, historical context)              |
 | • Timer Multiplier: +100% (2.0x) - Relaxed, dignified reaction windows                                |
-| • UI Ergonomics: 135% font scale, WCAG AAA high-contrast theme, enlarged click/touch targets            |
+| • UI Ergonomics: 135% font scale, high-contrast presentation (not WCAG certified), enlarged click/touch targets            |
 | • Cognitive Objective: Mental longevity preservation, neuro-plasticity exercise, zero burnout          |
 +---------------------------------------------------------------------------------------------------------+
 ```
@@ -307,17 +295,17 @@ Rather than treating all players identically, the engine tailors mechanics, onbo
 Forcing a senior engineer with 10+ years of Linux kernel or distributed systems experience to endure 20 minutes of "What is a variable?" causes immediate attrition.  
 `play-anything` includes a **30-second Onboarding Diagnostic Gate**:
 - When the telemetry monitor detects **$>350\text{ CPM}$** and **$<180\text{ ms}$ hesitation latency**, or when the player toggles **Pro Fast-Track**:
-- **All introductory tutorial levels (Levels 1–4) are bypassed in 0.04s**.
-- The player drops directly into the **Level 8 Concurrency Crucible Dungeon**, saving **22.5 minutes** of executive time.
+- **Introductory tutorial levels can be bypassed** through the professional track.
+- The player drops directly into the **Level 8 Concurrency Crucible Dungeon**, The actual time saved depends on the user and tutorial workload.
 
 ### Personalized Peer & AI Rival Matchmaking Engine
 Every player is provided with precise, dynamic suggestions to compete against opponents matching their calibrated skill bracket ($\Delta \text{Elo} \le 35$):
 * **Calibrated Human Peers**: Matched across similar cognitive tempos, consistency streaks, and complementary architectural specialties (e.g. distributed sagas vs. memory-safe systems).
-* **Calibrated AI Sparring Agents**: Directly paired with tailored LLM backbones (e.g. self-hosted **vLLM Llama-3.3-70B** with sub-50ms TTFT for high-speed refactoring drills, or **OpenRouter DeepSeek-R1** for recursive formal verification).
+* **AI Sparring Profiles**: The local engine returns modeled rival profiles and provider suggestions. Connecting and evaluating a real opponent requires a separate model endpoint and measured tasks.
 
 ### Precise Bracketed Division Leaderboards
 Progression is governed by transparent, meritocratic division leaderboards:
-* **Grandmaster Apex Syndicate (2600 – 2750 Elo)**: Top 0.01% global systems engineers and frontier reasoning models.
+* **Grandmaster Apex Syndicate (2600 – 2750 Elo)**: An illustrative local division for advanced profiles; not a measured global percentile.
 * **Staff Architect Premier League (2350 – 2500 Elo)**: High-concurrency systems, asynchronous sagas, and fault-tolerant design.
 * **Cadet Discovery Cup (1750 – 1920 Elo)**: Foundational algorithmic intuition, visual state-machine crafting, and positive scaffolding.
 * **Senior Sage Vitality Circle (2050 – 2250 Elo)**: Ergonomic cognitive longevity, pure functional programming, and memory preservation.
@@ -357,25 +345,38 @@ For game development titans leveraging **Unreal Engine 5 (Chaos/Lumen)** and **U
 
 ## 8. Commercial Unit Economics
 
-| Cost & Operational Dimension | Legacy Chat Swarms (AutoGen / Hermes) | `play-anything` Kernel | Economic Impact |
-|---|---|---|---|
-| **Quest & Progression Cost** | \$1.80 – \$6.50 (40–80 LLM prompt rounds) | **\$0.003 – \$0.008** (Deterministic graph solvers) | **99.4% Cost Reduction** |
-| **Voice Query Latency** | 2.5s – 8.0s (Unacceptable for voice) | **110ms – 140ms** (Instant full-duplex conversational rhythm) | **Real-time Voice Feasibility** |
-| **Context Window Overhead** | 64k – 128k tokens / query | **4k – 8k tokens** (Submodular GraphRAG) | **93.7% Token Savings** |
-| **Verification Reliability** | Vulnerable to prompt injection / mocks | **100% Anti-Cheat Sandbox Audit** | **Tamper-proof Proof of Work** |
-| **Serverless Idle Overhead** | \$1,200 / month (Always-on idle VMs) | **\$0.00 / month** (120s Scale-to-Zero Snapshot Sleep) | **100% Waste Elimination** |
-| **Monthly Cost for 100k Quests** | \$240,000 / month | **\$580 / month** | **\$239,420 / month direct net savings** |
+The current implementation includes deterministic graph algorithms and cost-model simulations. Production savings, inference latency, infrastructure billing, and security guarantees require deployment-specific measurements; the table below states the present evidence boundary.
+
+| Dimension | Current capability | What must be measured before a commercial claim |
+| --- | --- | --- |
+| Quest generation | Local graph selection and quest-route synthesis without mandatory model calls | End-to-end workload time, hosted compute cost, and comparable model-assisted baseline |
+| Voice interaction | Browser speech facilities and an optional adapter | Actual device/network audio round-trip latency and transcription quality |
+| Context selection | Budgeted graph context selection | Token counts, retrieval quality, and answer quality on the same held-out tasks |
+| Verification | AST/test checks and simulation interfaces | Threat-model coverage, adversarial testing, and real sandbox isolation |
+| Replica lifecycle | Scale-to-zero lifecycle simulation | Deployed idle, storage, networking, and wake-up charges |
+| Hosting economics | User-selected assumptions and estimated module costs | Current provider rates, usage, failure/retry overhead, and observed billing |
+
+Measured local index and graph-page query observations, including fixture shape and memory-measurement limits, are documented in the [verification guide](docs/disk-index-and-visual-regression.md).
 
 ---
 
 ## 9. Quick Start & CLI Usage
 
+For large repository summaries, use the optional SQLite index CLI described in
+[Disk-backed source indexing and visual checks](docs/disk-index-and-visual-regression.md).
+It supports atomic rebuilds and paginated import/path queries without allocating
+a full RPG world. `query-repository --view graph` exports a bounded file/import
+page for the Graph viewer or the Creator Understand step. Imported previews do
+not complete repository verification or the tutorial. The Python runtime remains
+standard-library only.
+
 ### Installation
-Clone and run locally with **zero pip dependencies**:
+Clone and run directly with **zero runtime pip dependencies**. No package
+installation is required for the source-tree commands:
 ```bash
 git clone https://github.com/AAH20/play-anything.git
 cd play-anything
-pip install -e .
+python3 -m play_anything.cli --help
 ```
 
 ### CLI Commands
@@ -391,19 +392,33 @@ python3 cli.py demo-world
 ```
 
 ### Interactive Web UI
+Run the local workbench to use repository analysis, optional model connections,
+and Creator APIs:
+
+```bash
+python3 -m play_anything.cli creator
+```
+
+Keep the terminal open while using the browser. The Creator and Graph pages use
+this local service; a static preview can display exported data but cannot clone
+repositories or call those local APIs.
+
 Open the standalone dashboard directly in your browser:
 ```bash
 open play_anything/dashboard.html
 ```
 Or jump directly to any tab via URL hash:
 * `#map` — 3D Archipelago Dungeon Realm
+* `#graph` — Repository graph inspection and imported index previews
+* `#quickstart` — Creator onboarding
 * `#skills` — Constellation Skill Tree DAG
 * `#battle` — Computer-Use Boss Raid Arena
 * `#voice` — Voice NPC Swarm Sanctuary
-* `#benchmarks` — Microsecond Solvers Radar
+* `#benchmarks` — Local Solver Radar
 * `#studio` — Realm Studio & Model Colosseum
 * `#personalization` — Adaptive Personalization & Onboarding Gate
 * `#enterprise` — Enterprise Mesh, Serverless Auto-Scaler & Agentic SOC/GRC
+* `#swarm` — Swarm orchestration planning
 
 ### Python API Example
 ```python
@@ -463,14 +478,15 @@ Run the comprehensive unit test suite:
 ```bash
 python3 -m unittest discover tests
 ```
-Output:
-```
-.............................
-----------------------------------------------------------------------
-Ran 29 tests in 0.002s
+For resource-leak checks and the Python 3.10 syntax/import boundary:
 
-OK
+```bash
+python3 -W error::ResourceWarning -m unittest discover tests
+python3 scripts/verify_runtime_contracts.py
 ```
+
+The suite has expanded beyond the original 29 tests. Actual results and remaining
+boundaries are recorded in the [enhancement audit](docs/verified-enhancement-audit.md).
 *Zero external test frameworks required. Runs portably on Python standard library.*
 
 ---
@@ -479,3 +495,33 @@ OK
 
 Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE) for full details.  
 Copyright (c) 2026 Ahmed Hassan (AAH20). All rights reserved.
+
+
+### Bounded source reads for repository worlds
+
+```bash
+python3 -m play_anything.cli play /path/to/repository --max-total-source-bytes 33554432
+```
+
+This optional cap limits source reads and reports partial analysis, file limits
+and synthetic fallback provenance. Zero inventories files without reading
+nonempty sources. Omitting the option preserves existing defaults. World state
+still materializes in RAM; use the separate SQLite index for paged graph queries.
+See [the ingestion and verification guide](docs/disk-index-and-visual-regression.md)
+for the API, benchmark commands and exact scope of these limits.
+
+### Realm manifest interchange and token accounting
+
+```bash
+python3 -m play_anything.cli manifest-schema > realm-manifest.schema.json
+python3 -m play_anything.cli validate-manifest /path/to/realm.json
+```
+
+The exported schema and validator enforce the creator-royalty interval of
+0–85 percent against original JSON decimal tokens before float normalization.
+Simulated ticket and engagement payouts use integer-ratio floor arithmetic:
+70 percent of 90 ticket tokens allocates 63 to the creator and 27 to the platform.
+Configured rates remain ordinary floats with a canonical decimal interpretation;
+the USD figure is an illustrative, bounded estimate rather than real settlement.
+See [manifest and accounting contracts](docs/repository-ingestion-and-manifests.md)
+for precision, transport limits and migration boundaries.

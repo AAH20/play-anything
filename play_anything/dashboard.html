@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Play-Anything: The Living Codebase RPG Engine</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script async src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
       --background: #090d16;
@@ -55,6 +55,80 @@
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
     ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.6); }
+    /* Keep the dashboard navigable if the optional utility stylesheet is offline. */
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body { height: 100vh; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    .hidden { display: none !important; }
+    button, input, select, textarea { font: inherit; }
+    button { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 2.25rem; padding: .45rem .75rem; border: 1px solid #334155; border-radius: .55rem; background: #172033; color: #e2e8f0; cursor: pointer; }
+    button:hover:not(:disabled) { background: #24334a; border-color: #475569; }
+    button:disabled { cursor: not-allowed; opacity: .6; }
+    input, select, textarea { min-height: 2.35rem; max-width: 100%; padding: .45rem .65rem; border: 1px solid #334155; border-radius: .45rem; background: #0f172a; color: var(--foreground); }
+    a { color: #7dd3fc; }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: .5rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-6 { gap: 1.5rem; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible,
+    textarea:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    header { position: sticky; top: 0; z-index: 50; flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 1.25rem; background: rgba(15,23,42,.96); border-bottom: 1px solid #1e293b; }
+    header > div { min-width: 0; }
+    header h1 { margin: 0; font-size: 1.2rem; }
+    header p { margin: .25rem 0 0; color: #94a3b8; font-size: .78rem; column-gap: .3rem; row-gap: .15rem; }
+    .glass-panel { padding: 1rem; border-radius: .85rem; box-shadow: 0 12px 32px rgba(0,0,0,.2); }
+    .text-xs { font-size: .78rem; }
+    .font-bold, .font-semibold { font-weight: 650; }
+    nav[aria-label="Dashboard views"] { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .5rem 1rem; background: #020617; border-bottom: 1px solid #1e293b; }
+    nav[aria-label="Dashboard views"] button { min-height: 2.25rem; padding: .4rem .75rem; border: 1px solid transparent; border-radius: .6rem; background: transparent; color: #cbd5e1; }
+    nav[aria-label="Dashboard views"] button[aria-current="page"] { background: rgba(56,189,248,.16); border-color: rgba(56,189,248,.45); color: #7dd3fc; }
+    main { display: flex; flex: 1 1 0; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+    main > [id^="view-"]:not(.hidden) { min-width: 0; min-height: 0; overflow: auto; }
+    #view-map:not(.hidden) { display: grid; flex: 1 1 0; grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); grid-template-rows: minmax(0, 1fr); width: 100%; height: 100%; min-height: 0; overflow: hidden; }
+    #view-map > div:first-child { position: relative; display: block; min-width: 0; min-height: 0; width: 100%; height: 100%; overflow: hidden; }
+    #biome-canvas-frame { position: absolute; inset: 0; min-width: 0; min-height: 0; }
+    #biome-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; min-height: 0; }
+    #biome-canvas:focus-visible { outline: 3px solid #38bdf8; outline-offset: -3px; }
+    #biome-legend > div:last-child { column-gap: .75rem; row-gap: .25rem; }
+    #view-map > aside { width: 100%; min-width: 0; height: 100%; min-height: 0; max-height: none; overflow: auto; border-left: 1px solid var(--border); padding: 1.25rem; }
+    @media (max-width: 720px) {
+      body { height: auto; min-height: 100vh; overflow-x: hidden; overflow-y: auto; }
+      main { flex: 0 0 auto; min-height: 0; overflow: visible; }
+      main > [id^="view-"]:not(.hidden) { overflow: visible; }
+      header { gap: .5rem; padding: .65rem; }
+      header > div:nth-child(2) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; max-width: 100%; min-width: 0; gap: .55rem; padding: .7rem; }
+      header > div:nth-child(2) > div { width: auto; min-width: 0; max-width: 100%; }
+      header > div:nth-child(2) > div:first-child,
+      header > div:nth-child(2) > div:last-child { grid-column: 1 / -1; }
+      header > div:nth-child(2) > div:last-child { justify-self: start; }
+      nav[aria-label="Dashboard views"] { gap: .35rem; padding: .5rem; }
+      nav[aria-label="Dashboard views"] button { max-width: 100%; }
+      #view-map:not(.hidden) { flex: 0 0 auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; height: auto; min-height: 0; overflow: visible; }
+      #view-map > div:first-child { display: flex; flex-direction: column; min-height: 360px; height: auto; overflow: visible; }
+      #biome-canvas-frame { position: relative; inset: auto; flex: 0 0 360px; width: 100%; height: 360px; min-height: 360px; overflow: hidden; }
+      #biome-canvas { min-height: 0; }
+      .map-overlay { position: static !important; inset: auto !important; width: auto; max-width: calc(100% - 1rem); margin: .5rem; }
+      .map-overlay-legend { align-self: stretch; }
+      .map-overlay-legend > div:last-child { flex-wrap: wrap; }
+      .map-overlay-controls { align-self: flex-end; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; }
+      #view-map > aside { width: 100%; min-width: 0; height: auto; min-height: 0; max-height: none; overflow: visible; border-left: 0; border-top: 1px solid var(--border); }
+    }
+    @media (max-width: 420px) {
+      header > div:nth-child(2) { grid-template-columns: minmax(0, 1fr); }
+      header > div:nth-child(2) > div { grid-column: 1 / -1; }
+      header > div:nth-child(2) > div:first-child { flex-wrap: wrap; }
+      header > div:first-child p { flex-wrap: wrap; }
+      header > div:first-child p > span:last-child { flex-basis: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
@@ -74,7 +148,7 @@
           <p class="text-xs text-[var(--muted-foreground)] flex items-center gap-1">
             <span>Realm:</span> <strong id="realm-name" class="text-sky-300 font-mono">Apollo-Core.git</strong>
             <span class="text-slate-600">|</span>
-            <span class="text-emerald-400">● 10 NP-Hard Solvers Active (582 µs)</span>
+            <span class="text-emerald-400">● Solver examples · timings are illustrative</span>
           </p>
         </div>
       </div>
@@ -136,10 +210,10 @@
   </header>
 
   <!-- NAVIGATION TABS -->
-  <nav class="w-full bg-slate-950/90 border-b border-slate-800 px-6 py-2 flex items-center gap-2 text-xs font-medium">
+  <nav aria-label="Dashboard views" class="w-full bg-slate-950/90 border-b border-slate-800 px-6 py-2 flex flex-wrap items-center gap-2 text-xs font-medium">
     <button id="tab-btn-graph" onclick="switchTab('graph')" class="px-3.5 py-1.5 rounded-lg text-slate-400 border border-transparent">⌘ Repository graph</button>
     <button id="tab-btn-quickstart" onclick="switchTab('quickstart')" class="px-3.5 py-1.5 rounded-lg text-slate-400 border border-transparent">✳ Creator quick start</button>
-      <button onclick="switchTab('map')" id="tab-btn-map" class="px-3.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/40 flex items-center gap-1.5 transition">
+      <button onclick="switchTab('map')" id="tab-btn-map" aria-current="page" class="px-3.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/40 flex items-center gap-1.5 transition">
       <span>🗺️</span> <span>3D Dungeon Realm (Fog-of-War)</span>
     </button>
     <button onclick="switchTab('skills')" id="tab-btn-skills" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition">
@@ -179,10 +253,10 @@
     <div id="view-map" class="flex-1 flex flex-col lg:flex-row relative">
       <!-- Left: Interactive Canvas Rendering Archipelago of Code -->
       <div class="flex-1 relative bg-gradient-to-b from-[#060911] to-[#0d1527] overflow-hidden flex flex-col">
-        <canvas id="biome-canvas" class="w-full h-full cursor-crosshair"></canvas>
+        <div id="biome-canvas-frame"><canvas id="biome-canvas" class="w-full h-full cursor-crosshair" tabindex="0" role="group" aria-label="Realm map. Use the arrow keys to select chambers and reveal fog; use Enter or Space to announce the current chamber." aria-describedby="map-keyboard-help" data-selected-island="room_01"></canvas></div>
 
         <!-- Canvas Overlays: Legend & Controls -->
-        <div class="absolute top-4 left-4 glass-panel px-3.5 py-2.5 rounded-xl border border-slate-700/60 text-xs flex flex-col gap-1.5 pointer-events-none">
+        <div class="map-overlay map-overlay-legend absolute top-4 left-4 glass-panel px-3.5 py-2.5 rounded-xl border border-slate-700/60 text-xs flex flex-col gap-1.5 pointer-events-none" id="biome-legend">
           <div class="font-bold text-sky-300 flex items-center gap-1.5">
             <span>🏰</span> <span>Architectural Biomes (Spectral Min-Cut)</span>
           </div>
@@ -194,11 +268,12 @@
           </div>
         </div>
 
-        <div class="absolute bottom-4 left-4 glass-panel px-3 py-1.5 rounded-lg border border-slate-700/60 text-[11px] text-slate-400 flex items-center gap-2">
-          <span>💡 <em>Click any island to dispell Fog-of-War or inspect chamber NPCs</em></span>
+        <div class="map-overlay map-overlay-hint absolute bottom-4 left-4 glass-panel px-3 py-1.5 rounded-lg border border-slate-700/60 text-[11px] text-slate-400 flex items-center gap-2">
+          <span id="map-keyboard-help">💡 <em>Click an island, or focus the map and use arrow keys to select and reveal chambers. Enter or Space announces the selected chamber.</em></span>
         </div>
+        <div id="map-selection-announcement" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
 
-        <div class="absolute top-4 right-4 flex flex-col gap-2">
+        <div class="map-overlay map-overlay-controls absolute top-4 right-4 flex flex-col gap-2">
           <button onclick="resetRealmCamera()" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs shadow-md">
             🎯 Recenter
           </button>
@@ -569,7 +644,7 @@
             <p class="text-xs text-slate-400 mt-1">Verified on Apple Silicon M-series (Single Core, Pure Python Standard Library, Zero pip dependencies).</p>
           </div>
           <span class="px-3 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-mono text-xs font-bold">
-            Total Pipeline: 582.7 µs (< 0.6 ms)
+            Illustrative reference: 582.7 µs (not a live measurement)
           </span>
         </div>
 
@@ -1457,9 +1532,9 @@
         <div class="glass-panel p-5 rounded-2xl border-slate-800 flex flex-col gap-4">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
             <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
-              <span>📡</span> <span>Continuous Biometric & Behavioral Telemetry</span>
+              <span>📡</span> <span>Illustrative Behavioral Telemetry (Demo)</span>
             </h3>
-            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">STREAMING 60Hz</span>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">SAMPLE VALUES</span>
           </div>
 
           <div class="grid grid-cols-2 gap-3 text-xs font-mono">
@@ -2355,6 +2430,8 @@
     </div>
 
 
+  </main>
+
   <!-- JAVASCRIPT: Procedural Isometric Biome Canvas, Web Audio Synthesizer, Web Speech API -->
   <script>
     // --- Audio Synthesizer (Zero external files) ---
@@ -2420,14 +2497,19 @@
         if (!v || !b) return;
         if (t === tabId) {
           v.classList.remove('hidden');
+          b.setAttribute('aria-current', 'page');
           b.className = 'px-3.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/40 flex items-center gap-1.5 transition';
         } else {
           v.classList.add('hidden');
+          b.removeAttribute('aria-current');
           b.className = 'px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5 transition';
         }
       });
       if (tabId === 'map') {
         renderCanvas();
+        startCanvasAnimation();
+      } else {
+        stopCanvasAnimation();
       }
     }
 
@@ -2601,54 +2683,125 @@
     let selectedIsland = islands[0];
     let canvas, ctx;
     let animOffset = 0;
+    let canvasFrame = null;
+    let canvasAnimating = false;
+
+    function canvasViewport() {
+      const scale = Math.min(canvas.width / 920, canvas.height / 510);
+      return { scale, offsetX: (canvas.width - 920 * scale) / 2, offsetY: (canvas.height - 510 * scale) / 2 };
+    }
 
     function initCanvas() {
       canvas = document.getElementById('biome-canvas');
       ctx = canvas.getContext('2d');
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
+      }
 
       canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const {scale, offsetX, offsetY} = canvasViewport();
+        const mouseX = (e.clientX - rect.left - offsetX) / scale;
+        const mouseY = (e.clientY - rect.top - offsetY) / scale;
 
         for (const isl of islands) {
           const dx = mouseX - isl.x;
           const dy = mouseY - isl.y;
           if (Math.sqrt(dx * dx + dy * dy) < isl.r + 15) {
-            isl.fog = false;
-            selectedIsland = isl;
-            updateInspector();
-            playSound('unlock');
+            selectIsland(isl, { announce: true });
             break;
           }
         }
       });
-      requestAnimationFrame(renderLoop);
+      canvas.addEventListener('keydown', (e) => {
+        const currentIndex = islands.findIndex((island) => island.id === selectedIsland.id);
+        const forward = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+        const backward = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+        if (forward || backward) {
+          e.preventDefault();
+          const step = forward ? 1 : -1;
+          const next = islands[(currentIndex + step + islands.length) % islands.length];
+          selectIsland(next, { announce: true });
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          announceSelectedIsland();
+        }
+      });
+      startCanvasAnimation();
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopCanvasAnimation();
+        else if (!document.getElementById('view-map').classList.contains('hidden')) startCanvasAnimation();
+      });
+    }
+
+    function selectIsland(island, { announce = false } = {}) {
+      const revealedFog = island.fog;
+      island.fog = false;
+      selectedIsland = island;
+      canvas.dataset.selectedIsland = island.id;
+      updateInspector();
+      renderCanvas();
+      if (announce) {
+        const revealMessage = revealedFog ? ' Fog revealed.' : '';
+        document.getElementById('map-selection-announcement').textContent = `${island.name} selected.${revealMessage} ${island.desc}`;
+        playSound('unlock');
+      }
+    }
+
+    function announceSelectedIsland() {
+      const island = selectedIsland;
+      document.getElementById('map-selection-announcement').textContent = `${island.name} selected. Fog is clear. ${island.desc}`;
     }
 
     function resizeCanvas() {
       if (!canvas) return;
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
+      const width = Math.max(1, canvas.parentElement.clientWidth);
+      const height = Math.max(1, canvas.parentElement.clientHeight);
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        renderCanvas();
+      }
     }
 
     function renderLoop() {
+      canvasFrame = null;
+      if (!canvasAnimating || document.hidden || document.getElementById('view-map').classList.contains('hidden')) {
+        canvasAnimating = false;
+        return;
+      }
       animOffset += 0.02;
       renderCanvas();
-      requestAnimationFrame(renderLoop);
+      canvasFrame = requestAnimationFrame(renderLoop);
+    }
+
+    function startCanvasAnimation() {
+      const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (canvasAnimating || canvasFrame !== null || document.hidden || reducedMotion) return;
+      canvasAnimating = true;
+      canvasFrame = requestAnimationFrame(renderLoop);
+    }
+
+    function stopCanvasAnimation() {
+      canvasAnimating = false;
+      if (canvasFrame !== null) cancelAnimationFrame(canvasFrame);
+      canvasFrame = null;
     }
 
     function renderCanvas() {
       if (!ctx || !canvas) return;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const {scale, offsetX, offsetY} = canvasViewport();
+      ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
 
       // Starfield particles
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       for (let i = 0; i < 30; i++) {
-        const sx = (Math.sin(i * 99 + animOffset * 0.1) * 0.5 + 0.5) * canvas.width;
-        const sy = (Math.cos(i * 33 + animOffset * 0.1) * 0.5 + 0.5) * canvas.height;
+        const sx = (Math.sin(i * 99 + animOffset * 0.1) * 0.5 + 0.5) * 920;
+        const sy = (Math.cos(i * 33 + animOffset * 0.1) * 0.5 + 0.5) * 510;
         ctx.fillRect(sx, sy, 1.5, 1.5);
       }
 
@@ -2731,13 +2884,13 @@
 
     function resetRealmCamera() {
       playSound('click');
-      selectedIsland = islands[0];
-      updateInspector();
+      selectIsland(islands[0]);
     }
 
     function dispelAllFog() {
       playSound('unlock');
       islands.forEach(i => i.fog = false);
+      renderCanvas();
     }
 
     // --- Computer-Use Raid Boss Execution ---

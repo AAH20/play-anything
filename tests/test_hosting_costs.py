@@ -32,6 +32,13 @@ class HostingTests(unittest.TestCase):
         self.assertEqual(before['profit']-after['profit'],45)
         self.assertEqual(before['contribution'],after['contribution'])
 
+    def test_output_labels_rates_as_illustrative_not_live_verified(self):
+        estimate=estimate_hosting()
+        self.assertEqual(estimate['estimate_type'],'illustrative')
+        self.assertFalse(estimate['price_verified'])
+        self.assertIsNone(estimate['verified_on'])
+        self.assertIn('not a quote',estimate['estimate_basis'].lower())
+
     def test_invalid_usage(self):
         for setting in ({'mau':-1},{'mau':1.2},{'extra':'NaN'},{'web':'fake'},{'seats':0},{'commercial':'yes'}):
             with self.assertRaises(ValueError): estimate_hosting(setting)

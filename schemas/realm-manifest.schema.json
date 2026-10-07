@@ -267,7 +267,9 @@
           "type": "integer"
         },
         "creator_rev_share_pct": {
-          "type": "number"
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 85.0
         },
         "engagement_pool_eligible": {
           "type": "boolean"

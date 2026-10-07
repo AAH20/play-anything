@@ -62,5 +62,7 @@ def estimate_hosting(settings=None):
     total = round(sum(r['amount'] for r in rows), 6)
     return dict(settings={k:float(v) if isinstance(v,Decimal) else v for k,v in a.items()},
                 monthly=total, rows=rows, warnings=warnings, eligible=not warnings,
-                verified_on='2026-09-27', sources=SOURCES,
+                estimate_type='illustrative', price_verified=False, verified_on=None,
+                estimate_basis='Editable planning scenario using modeled rates; not a quote or live-verified provider price list.',
+                sources=SOURCES,
                 scope='Static site hosting and one Supabase project. Git clones and agent connections run locally. Free Supabase can pause after one inactive week; 2 active free projects maximum. Realtime, functions, large compute, email and other add-ons need separate allowances.')

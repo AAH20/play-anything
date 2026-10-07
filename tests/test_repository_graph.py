@@ -1,6 +1,7 @@
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 from play_anything.core.repository_graph import build_repository_graph
 
 
@@ -40,10 +41,42 @@ class RepositoryGraphTests(unittest.TestCase):
         self.assertEqual(g['summary']['functions'],2)
 
     def test_limits_and_bad_syntax_are_reported(self):
+        exact = self.graph({'a.py': 'pass'}, max_files=1)
+        self.assertFalse(exact['analysis']['file_limit_reached'])
         g=self.graph({'a.py':'def broken(', 'b.py':'pass'},max_files=1)
         self.assertTrue(g['truncated'])
         self.assertTrue(g['warnings'])
         with self.assertRaises(ValueError): self.graph({},max_symbols=0)
+
+    def test_exact_symbol_limit_is_complete_until_an_extra_symbol_is_omitted(self):
+        exact = self.graph({'a.py': 'def one(): pass\n'}, max_symbols=1)
+        self.assertEqual(exact['summary']['functions'], 1)
+        self.assertFalse(exact['analysis']['symbol_limit_reached'])
+
+        overflow = self.graph({'a.py': 'def one(): pass\ndef two(): pass\n'}, max_symbols=1)
+        self.assertEqual(overflow['summary']['functions'], 1)
+        self.assertTrue(overflow['analysis']['symbol_limit_reached'])
+
+    def test_directory_walk_errors_propagate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            def failed_walk(root, *, onerror):
+                onerror(PermissionError('fixture traversal failure'))
+                return iter(())
+
+            with patch('play_anything.core.repository_graph.os.walk', side_effect=failed_walk):
+                with self.assertRaisesRegex(PermissionError, 'fixture traversal failure'):
+                    build_repository_graph(directory)
+
+    def test_source_byte_cap_is_inclusive_and_reported(self):
+        exact = self.graph({'a.py': 'x=1\n'}, max_file_bytes=4)
+        self.assertEqual(exact['analysis']['analyzed_files'], 1)
+        self.assertEqual(exact['analysis']['max_file_bytes'], 4)
+        self.assertEqual(exact['analysis']['too_large_files'], 0)
+
+        oversized = self.graph({'a.py': 'x=1\ny=2\n'}, max_file_bytes=4)
+        self.assertEqual(oversized['analysis']['too_large_files'], 1)
+        self.assertEqual(oversized['analysis']['max_file_bytes'], 4)
+        self.assertFalse(oversized['analysis']['complete'])
 
     def test_nested_functions_resolve_and_output_is_deterministic(self):
         files={'x.py':'def outer():\n def inner(): pass\n inner()\n'}

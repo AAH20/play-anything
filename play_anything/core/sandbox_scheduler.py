@@ -1,30 +1,44 @@
-"""P7 Solver: Disjunctive Computer-Use Sandbox Task Scheduler.
+"""Deterministic list-scheduling heuristic for sandbox actions.
 
-Solves the NP-hard Disjunctive Job Shop Scheduling problem with Multi-Resource Contention.
-Coordinates concurrent autonomous computer-use actions (git checkout, test runner, Playwright browser,
-local mock server) across constrained sandbox resources without race conditions or circular deadlocks.
+Produces planned start times under release, dependency, and exclusive-resource
+constraints. It does not execute actions or prove globally minimal makespan.
+Cycles are reported through ``deadlock_free=False``.
 """
 import time
-from typing import List, Dict, Set, Tuple
-from collections import defaultdict, deque
+from typing import List, Dict
+from collections import defaultdict
 from .models import SandboxAction, DisjunctiveSandboxResult
 
 
 def solve_sandbox_scheduling(
     actions: List[SandboxAction]
 ) -> DisjunctiveSandboxResult:
-    """Computes a deadlock-free schedule for sandbox execution minimizing makespan."""
+    """Plan valid actions; reject ambiguous IDs, timing, and missing dependencies."""
     t0 = time.perf_counter()
     if not actions:
         return DisjunctiveSandboxResult(
             schedule={},
             makespan_ms=0,
             deadlock_free=True,
-            algorithm="Shifting-Bottleneck-Disjunctive-Scheduler",
+            algorithm="Deterministic-Precedence-Resource-List-Scheduler",
             execution_time_us=0.0
         )
 
-    action_map = {a.action_id: a for a in actions}
+    action_map = {}
+    for action in actions:
+        if not isinstance(action.action_id, str) or not action.action_id:
+            raise ValueError('Action IDs must be nonempty strings.')
+        if action.action_id in action_map:
+            raise ValueError('Action IDs must be unique.')
+        if not isinstance(action.resource_id, str) or not action.resource_id:
+            raise ValueError('Resource IDs must be nonempty strings.')
+        if any(type(value) is not int or value < 0
+               for value in (action.duration_ms, action.release_ms)):
+            raise ValueError('Duration and release must be nonnegative integer milliseconds.')
+        action_map[action.action_id] = action
+    for action in actions:
+        if any(dependency not in action_map for dependency in action.precedence_deps):
+            raise ValueError('Every precedence dependency must identify a supplied action.')
 
     # Precedence adjacency
     adj: Dict[str, List[str]] = defaultdict(list)
@@ -46,7 +60,8 @@ def solve_sandbox_scheduling(
 
     while ready:
         # Sort ready actions by earliest release date and duration
-        ready.sort(key=lambda a_id: (action_map[a_id].release_ms, action_map[a_id].duration_ms))
+        ready.sort(key=lambda a_id: (action_map[a_id].release_ms,
+                                    action_map[a_id].duration_ms, a_id))
         curr_id = ready.pop(0)
         curr_action = action_map[curr_id]
 
@@ -78,6 +93,6 @@ def solve_sandbox_scheduling(
         schedule=start_times,
         makespan_ms=makespan,
         deadlock_free=deadlock_free,
-        algorithm="Shifting-Bottleneck-Disjunctive-Scheduler",
+        algorithm="Deterministic-Precedence-Resource-List-Scheduler",
         execution_time_us=(t_end - t0) * 1_000_000
     )

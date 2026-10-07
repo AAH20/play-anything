@@ -12,6 +12,7 @@
   if (!Array.isArray(state.selected) || !Array.isArray(state.competitors) || !Array.isArray(state.sourceModules)) state = {...defaults};
   try { CreatorModel.calculate(state.selected,state.assumptions,state.overrides,state.hosting); } catch (_) { state = {...defaults}; }
   let session = null, latestPlan = null, busy = false;
+  const graphPreviewGate=globalThis.playAnythingCreateRequestGate();
   const steps = ['connect','understand','compose','launch'];
   const presets = {game:['repository','studio','personalization','npcs','economy'],map:['repository','studio','skills'],tool:['repository','agent','analytics'],all:CreatorModel.catalog.map(m=>m.id)};
   const descriptions = {
@@ -70,7 +71,7 @@
   function summary() {
     const labels={game:'Your custom game',map:'Your custom map',tool:'Your developer tool'};
     $('summary-name').textContent=labels[state.goal]||labels.game;
-    $('summary-mode').textContent=state.demo?'Sample exploration':state.report?'Repository analyzed':'Ready when you are';
+    $('summary-mode').textContent=state.demo?'Illustrative demo':(state.report?.analysis?.source_kind==='bundled_sample'||state.report?.url==='local:play-anything')?'Bundled sample analyzed':state.report?'Repository analyzed':'Ready when you are';
     $('summary-agent').textContent=state.connection?state.connection.harness:'Choose your agent';
     $('summary-repo').textContent=state.report?state.report.name:'Add a repository';
     $('summary-tutorial').textContent=state.completed?'Understanding check complete':'A short guided walkthrough';
@@ -101,25 +102,66 @@
   }
   function sampleReport() {
     const files=[{path:'game/world.py',analysis:'python_ast',lines_of_code:84,complexity:4,imports:[]},{path:'game/quests.py',analysis:'python_ast',lines_of_code:63,complexity:6,imports:[]},{path:'maps/forest.json',analysis:'unparsed_language',lines_of_code:48,complexity:1,imports:[]},{path:'tests/test_world.py',analysis:'python_ast',lines_of_code:35,complexity:2,imports:[]}];
-    return {name:'Forest Quest · sample',url:'sample:forest-quest',files,edges:[['game/world.py','game/quests.py'],['game/world.py','tests/test_world.py']],groups:[{name:'game',files:['game/world.py','game/quests.py']},{name:'maps',files:['maps/forest.json']},{name:'tests',files:['tests/test_world.py']}],licenses:[],truncated:false,python_files:3};
+    return {name:'Forest Quest · sample',url:'sample:forest-quest',files,edges:[['game/world.py','game/quests.py'],['game/world.py','tests/test_world.py']],groups:[{name:'game',files:['game/world.py','game/quests.py']},{name:'maps',files:['maps/forest.json']},{name:'tests',files:['tests/test_world.py']}],licenses:[],truncated:false,python_files:3,analysis:{status:'synthetic_demo',complete:false,sample_fallback:true,source_kind:'synthetic_demo',message:'Illustrative synthetic demo; no repository files were analyzed.'}};
+  }
+  function analysisDescription(report) {
+    const analysis=report.analysis;
+    if(state.demo||analysis?.source_kind==='synthetic_demo')return analysis?.message||'Illustrative synthetic demo; no repository files were analyzed.';
+    if(!analysis){
+      const counts={python_ast:0,python_parse_error:0,unreadable_file:0,source_too_large:0,unparsed_language:0};
+      report.files.forEach(file=>{if(Object.prototype.hasOwnProperty.call(counts,file.analysis))counts[file.analysis]++;});
+      const coverage=[`${report.files.length} supported files listed`,`${counts.python_ast} Python files parsed by AST`,`${counts.unparsed_language} files outside Python AST parsing`,`${counts.python_parse_error} parse failures`,`${counts.unreadable_file} unreadable files`,`${counts.source_too_large} files above the summary byte cap`];
+      if(report.truncated)coverage.push('the file reporting limit was reached');
+      const source=report.url==='local:play-anything'?'The bundled Play-Anything repository was scanned; no user repository was provided. ':'The service did not provide a complete coverage summary. ';
+      return `${source}${coverage.join('; ')}. Dynamic imports and runtime behavior are not inferred.`;
+    }
+    const details=[];
+    const count=(label,value)=>{if(Number.isSafeInteger(value)&&value>=0)details.push(`${value} ${label}`);};
+    count('supported files listed',analysis.file_count);
+    count('Python files parsed by AST',analysis.analyzed_files);
+    count('files outside Python AST parsing',analysis.unparsed_files);
+    count('Python parse failures',analysis.parse_errors);
+    count('unreadable files',analysis.unreadable_files);
+    count('files above the summary byte cap',analysis.too_large_files);
+    count('files skipped by the total source byte budget',analysis.source_budget_exceeded_files);
+    count('source bytes read',analysis.source_bytes_read);
+    if(Number.isSafeInteger(analysis.source_budget_bytes)&&analysis.source_budget_bytes>=0)details.push(`total source byte budget ${analysis.source_budget_bytes} bytes`);
+    if(analysis.source_budget_exhausted)details.push('the total source byte budget was exhausted');
+    count('graph files above its byte cap',analysis.graph_too_large_files);
+    count('graph files skipped by the total source byte budget',analysis.graph_source_budget_exceeded_files);
+    count('graph source bytes read',analysis.graph_source_bytes_read);
+    if(Number.isSafeInteger(analysis.graph_source_budget_bytes)&&analysis.graph_source_budget_bytes>=0)details.push(`graph total source byte budget ${analysis.graph_source_budget_bytes} bytes`);
+    if(analysis.graph_source_budget_exhausted)details.push('the graph source byte budget was exhausted');
+    if(analysis.file_limit_reached)details.push(`the ${analysis.file_limit}-file reporting limit was reached`);
+    if(analysis.graph_file_limit_reached)details.push(`the ${report.graph?.limits?.files||'configured'}-file graph limit was reached`);
+    if(analysis.graph_symbol_limit_reached)details.push('the graph symbol limit was reached');
+    if(Array.isArray(analysis.warnings)&&analysis.warnings.length)details.push(`${analysis.warnings.length} graph warnings; inspect the graph coverage details`);
+    return [analysis.message||`Analysis status: ${analysis.status||'unknown'}.`,...details].join(' ');
   }
   function loadSample() {
     if(busy){notice('Wait for the current operation to finish before switching repositories.');return;}
+    clearGraphPreview('The previous graph preview was cleared for the illustrative sample.');
     state.demo=true;state.report=sampleReport();state.completed=false;state.sourceModules=['game','maps'];
     state.connection=state.connection||{mode:'handoff',harness:state.harness,status:'Handoff ready'};
     resetAnswers();renderReport();event('repository_analyzed');go(1);notice('Sample loaded. Its files and relationships are illustrative. Add a real repository when you are ready to clone.');
   }
   function resetAnswers(){document.querySelectorAll('input[name="dependencies"],input[name="rights"]').forEach(x=>x.checked=false);$('rights-reviewed').checked=false;$('workspace-result').hidden=true;$('explanation').hidden=true;}
+  function clearGraphPreview(message='Graph preview cleared. Repository analysis and tutorial status are unchanged.'){
+    graphPreviewGate.invalidate();
+    $('imported-graph-viewer').clear();$('imported-graph-preview').hidden=true;$('graph-preview-clear').hidden=true;
+    $('graph-preview-status').textContent=message;$('graph-preview-file').value='';
+  }
   function renderReport() {
     const report=state.report;$('repository-report').hidden=!report;if(!report)return;
     $('repo-name').textContent=report.name;
-    $('repo-stats').innerHTML=[['Files inspected',report.files.length],['Python ASTs',report.python_files],['Import edges',report.edges.length]].map(([title,value])=>`<div class="stat"><span>${title}</span><strong>${value}</strong></div>`).join('');
+    const stats=state.demo?[['Illustrative files',report.files.length],['Illustrative Python entries',report.python_files],['Illustrative links',report.edges.length]]:[['Files listed',report.files.length],['Python ASTs',report.python_files],['Observed import edges',report.edges.length]];
+    $('repo-stats').innerHTML=stats.map(([title,value])=>`<div class="stat"><span>${title}</span><strong>${value}</strong></div>`).join('');
     $('repo-tree').innerHTML=report.groups.map(group=>`<details class="repo-folder"><summary>⌑ ${esc(group.name)} <small>${group.files.length} files</small></summary><ul>${group.files.slice(0,25).map(f=>`<li>${esc(f)}</li>`).join('')}${group.files.length>25?'<li>More files included in the exported brief.</li>':''}</ul></details>`).join('');
     $('repo-edges').innerHTML=report.edges.slice(0,25).map(([from,to])=>`<li>${esc(from)} → ${esc(to)}</li>`).join('')||'<li>No resolvable Python imports in this scan. Other languages are not parsed.</li>';
-    $('repo-limit').textContent=state.demo?'Illustrative sample, not an analyzed remote repository.':(report.truncated?'Showing the first 500 supported files. ':'')+'Python relationships are parsed imports. Other languages have line counts only; dynamic imports and runtime behavior are not inferred.';
+    $('repo-limit').textContent=analysisDescription(report);
     $('license-files').innerHTML=report.licenses.length?report.licenses.map(item=>`<details><summary>${esc(item.name)}</summary><pre>${esc(item.text)}</pre></details>`).join(''):'<p class="help">No root license file was found in this report. Check the repository and assets before commercial reuse.</p>';
     $('tutorial-intro').textContent=state.experience==='experienced'?'Fast track: inspect the structure and observed edges above, then confirm these two boundaries.':'Explore a folder above, then follow a dependency. An arrow points from a dependency to the file that imports it. Structure does not prove runtime behavior.';
-    if(state.demo&&!report.graph){const nodes=[{id:'module:.',name:'Sample game',kind:'module',path:'.',summary:'Illustrative sample',confidence:'illustrative'},...report.files.map(f=>({id:'file:'+f.path,name:f.path.split('/').pop(),kind:'file',path:f.path,summary:'Illustrative sample file',confidence:'illustrative'}))];const edges=[...report.files.map(f=>({source:'module:.',target:'file:'+f.path,relation:'contains',confidence:'illustrative'})),...report.edges.map(([dependency,importer])=>({source:'file:'+importer,target:'file:'+dependency,relation:'imports',confidence:'illustrative'}))];report.graph={version:1,name:'Forest Quest · illustrative sample',nodes,edges,summary:{files:report.files.length,modules:1,functions:0,classes:0,relationships:edges.length,unresolved:0,hubs:[]},warnings:['Illustrative walkthrough only; no source was parsed. Analyze a real repository for evidence-based symbols and calls.'],unresolved:[]};}
+    if(state.demo&&!report.graph){const nodes=[{id:'module:.',name:'Sample game',kind:'module',path:'.',summary:'Illustrative sample',confidence:'illustrative'},...report.files.map(f=>({id:'file:'+f.path,name:f.path.split('/').pop(),kind:'file',path:f.path,summary:'Illustrative sample file',confidence:'illustrative'}))];const edges=[...report.files.map(f=>({source:'module:.',target:'file:'+f.path,relation:'contains',confidence:'illustrative'})),...report.edges.map(([dependency,importer])=>({source:'file:'+importer,target:'file:'+dependency,relation:'imports',confidence:'illustrative'}))];report.graph={version:1,name:'Forest Quest · illustrative sample',nodes,edges,analysis:report.analysis,summary:{files:report.files.length,modules:1,functions:0,classes:0,relationships:edges.length,unresolved:0,hubs:[]},warnings:['Illustrative walkthrough only; no source was parsed. Analyze a real repository for evidence-based symbols and calls.'],unresolved:[]};}
     document.dispatchEvent(new CustomEvent('creator-report',{detail:report}));
     renderSources();summary();
   }
@@ -171,12 +213,23 @@
   }
   document.querySelectorAll('button[data-step]').forEach(button=>button.addEventListener('click',()=>go(Number(button.dataset.step))));
   $('quick-start').onclick=()=>{event('quickstart_opened');loadSample();};$('sample').onclick=loadSample;
-  $('connection-mode').onchange=()=>{const live=$('connection-mode').value==='endpoint';$('endpoint-fields').hidden=!live;$('handoff-help').hidden=live;$('connect').textContent=live?'Verify connection →':'Prepare handoff →';};
+  $('connection-mode').onchange=()=>{
+    const mode=$('connection-mode').value,live=mode==='endpoint';
+    $('endpoint-fields').hidden=!live;$('handoff-help').hidden=live;$('connect').textContent=live?'Verify connection →':'Prepare handoff →';
+    if(state.connection&&state.connection.mode!==mode){state.connection=null;$('api-key').value='';save();summary();}
+    if(!state.connection)$('connection-status').textContent=live?'Verify a compatible endpoint to continue.':'Prepare a handoff to continue.';
+  };
   $('connect').onclick=()=>action($('connect'),async()=>{
     const mode=$('connection-mode').value;state.harness=$('harness').value.trim()||'My coding agent';
-    if(mode==='handoff'&&!session)state.connection={mode,harness:state.harness,status:'Handoff ready'};
-    else state.connection=await api('/api/connect',{mode,harness:state.harness,endpoint:$('endpoint').value.trim(),model:$('model').value.trim(),api_key:$('api-key').value});
-    $('api-key').value='';$('connection-status').textContent=state.connection.status+(state.connection.model?' · '+state.connection.model:'');event('agent_configured');notice(mode==='handoff'?'Handoff prepared. Choose a repository to continue.':'Model endpoint verified. You can request an explanation after analyzing a repository.');
+    if(mode==='endpoint'){state.connection=null;$('connection-status').textContent='Verifying compatible model endpoint…';}
+    try {
+      if(mode==='handoff'&&!session)state.connection={mode,harness:state.harness,status:'Handoff ready'};
+      else state.connection=await api('/api/connect',{mode,harness:state.harness,endpoint:$('endpoint').value.trim(),model:$('model').value.trim(),api_key:$('api-key').value});
+    } catch(error) {
+      if(mode==='endpoint')$('connection-status').textContent='No verified endpoint. Check the endpoint settings and try again.';
+      throw error;
+    } finally {$('api-key').value='';}
+    $('connection-status').textContent=state.connection.status+(state.connection.model?' · '+state.connection.model:'');event('agent_configured');notice(mode==='handoff'?'Handoff prepared. Choose a repository to continue.':'Model endpoint verified. You can request an explanation after analyzing a repository.');
   });
   $('to-repository').onclick=()=>go(1);
   document.querySelectorAll('[name="goal"]').forEach(input=>input.onchange=()=>{state.goal=input.value;state.selected=presets[input.value];summary();save();});
@@ -184,11 +237,25 @@
   $('analyze').onclick=()=>action($('analyze'),async()=>{
     const url=$('repo-url').value.trim();if(!url)throw Error('Enter a repository URL first.');
     notice('Cloning and inspecting the repository. This can take up to two minutes; the current preview will be replaced when it is ready.');
-    const report=await api('/api/analyze',{url});state.report=report;state.demo=false;state.completed=false;state.sourceModules=report.groups.map(g=>g.name);state.server=session.instance;resetAnswers();renderReport();event('repository_analyzed');notice('Repository analyzed. Explore its structure, then complete the understanding check.');
+    const report=await api('/api/analyze',{url});clearGraphPreview('New repository analysis replaced the prior preview.');state.report=report;state.demo=false;state.completed=false;state.sourceModules=report.groups.map(g=>g.name);state.server=session.instance;resetAnswers();renderReport();event('repository_analyzed');notice('Repository analyzed. Explore its structure, then complete the understanding check.');
   });
   $('explain').onclick=()=>action($('explain'),async()=>{const result=await api('/api/explain',{analysis_id:state.report?.id,connection_id:state.connection?.id});$('explanation').textContent=result.explanation;$('explanation').hidden=false;});
   $('handoff-download').onclick=()=>download('AGENT-HANDOFF.md',brief(),'text/markdown');
-  $('analyze-local').onclick=()=>action($('analyze-local'),async()=>{const report=await api('/api/analyze',{sample:true});state.report=report;state.demo=false;state.completed=false;state.sourceModules=report.groups.map(g=>g.name);state.server=session.instance;resetAnswers();renderReport();save();notice('This project is analyzed. Explore its graph and complete the understanding check.');});
+  $('analyze-local').onclick=()=>action($('analyze-local'),async()=>{const report=await api('/api/analyze',{sample:true});clearGraphPreview('The bundled repository analysis replaced the prior preview.');state.report=report;state.demo=false;state.completed=false;state.sourceModules=report.groups.map(g=>g.name);state.server=session.instance;resetAnswers();renderReport();save();notice('This project is analyzed. Explore its graph and complete the understanding check.');});
+  $('graph-preview-clear').onclick=()=>clearGraphPreview();
+  $('graph-preview-file').onchange=async event=>{
+    const request=graphPreviewGate.begin(),input=event.currentTarget,file=input.files?.[0];if(!file)return;input.value='';
+    try{
+      if(file.size>15000000)throw Error('Graph files must be no larger than 15,000,000 bytes.');
+      const graph=JSON.parse(await file.text());
+      if(!graphPreviewGate.isCurrent(request))return;
+      $('imported-graph-viewer').graph=graph;
+      $('imported-graph-preview').hidden=false;$('graph-preview-clear').hidden=false;
+      $('graph-preview-status').textContent=`Imported ${graph.name||'repository'} snapshot for browsing only. Analyze a repository to complete understanding; this preview does not change tutorial status.`;
+    }catch(error){
+      if(graphPreviewGate.isCurrent(request))$('graph-preview-status').textContent=`Could not import graph preview: ${String(error?.message||'Invalid graph snapshot.').slice(0,220)} The existing preview, repository analysis, and tutorial status are unchanged.`;
+    }
+  };
   $('complete-tutorial').onclick=()=>action($('complete-tutorial'),async()=>{
     const answers={dependencies:document.querySelector('[name="dependencies"]:checked')?.value,rights:document.querySelector('[name="rights"]:checked')?.value};
     if(answers.dependencies!=='imports'||answers.rights!=='review')throw Error('Check both answers. Dependencies come from parsed imports; commercial reuse requires reviewing permissions.');

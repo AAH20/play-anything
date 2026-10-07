@@ -1,15 +1,31 @@
 (() => {
   const viewer=document.querySelector('repo-graph'),status=document.getElementById('graph-status');
+  const loadGate=globalThis.playAnythingCreateRequestGate();
   function show(graph){
-    if(!graph||!Array.isArray(graph.nodes)||!Array.isArray(graph.edges)||graph.nodes.length>65000||graph.edges.length>250000||graph.nodes.some(n=>!n||typeof n.id!=='string'||typeof n.name!=='string'||typeof n.path!=='string'||!['module','file','function','class','external'].includes(n.kind)))throw Error('Invalid graph snapshot.');
-    const ids=new Set(graph.nodes.map(n=>n.id));
-    if(ids.size!==graph.nodes.length||graph.edges.some(e=>!e||!ids.has(e.source)||!ids.has(e.target)||typeof e.relation!=='string')||(graph.warnings&&!Array.isArray(graph.warnings))||(graph.unresolved&&!Array.isArray(graph.unresolved)))throw Error('Invalid graph relationships.');
-    viewer.graph=graph;status.textContent='Loaded '+graph.name+'. Select a detail level or inspect a node.';
+    try{viewer.graph=graph;status.textContent='Loaded '+(graph.name||'Repository')+'. Select a detail level or inspect a node.';return true;}
+    catch(error){const detail=String(error?.message||'').slice(0,180);status.textContent=`Graph could not be loaded (${error?.name||'Error'}): ${detail}`;return false;}
   }
-  async function load(){try{if(window.PlayCloudConfig?.mode==='static')throw Error('Hosted snapshot');const r=await fetch('/api/session');if(!r.ok)throw Error('Hosted snapshot');const session=await r.json();const response=await fetch('/api/graph',{method:'POST',headers:{'Content-Type':'application/json','X-Play-Token':session.token},body:'{}'});if(!response.ok)throw Error('Analysis failed');show(await response.json());}catch(_){try{const response=await fetch('repository-graph.json');if(!response.ok)throw Error();show(await response.json());}catch(_){status.textContent='Start the local creator server to analyze source, or import an exported graph snapshot.';}}}
+  async function load(){
+    const revision=loadGate.begin(),isCurrent=()=>loadGate.isCurrent(revision);let apiError=null;
+    try{
+      if(window.PlayCloudConfig?.mode==='static')throw Error('Hosted snapshot');
+      const r=await fetch('/api/session');if(!isCurrent())return;if(!r.ok)throw Error('Hosted snapshot');
+      const session=await r.json();if(!isCurrent())return;
+      const response=await fetch('/api/graph',{method:'POST',headers:{'Content-Type':'application/json','X-Play-Token':session.token},body:'{}'});
+      if(!isCurrent())return;if(!response.ok)throw Error('Analysis failed');
+      const graph=await response.json();if(!isCurrent())return;show(graph);return;
+    }catch(error){apiError=error;}
+    if(!isCurrent())return;
+    if(String(apiError?.message||'').startsWith('Invalid graph snapshot:')){status.textContent=`${apiError.message} The previous graph remains displayed.`;return;}
+    try{
+      const response=await fetch('repository-graph.json');if(!isCurrent())return;
+      if(!response.ok)throw Error('No bundled graph snapshot is available.');
+      const graph=await response.json();if(!isCurrent())return;show(graph);
+    }catch(error){if(isCurrent()){const invalid=String(error?.message||'').startsWith('Invalid graph snapshot:');status.textContent=invalid?`${error.message} The previous graph remains displayed.`:'Start the local creator server to analyze source, or import an exported graph snapshot.';}}
+  }
   document.getElementById('graph-local').onclick=load;
   if(window.PlayCloudConfig?.mode==='static')document.getElementById('graph-local').textContent='Reload project snapshot';
-  document.getElementById('graph-saved').onclick=()=>{try{const graph=JSON.parse(localStorage.getItem('play-anything.graph.v1'));if(!graph)throw Error('Analyze a repository in Creator Studio first.');show(graph);}catch(error){status.textContent=error.message;}};
-  document.getElementById('graph-file').onchange=async event=>{try{const file=event.target.files[0];if(!file)return;if(file.size>15000000)throw Error('Graph files must be below 15 MB.');show(JSON.parse(await file.text()));}catch(error){status.textContent=error.message;}};
+  document.getElementById('graph-saved').onclick=()=>{loadGate.invalidate();try{const graph=JSON.parse(localStorage.getItem('play-anything.graph.v1'));if(!graph)throw Error('Analyze a repository in Creator Studio first.');show(graph);}catch(error){status.textContent=`${error.message}${String(error?.message||'').startsWith('Invalid graph snapshot:')?' The previous graph remains displayed.':''}`;}};
+  document.getElementById('graph-file').onchange=async event=>{const revision=loadGate.begin(),file=event.target.files[0];if(!file)return;event.target.value='';try{if(file.size>15000000)throw Error('Graph files must be below 15 MB.');const text=await file.text();if(!loadGate.isCurrent(revision))return;show(JSON.parse(text));}catch(error){if(loadGate.isCurrent(revision))status.textContent=`${error.message}${String(error?.message||'').startsWith('Invalid graph snapshot:')?' The previous graph remains displayed.':''}`;}};
   load();
 })();

@@ -9,13 +9,17 @@ from __future__ import annotations
 import math
 import json
 from copy import deepcopy
+from decimal import Decimal
 import uuid
 import time
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from play_anything.core.personalization_engine import OnboardingCalibrationGate
-from play_anything.core.manifest_schema import manifest_json_schema, validate_manifest_data
+from play_anything.core.manifest_schema import (
+    _ParsedJSONFloat, manifest_json_schema, normalize_parsed_json_numbers,
+    validate_manifest_data,
+)
 
 
 class GameMode(str, Enum):
@@ -173,7 +177,9 @@ class RealmPunishments:
 class RealmMonetizationConfig:
     access_type: AccessType = AccessType.OPEN_ACCESS
     ticket_price_tokens: int = 0             # 0 for Open, e.g. 50 Sovereign Credits
-    creator_rev_share_pct: float = 70.0      # 70% to architect, 30% sovereign protocol
+    creator_rev_share_pct: float = field(
+        default=70.0, metadata={"minimum": 0.0, "maximum": 85.0}
+    )                                             # 70% to architect, 30% sovereign protocol
     engagement_pool_eligible: bool = True    # Receives slice of protocol yield pool
     custom_skins_allowed: bool = True
     sponsored_bounty_usd: float = 0.0        # Sponsored corporate prize pool
@@ -221,14 +227,34 @@ class RealmManifest:
 
     @classmethod
     def from_json(cls, payload: str) -> RealmManifest:
-        return cls.from_dict(json.loads(payload))
+        """Parse a manifest, rejecting ambiguous duplicate JSON object keys."""
+        def reject_duplicate_keys(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError(f"Duplicate JSON object key {key!r}")
+                result[key] = value
+            return result
+
+        try:
+            data = json.loads(
+                payload,
+                object_pairs_hook=reject_duplicate_keys,
+                parse_float=_ParsedJSONFloat,
+            )
+        except RecursionError as exc:
+            # Older supported Python runtimes raise RecursionError for deeply
+            # nested JSON. Surface that parser limit through the same
+            # controlled invalid-manifest contract as other malformed input.
+            raise ValueError("Invalid manifest JSON: nesting exceeds parser limit") from exc
+        return cls.from_dict(data)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> RealmManifest:
         errors = cls.validate_dict(data)
         if errors:
             raise ValueError("Invalid realm manifest: " + "; ".join(errors))
-        data = deepcopy(data)
+        data = normalize_parsed_json_numbers(deepcopy(data), cls)
         data["game_mode"] = GameMode(data["game_mode"])
         data["requirements"]["sandbox_tier"] = SandboxTier(data["requirements"].get("sandbox_tier", SandboxTier.DOCKER_CONTAINER))
         data["requirements"] = RealmRequirement(**data["requirements"])
@@ -485,11 +511,16 @@ class RealmStudioEngine:
         if mandatory_count == 0:
             errors.append("At least one mandatory objective is required for victory conditions.")
 
+        if manifest.requirements.max_memory_mb <= 0:
+            errors.append("requirements.max_memory_mb must be greater than zero.")
+        if manifest.requirements.max_cpu_time_ms <= 0:
+            errors.append("requirements.max_cpu_time_ms must be greater than zero.")
+
         if manifest.benchmarks.max_pipeline_latency_us > 50000.0:
             warnings.append("Pipeline latency benchmark exceeds 50ms; may cause client frame stutter.")
 
-        if manifest.monetization.creator_rev_share_pct > 85.0:
-            errors.append("Architect revenue share cannot exceed 85.0% (Platform minimum margin 15%).")
+        if not 0.0 <= manifest.monetization.creator_rev_share_pct <= 85.0:
+            errors.append("monetization.creator_rev_share_pct must be between 0.0% and 85.0% (Platform minimum margin 15%).")
 
         is_valid = len(errors) == 0
         return {
@@ -500,18 +531,21 @@ class RealmStudioEngine:
         }
 
     def publish_realm(self, manifest: RealmManifest) -> Dict[str, Any]:
-        val = self.validate_manifest(manifest)
+        # Publication captures an immutable-in-practice snapshot: edits to a
+        # caller-owned draft take effect only after a new publish operation.
+        published_manifest = deepcopy(manifest)
+        val = self.validate_manifest(published_manifest)
         if not val["valid"]:
             raise ValueError(f"Manifest validation failed: {val['errors']}")
 
-        self.published_realms[manifest.id] = manifest
+        self.published_realms[published_manifest.id] = published_manifest
         return {
             "status": "PUBLISHED",
-            "realm_id": manifest.id,
-            "slug": manifest.slug,
-            "share_url": f"playanything://realms/{manifest.slug}",
-            "creator_rev_share": f"{manifest.monetization.creator_rev_share_pct}%",
-            "eval_protocol": manifest.evaluation.arena_protocol.value
+            "realm_id": published_manifest.id,
+            "slug": published_manifest.slug,
+            "share_url": f"playanything://realms/{published_manifest.slug}",
+            "creator_rev_share": f"{published_manifest.monetization.creator_rev_share_pct}%",
+            "eval_protocol": published_manifest.evaluation.arena_protocol.value
         }
 
     def simulate_payout_distribution(
@@ -527,20 +561,56 @@ class RealmStudioEngine:
             raise KeyError(f"Realm {realm_id} not registered.")
 
         manifest = self.published_realms[realm_id]
-        rev_share_ratio = manifest.monetization.creator_rev_share_pct / 100.0
+        validation = self.validate_manifest(manifest)
+        if not validation["valid"]:
+            raise ValueError(f"Published realm manifest is no longer valid: {validation['errors']}")
 
-        # Direct challenge entries cut (e.g. 70%)
-        direct_creator_cut = int(ticket_sales_revenue_tokens * rev_share_ratio)
+        for name, value in (
+            ("total_plays", total_plays),
+            ("ticket_sales_revenue_tokens", ticket_sales_revenue_tokens),
+            ("engagement_pool_size_tokens", engagement_pool_size_tokens),
+        ):
+            if type(value) is not int or value < 0:
+                raise ValueError(f"{name} must be a non-negative integer.")
+        if type(completion_rate) not in (int, float):
+            raise ValueError("completion_rate must be a finite number between 0 and 1.")
+        if not 0.0 <= completion_rate <= 1.0 or not math.isfinite(completion_rate):
+            raise ValueError("completion_rate must be a finite number between 0 and 1.")
+
+        # Treat the public float's canonical decimal representation as the
+        # configured percentage, then floor with integer arithmetic. This
+        # avoids one-token under-allocation at exact decimal boundaries.
+        share_numerator, share_denominator = Decimal(
+            str(manifest.monetization.creator_rev_share_pct)
+        ).as_integer_ratio()
+        direct_creator_cut = (
+            ticket_sales_revenue_tokens * share_numerator // (share_denominator * 100)
+        )
         direct_platform_cut = ticket_sales_revenue_tokens - direct_creator_cut
 
-        # Engagement Pool yield (weighted by volume and completion rate)
-        engagement_score = total_plays * (0.4 + 0.6 * completion_rate)
-        pool_share_factor = min(1.0, engagement_score / 10000.0)
-        engagement_payout_tokens = int(engagement_pool_size_tokens * 0.15 * pool_share_factor)
+        # Engagement weight is exactly 0.4 + 0.6 * completion_rate, with
+        # completion_rate interpreted via its canonical decimal spelling.
+        completion_numerator, completion_denominator = Decimal(
+            str(completion_rate)
+        ).as_integer_ratio()
+        weight_numerator = 2 * completion_denominator + 3 * completion_numerator
+        weight_denominator = 5 * completion_denominator
+        factor_numerator = total_plays * weight_numerator
+        factor_denominator = 10000 * weight_denominator
+        if factor_numerator >= factor_denominator:
+            engagement_payout_tokens = engagement_pool_size_tokens * 15 // 100
+        else:
+            engagement_payout_tokens = (
+                engagement_pool_size_tokens * 15 * factor_numerator //
+                (100 * factor_denominator)
+            )
 
         total_creator_tokens = direct_creator_cut + engagement_payout_tokens
         # Exchange rate: 100 Sovereign Credits = $1.00 USD
-        settlement_usd_equivalent = round(total_creator_tokens * 0.01, 2)
+        try:
+            settlement_usd_equivalent = round(total_creator_tokens * 0.01, 2)
+        except OverflowError:
+            raise ValueError("estimated settlement exceeds the supported finite numeric range.") from None
 
         return {
             "realm_id": realm_id,

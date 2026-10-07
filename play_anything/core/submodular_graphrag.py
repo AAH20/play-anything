@@ -1,15 +1,26 @@
-"""P6 Solver: GraphRAG Submodular Curiosity Context Distillation.
+"""P6 heuristic: GraphRAG Submodular Curiosity Context Distillation.
 
 Solves the NP-hard Submodular Maximization under Knapsack Budget constraints.
 Extracts non-redundant, cross-module context snippets that maximize user learning novelty and
 pedagogical 'aha!' moments without exceeding strict LLM context token caps.
-Implements Minoux's Accelerated Lazy-Greedy algorithm with the Nemhauser-Wolsey (1 - 1/e)
-approximation guarantee and heap-based marginal gain pruning.
+Uses lazy marginal-gain-per-token ordering. This knapsack heuristic is not an exact
+solver, and this implementation does not claim the cardinality-constrained
+Nemhauser-Wolsey (1 - 1/e) guarantee.
 """
 import time
 import heapq
-from typing import List, Dict, Set, Tuple
+import math
+from typing import List, Set, Tuple
 from .models import ContextSnippet, SubmodularCuriosityResult
+
+
+def _finite_real(value) -> bool:
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def solve_submodular_graphrag(
@@ -18,11 +29,22 @@ def solve_submodular_graphrag(
     redundancy_penalty_factor: float = 0.5
 ) -> SubmodularCuriosityResult:
     """
-    Selects subset of code snippets maximizing novelty and coverage under Knapsack token limit.
-    Utilizes Minoux (1978) Lazy-Greedy algorithm with a max-heap priority queue.
+    Greedily selects snippets for novelty and coverage under the token limit, using
+    lazy marginal-gain-per-token ordering with a max-heap.
     """
     t0 = time.perf_counter()
-    if not snippets or token_budget <= 0:
+    if type(token_budget) is not int or token_budget < 0:
+        raise ValueError("token_budget must be a nonnegative integer")
+    if not _finite_real(redundancy_penalty_factor) or redundancy_penalty_factor < 0:
+        raise ValueError("redundancy_penalty_factor must be non-negative and finite")
+    if any(type(s.token_length) is not int or s.token_length < 0 for s in snippets):
+        raise ValueError("snippet token_length must be non-negative integer")
+    if any(not _finite_real(s.novelty_score) for s in snippets):
+        raise ValueError("snippet novelty_score must be a finite real number")
+    snippet_ids = [s.snippet_id for s in snippets]
+    if len(snippet_ids) != len(set(snippet_ids)):
+        raise ValueError("snippet_id values must be unique")
+    if not snippets:
         return SubmodularCuriosityResult(
             selected_snippets=[],
             total_coverage=0.0,
@@ -58,6 +80,8 @@ def solve_submodular_graphrag(
         overlap_concepts = s.concepts & covered_concepts
         redundancy = len(overlap_concepts) * redundancy_penalty_factor
         marginal_gain = (len(new_concepts) * 2.0) + s.novelty_score - redundancy
+        if not math.isfinite(redundancy) or not math.isfinite(marginal_gain):
+            raise ValueError("snippet scores produce a non-finite aggregate")
         return max(0.0, marginal_gain), redundancy
 
     # Build initial max-heap of marginal gain per token cost
@@ -67,11 +91,15 @@ def solve_submodular_graphrag(
     for s in candidates:
         gain, _ = compute_gain(s)
         if gain > 0:
-            ratio = gain / s.token_length
+            # Empty snippets can still add concepts or novelty and consume no
+            # budget. Rank them first without dividing by zero.
+            ratio = float("inf") if s.token_length == 0 else gain / s.token_length
             heapq.heappush(heap, (-ratio, current_step, s.snippet_id, s))
 
     # Minoux Lazy-Greedy Loop
-    while heap and used_tokens < token_budget:
+    # Continue at an exactly exhausted budget so zero-token candidates remain
+    # eligible; the fit check below still rejects every positive-cost item.
+    while heap:
         neg_ratio, last_step, sid, candidate = heapq.heappop(heap)
 
         # Skip if adding this candidate exceeds token budget
@@ -85,17 +113,26 @@ def solve_submodular_graphrag(
             if actual_gain <= 0:
                 continue
 
+            next_coverage = total_coverage + actual_gain
+            next_penalty = total_penalty + actual_redundancy
+            if not math.isfinite(next_coverage) or not math.isfinite(next_penalty):
+                raise ValueError("snippet scores produce a non-finite aggregate")
+
             selected.append(candidate)
             used_tokens += candidate.token_length
-            total_coverage += actual_gain
-            total_penalty += actual_redundancy
+            total_coverage = next_coverage
+            total_penalty = next_penalty
             covered_concepts.update(candidate.concepts)
             current_step += 1
         else:
             # Recompute marginal gain with respect to current covered_concepts
             fresh_gain, _ = compute_gain(candidate)
             if fresh_gain > 0:
-                fresh_ratio = fresh_gain / candidate.token_length
+                fresh_ratio = (
+                    float("inf")
+                    if candidate.token_length == 0
+                    else fresh_gain / candidate.token_length
+                )
                 heapq.heappush(heap, (-fresh_ratio, current_step, candidate.snippet_id, candidate))
 
     t_end = time.perf_counter()

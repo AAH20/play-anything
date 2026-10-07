@@ -38,7 +38,9 @@ from .adapters.repo_rpg_generator import RepoRPGGenerator, WorldState
 class PlayAnythingEngine:
     """Master engine facade for Codebase Gamification & Agentic Swarm Orchestration."""
 
-    def __init__(self):
+    def __init__(self, *, max_total_source_bytes: Optional[int] = None):
+        RepoRPGGenerator._validate_total_source_budget(max_total_source_bytes)
+        self.max_total_source_bytes = max_total_source_bytes
         self.voice = VoiceAgentAdapter()
         self.sandbox = ComputerUseSandboxAdapter()
         self.generator = RepoRPGGenerator()
@@ -46,7 +48,8 @@ class PlayAnythingEngine:
     def generate_world(self, repo_path: Optional[str] = None) -> WorldState:
         """Compiles a repository or sample codebase into a living RPG world state."""
         if repo_path:
-            return self.generator.scan_local_directory(repo_path)
+            return self.generator.scan_local_directory(
+                repo_path, max_total_source_bytes=self.max_total_source_bytes)
         return self.generator.generate_synthetic_world()
 
     def create_benchmark_suite(self) -> Dict[str, Any]:

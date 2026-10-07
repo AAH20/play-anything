@@ -10,17 +10,52 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tokenize
 
 
-def build_repository_graph(directory, max_files=2000, max_symbols=10000):
+def _raise_walk_error(error):
+    raise error
+
+
+def _read_capped_source(path, max_file_bytes, *, on_read=None):
+    """Read at most cap+1 bytes without allocating the configured cap up front."""
+    content = bytearray()
+    with path.open('rb') as source:
+        remaining = None if max_file_bytes is None else max_file_bytes + 1
+        while remaining is None or remaining:
+            chunk = source.read(65536 if remaining is None else min(65536, remaining))
+            if not chunk:
+                break
+            if on_read is not None:
+                on_read(len(chunk))
+            content.extend(chunk)
+            if remaining is not None:
+                remaining -= len(chunk)
+    return bytes(content)
+
+
+def build_repository_graph(directory, max_files=2000, max_symbols=10000,
+                          max_file_bytes=1000000, *, max_total_source_bytes=None):
     if type(max_files) is not int or not 1 <= max_files <= 10000:
         raise ValueError('Graph file limit must be between 1 and 10000.')
     if type(max_symbols) is not int or not 1 <= max_symbols <= 50000:
         raise ValueError('Graph symbol limit must be between 1 and 50000.')
+    if max_file_bytes is not None and (type(max_file_bytes) is not int or not 1 <= max_file_bytes <= sys.maxsize - 1):
+        raise ValueError(f'Graph source size limit must be an integer from 1 to {sys.maxsize - 1}, or None.')
+    if max_total_source_bytes is not None and (type(max_total_source_bytes) is not int or not 0 <= max_total_source_bytes <= sys.maxsize - 1):
+        raise ValueError(f'Graph total source budget must be an integer from 0 to {sys.maxsize - 1}, or None.')
     root = Path(directory).resolve()
     nodes, edges, files, trees, definitions, imports, calls = {}, set(), {}, {}, {}, [], []
     unresolved, warnings = [], []
+    symbol_limit_reached = False
+    analysis_counts = dict(analyzed_files=0, parse_errors=0, unreadable_files=0,
+                           too_large_files=0, unparsed_files=0, source_budget_exceeded_files=0)
+    source_bytes_read = 0
+
+    def note_read(count):
+        nonlocal source_bytes_read
+        source_bytes_read += count
     aliases, shadows = {}, {}
 
     def node(identifier, **attributes):
@@ -44,16 +79,16 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
     except (OSError, subprocess.SubprocessError):
         warnings.append('Git ignore rules unavailable; inventory uses generated-directory exclusions only.')
     included_dirs = {str(parent).replace(os.sep, '/') for name in (indexed or []) for parent in Path(name).parents}
-    for folder, dirs, names in os.walk(root):
-        dirs[:] = sorted(d for d in dirs if d not in
-                         {'.git', '.codex', '.agents', '.venv', '.cache', 'node_modules', '__pycache__', 'venv', 'dist', 'build', 'site-dist', 'vendor'})
+    for folder, dirs, names in os.walk(root, onerror=_raise_walk_error):
+        dirs[:] = sorted(d for d in dirs if not d.startswith('.') and d not in
+                         {'node_modules', '__pycache__', 'venv', 'dist', 'build', 'site-dist', 'vendor'})
         if indexed is not None:
             dirs[:] = [d for d in dirs if str((Path(folder) / d).relative_to(root)).replace(os.sep, '/') in included_dirs]
         for name in sorted(names):
             path = Path(folder) / name
             if indexed is not None and path.relative_to(root).as_posix() not in indexed:
                 continue
-            if path.is_symlink() or not path.is_file():
+            if path.name.startswith('.') or path.is_symlink() or not path.is_file():
                 continue
             paths.append(path)
             if len(paths) > max_files:
@@ -78,26 +113,51 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
         edge(parent, fid, 'contains', 'observed')
         files[relative] = fid
         if path.suffix not in {'.py', '.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx'}:
+            analysis_counts['unparsed_files'] += 1
             continue
         try:
-            if path.stat().st_size > 1000000:
-                warnings.append(relative + ': source larger than 1 MB; inventory only')
+            file_size = path.stat().st_size
+            if max_file_bytes is not None and file_size > max_file_bytes:
+                analysis_counts['too_large_files'] += 1
+                warnings.append(relative + ': source exceeds the configured byte limit; inventory only')
                 continue
-            content = path.read_bytes()
+            remaining_budget = None if max_total_source_bytes is None else max_total_source_bytes - source_bytes_read
+            if remaining_budget is not None and (file_size > remaining_budget or remaining_budget < 0):
+                analysis_counts['source_budget_exceeded_files'] += 1
+                warnings.append(relative + ': total source-read budget reached; inventory only')
+                continue
+            if remaining_budget == 0 and file_size == 0:
+                # Parse the known-empty source from memory; opening it would
+                # perform a read (and a cap+1 sentinel) under a zero-byte budget.
+                content = b''
+            else:
+                limits = [value for value in (max_file_bytes, remaining_budget) if value is not None]
+                content = _read_capped_source(path, min(limits) if limits else None, on_read=note_read)
+            if remaining_budget is not None and len(content) > remaining_budget:
+                analysis_counts['source_budget_exceeded_files'] += 1
+                warnings.append(relative + ': source grew beyond the total source-read budget; inventory only')
+                continue
+            if max_file_bytes is not None and len(content) > max_file_bytes:
+                analysis_counts['too_large_files'] += 1
+                warnings.append(relative + ': source exceeds the configured byte limit; inventory only')
+                continue
             if path.suffix == '.py':
                 encoding, _ = tokenize.detect_encoding(io.BytesIO(content).readline)
                 tree = ast.parse(content.decode(encoding), filename=relative)
                 trees[relative] = tree
+                analysis_counts['analyzed_files'] += 1
                 nodes[fid]['summary'] = (ast.get_docstring(tree) or 'Python module; inspect symbols and relationships.')[:400]
                 nodes[fid]['confidence'] = 'parsed'
             else:
                 source = content.decode('utf-8')
+                analysis_counts['unparsed_files'] += 1
                 # Remove comments and string contents before looking for declarations.
                 masked = re.sub(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|`(?:\\.|[^`\\])*`',
                                 lambda m: ''.join('\n' if c == '\n' else ' ' for c in m[0]), source)
                 pattern = r'\b(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(|\bclass\s+([A-Za-z_$][\w$]*)|\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>'
                 for match in re.finditer(pattern, masked):
                     if len(definitions) >= max_symbols:
+                        symbol_limit_reached = True
                         break
                     name = next(g for g in match.groups() if g)
                     line = source.count('\n', 0, match.start()) + 1
@@ -114,6 +174,10 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
                     imports.append((relative, '', match[1], [], -1, source.count('\n', 0, match.start()) + 1))
                 nodes[fid]['summary'] = 'JavaScript/TypeScript: lexical declarations and import hints; no full language parser.'
         except (OSError, UnicodeError, SyntaxError, ValueError, RecursionError) as error:
+            if isinstance(error, OSError):
+                analysis_counts['unreadable_files'] += 1
+            else:
+                analysis_counts['parse_errors'] += 1
             warnings.append(f'{relative}: {type(error).__name__}; inventory only')
 
     class Symbols(ast.NodeVisitor):
@@ -121,7 +185,9 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
             self.path, self.scope, self.owner, self.class_scope = path, '', files[path], None
 
         def declaration(self, item, kind):
+            nonlocal symbol_limit_reached
             if len(definitions) >= max_symbols:
+                symbol_limit_reached = True
                 return
             name = item.name if hasattr(item, 'name') else f'<lambda>@{item.lineno}'
             qualified = self.scope + '.' + name if self.scope else name
@@ -175,7 +241,8 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
         if not path.endswith('.py'):
             continue
         parts = path[:-3].split('/')
-        if parts[0] == 'src': parts = parts[1:]
+        if parts[0] == 'src' and len(parts) > 1:
+            parts = parts[1:]
         is_package = parts[-1] == '__init__'
         module = '.'.join(parts[:-1] if is_package else parts)
         modules.setdefault(module, []).append(fid)
@@ -272,11 +339,26 @@ def build_repository_graph(directory, max_files=2000, max_symbols=10000):
         elif item['kind'] == 'file' and file_counts.get(item['path'], {}).get('function', 0):
             item['summary'] += f" Contains {file_counts[item['path']]['function']} indexed functions and {file_counts[item['path']]['class']} classes."
     counts = Counter(n['kind'] for n in nodes.values())
-    if len(definitions) >= max_symbols: warnings.append('Symbol limit reached; some declarations are not included.')
+    if symbol_limit_reached: warnings.append('Symbol limit reached; some declarations are not included.')
+    file_count = counts['file']
+    complete = (not truncated and not symbol_limit_reached and not warnings and
+                not any(value for key, value in analysis_counts.items()
+                        if key != 'analyzed_files'))
+    status = 'empty' if not file_count else 'complete' if complete else 'partial'
+    analysis = dict(status=status, complete=complete, sample_fallback=False,
+                    file_count=file_count, file_limit_reached=truncated,
+                    file_limit=max_files, max_file_bytes=max_file_bytes,
+                    symbol_limit=max_symbols, symbol_limit_reached=symbol_limit_reached,
+                    source_bytes_read=source_bytes_read, source_budget_bytes=max_total_source_bytes,
+                    source_budget_exhausted=(max_total_source_bytes is not None and
+                                            (source_bytes_read >= max_total_source_bytes or
+                                             bool(analysis_counts['source_budget_exceeded_files']))),
+                    **analysis_counts)
     return dict(version=1, name=root.name, nodes=list(nodes.values()),
                 edges=[dict(source=s,target=t,relation=r,confidence=c,line=line) for s,t,r,c,line in sorted(edges)],
                 summary=dict(files=counts['file'], modules=counts['module'], functions=counts['function'],
                              classes=counts['class'], relationships=len(edges), unresolved=len(unresolved),
                              hubs=[nodes[k]['name'] for k,_ in sorted(degree.items(), key=lambda item: (-item[1], item[0]))[:5]]),
                 unresolved=unresolved[:200], unresolved_truncated=len(unresolved)>200,
-                warnings=warnings, truncated=truncated, limits=dict(files=max_files,symbols=max_symbols))
+                warnings=warnings, truncated=truncated, limits=dict(files=max_files,symbols=max_symbols),
+                analysis=analysis)

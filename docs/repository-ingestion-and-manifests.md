@@ -29,10 +29,12 @@ for malformed inputs. `from_json` also rejects malformed JSON. Existing valid
 manifests and nested defaults continue to work.
 
 The built-in validator implements only the keywords emitted by this schema;
-it is not an arbitrary JSON Schema engine. Business rules such as minimum title
-length, mandatory objectives, and the 85% creator revenue-share cap remain in
-`RealmStudioEngine.validate_manifest`. Structural validity alone is not approval
-to publish. No format checks or numeric business bounds are implied by export.
+it is not an arbitrary JSON Schema engine. The exported schema and built-in
+validator enforce the inclusive 0–85% creator revenue-share range. Business rules
+such as minimum title length and mandatory objectives remain in
+`RealmStudioEngine.validate_manifest`, which also checks that range when given a
+dataclass directly. Structural validity alone is not approval to publish; export
+does not imply arbitrary format checks or additional numeric business bounds.
 
 After changing manifest dataclasses, regenerate the schema:
 
@@ -105,3 +107,103 @@ Run `python3 -m unittest discover tests`. New cases cover schema drift,
 serialization, defaults, malformed values, caller-data preservation, AST metrics,
 relative imports, encoding, fallbacks, limits, cache identity/invalidation/eviction,
 and lazy iteration. Compile changed Python files with `python3 -m py_compile`.
+
+
+### Exact JSON integer semantics
+
+Manifest JSON validation checks decimal tokens before ordinary floating-point
+rounding can disguise a fraction as an integer. Mathematically integral forms
+such as `512.0` and `5.12e2` remain valid for integer fields; a token slightly
+greater than 512 is rejected even if a binary float would round it to 512.
+Exactly representable integral decimal forms retain their prior plain-float
+values. An integral token whose value would be lost through float rounding
+becomes an exact Python integer, including counters above JavaScript's
+safe-integer range. Float fields remain ordinary finite floats;
+this does not introduce arbitrary-precision cost arithmetic or browser numeric
+precision. Public dataclass values do not retain parser wrapper types.
+
+Integral exponential tokens are bounded by the interpreter's integer-digit
+limit before conversion: `1e309` is supported as an exact integer, while
+`1e1000000000` raises a controlled validation error. This is a resource bound,
+not a claim that every arbitrarily large JSON number is supported.
+
+The royalty field now exports JSON Schema `minimum: 0.0` and `maximum: 85.0`.
+JSON validation compares the original decimal token to those bounds before
+normalization, so a token microscopically above 85 or a negative token that
+would round to negative zero is rejected. Valid dataclass values remain plain
+floats. Invalid royalty inputs now fail at the structural interchange boundary;
+directly constructed dataclasses retain the engine's semantic range backstop.
+
+An exact financial contract should define its serialized precision, units and
+rounding mode before implementation. Acceptance cases should include exact
+ceiling values, a value one supported unit above the ceiling, negative values,
+conversion/serialization round trips, and repeated revenue distributions that
+conserve the original total. Keep the current float contract explicitly
+versioned during migration rather than silently changing existing dataclass
+values or claiming that larger model budgets improve arithmetic correctness.
+
+### Simulated token payout rounding
+
+Ticket splits and engagement-pool payouts use exact integer-ratio floor
+arithmetic based on the canonical decimal spelling of the configured float
+rate. At 70 percent, 90 ticket tokens allocate 63 to the creator and 27 to the
+platform; the previous binary-float product could allocate 62. At 33.3 percent,
+1,000 tokens allocate 333. The platform receives the ticket remainder, which
+preserves the original ticket total. Engagement payout uses the same floor
+policy for its formula and 15-percent pool cap; 2 plays at 50-percent completion
+from a 1,000,000-token pool allocate 21 tokens.
+
+These are in-memory simulated token units. The canonical decimal spelling is
+not arbitrary-precision retention of every original JSON percentage token.
+`estimated_settlement_usd` remains an illustrative float estimate using the
+assumption of USD 0.01 per token, not a market quote or real settlement. Inputs
+outside that estimate's current finite-number gate return a controlled error;
+exact integer allocation does not imply unbounded end-to-end currency support.
+
+### Creator and agent JSON body boundaries
+
+Model endpoint API keys are checked before constructing HTTP requests. Header
+control characters and characters outside the header encoding are rejected
+with a controlled error that does not echo the supplied key.
+
+The local Creator POST API supports Content-Length framing only. It rejects
+any Transfer-Encoding header before reading the body or dispatching work,
+including requests containing both headers. Clients must send one validated
+Content-Length matching the UTF-8 JSON byte count.
+
+Creator request bodies retain their 200,000-byte limit, and agent response
+bodies retain their 1,000,000-byte limit plus one overflow-detection byte.
+Both reject duplicate object keys, non-finite numeric constants/exponents and
+more than 64 nested containers. Quoted or escaped brackets are ordinary string
+data. The nesting check runs before decoding, so supported Python versions
+produce controlled errors rather than decoder-dependent recursion failures.
+Ordinary finite JSON float values still use binary floats; this transport check
+does not provide exact monetary interchange.
+
+Agent response body reads retain their existing absolute deadline after headers.
+Consuming a complete HTTP response may close its socket: the reader finishes
+without an extra read and ignores only `EBADF` while restoring that already
+closed socket's timeout. Other transport and timeout errors remain visible.
+
+### Implemented validation and payout flow
+
+```mermaid
+flowchart TD
+    A[Manifest JSON text] --> B[Parse original numeric tokens]
+    B --> C[Generated JSON Schema and built-in validator]
+    C --> D{Royalty token within 0 to 85?}
+    D -->|No| E[Controlled validation error]
+    D -->|Yes| F[Plain numeric dataclass fields]
+    F --> G[Engine semantic validation]
+    G --> H[Local realm registry]
+    H --> I[Canonical decimal rate to integer ratio]
+    I --> J[Floor ticket share and engagement allocation]
+    J --> K[Conserved ticket remainder and capped pool allocation]
+    K --> L[Simulated token report]
+    L --> M[Illustrative float USD estimate with finite-range gate]
+```
+
+This manifest-text path preserves source tokens only through structural
+validation. It is separate from generic HTTP JSON decoding, which normalizes
+finite numbers to ordinary Python numbers. Neither path promises arbitrary
+original-token precision throughout a financial system.

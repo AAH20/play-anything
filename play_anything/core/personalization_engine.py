@@ -16,6 +16,8 @@ CORE MANDATE & ANTI-ESCAPISM PHILOSOPHY:
 from __future__ import annotations
 import uuid
 import time
+import math
+from copy import deepcopy
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
 from enum import Enum
@@ -401,7 +403,30 @@ class AdaptivePersonalizationEngine:
         stated_age: Optional[int] = None,
         telemetry: Optional[BehavioralTelemetry] = None
     ) -> PersonalizationProfile:
-        telemetry = telemetry or BehavioralTelemetry()
+        if not isinstance(user_id, str) or not user_id.strip():
+            raise ValueError("user_id must be a nonempty string.")
+        if stated_age is not None and (type(stated_age) is not int or stated_age < 0):
+            raise ValueError("stated_age must be a nonnegative integer or None.")
+        if telemetry is None:
+            telemetry = BehavioralTelemetry()
+        elif not isinstance(telemetry, BehavioralTelemetry):
+            raise ValueError("telemetry must be a BehavioralTelemetry instance or None.")
+
+        for name in ("keystroke_cadence_cpm", "hesitation_interval_ms",
+                     "error_recovery_latency_ms", "terminal_command_density",
+                     "cyclomatic_comprehension_score"):
+            value = getattr(telemetry, name)
+            try:
+                finite = not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value)
+            except OverflowError:
+                finite = False
+            if not finite:
+                raise ValueError(f"{name} must be a finite number.")
+            if name in ("terminal_command_density", "cyclomatic_comprehension_score"):
+                if not 0 <= value <= 1:
+                    raise ValueError(f"{name} must be between 0 and 1.")
+            elif value < 0:
+                raise ValueError(f"{name} must be nonnegative.")
 
         # 1. Determine Age Cluster
         if stated_age is not None:
@@ -487,11 +512,13 @@ class AdaptivePersonalizationEngine:
         humans = [c for c in candidates if c.competitor_type == CompetitorType.HUMAN_PEER]
         ai_agents = [c for c in candidates if c.competitor_type == CompetitorType.AI_AGENT]
 
+        if type(current_elo) is not int:
+            raise ValueError("current_elo must be an integer or None.")
         humans_sorted = sorted(humans, key=lambda c: abs(c.rating_elo - current_elo))
         ai_sorted = sorted(ai_agents, key=lambda c: abs(c.rating_elo - current_elo))
 
-        top_humans = humans_sorted[:2]
-        top_agents = ai_sorted[:2]
+        top_humans = deepcopy(humans_sorted[:2])
+        top_agents = deepcopy(ai_sorted[:2])
 
         # Division champion
         division = self.get_division_leaderboard(target_tier)
@@ -537,7 +564,7 @@ class AdaptivePersonalizationEngine:
         Retrieves the fine-grained, meritocratic leaderboard for a specific division,
         highlighting the champion's holistic life transformation through relentless consistency.
         """
-        entries = [c for c in self._competitor_pool if c.expertise_tier == tier]
+        entries = [deepcopy(c) for c in self._competitor_pool if c.expertise_tier == tier]
         entries_sorted = sorted(entries, key=lambda c: (c.rating_elo, c.consistency_streak_days), reverse=True)
 
         if tier == ExpertiseTier.GRANDMASTER_APEX:
