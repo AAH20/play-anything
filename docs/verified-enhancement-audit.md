@@ -734,3 +734,18 @@ and graph pages. The temporary verification workbench was stopped and its port
 was confirmed closed; existing user services were not targeted.
 
 The requested one-hour enhancement window completed before publication, at 2026-10-07 06:55:05 UTC (3641 seconds elapsed).
+
+
+### Post-publication clean-package check
+
+For commit `aaf017b`, GitHub CI passed its Python 3.10, 3.11, 3.12 and
+3.14 jobs. The Node job caught two missing development helpers: the existing
+`lib/` ignore rule also excluded `scripts/lib`. A clean archive reproduced
+those exact module-not-found failures. Scoped ignore exceptions now include
+both browser-verification helpers in the source package.
+
+The corrected staged archive passed all 399 Python tests in 3.690 s. Its
+Node run passed 45 tests and skipped six optional Sharp integration tests,
+with no failures. The full local run with Sharp had already passed all 51.
+The corrective commit retains zero-threshold pixel comparison and adds no
+Python runtime dependency.
